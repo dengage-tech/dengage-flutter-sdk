@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.util.*
 
 
-internal abstract class DengageResponder {
+abstract class DengageResponder {
     open lateinit var channel: MethodChannel
 
     /**
