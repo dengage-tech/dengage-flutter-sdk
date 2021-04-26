@@ -45,7 +45,10 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      if (call.method == "setContactKey") {
+      if (call.method == "setIntegerationKey") {
+        setIntegerationKey(call, result)
+      }
+      else if (call.method == "setContactKey") {
         setContactKey(call, result)
       } else if (call.method == "setHuaweiIntegrationKey") {
         this.setHuaweiIntegrationKey(call, result)
@@ -102,6 +105,17 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       }
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+  /**
+   * Method to set the integeration key.
+   */
+  private fun setIntegerationKey (@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      throw Exception("This method is not available in android. please use 'setHuaweiIntegrationKey' OR 'setFirebaseIntegrationKey' instead.")
+    } catch (ex: Exception) {
+      replyError(result, "Error:Method not available", ex.localizedMessage, ex)
     }
   }
 
