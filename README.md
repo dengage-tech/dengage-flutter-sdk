@@ -312,10 +312,7 @@ OR
 import 'package:dengage_flutter/dengage_flutter.dart';
 
 // somewhere in your javascript/typescript code
-dEngage.promptForPushNotificationsWitCallback((hasPermission: Boolean) => {
-  // do somthing with hasPermission flag.
-  // Note: hasPermission provides information if user enabled or disabled notification permission from iOS Settings > Notifications.
-})
+Object result = await DengageFlutter.promptForPushNotificationsWitCallback()
 ```
 
 ### Setting Contact Key
@@ -330,11 +327,11 @@ To track devices by their contacts you need to set contact key on SDK.
 import 'package:dengage_flutter/dengage_flutter.dart';
 
 // in js/ts code
-dEngage.setContactKey(userId: String)
+Object result = await DengageFlutter.setContactKey(userId: String)
 
 
 // You may need getting current contact key from SDK. In that case you can use getContactKey
-var contactkey = await dEngage.getContactKey()
+Object result = await DengageFlutter.getContactKey()
 ```
 
 
@@ -347,10 +344,10 @@ If you need to get current token or if you are managing token subscription proce
 import 'package:dengage_flutter/dengage_flutter.dart';
 
 // somewhere in your javascript/typescript code
-const token = await dEngage.getToken()
+Object result = await DengageFlutter.getToken()
 
 // setting the token that is taken manually
-dEngage.setToken(token)
+DengageFlutter.setToken(token)
 ```
 
 
@@ -361,10 +358,10 @@ If you manage your own user permission states on your application you may send u
 import 'package:dengage_flutter/dengage_flutter.dart';
 
 // somewhere in your javascript/typescript code
-dEngage.setUserPermission(true)
+DengageFlutter.setUserPermission(true)
 
 // For getting last permission set by user
-const permission = await dEngage.getUserPermission(true)
+Object result = await DengageFlutter.getUserPermission(true)
 ```
 
 ### Logging
@@ -374,16 +371,14 @@ To validate your inputs you can enable SDK’s log by a method.
 
 ```
 // isVisible is Boolean. By default isVisible set to false.
-dEngage.setLogStatus(isVisible)
+DengageFlutter.setLogStatus(isVisible)
 ```
 
 ### Handling Notification Action Callback
 SDK provides a method if you want to get and parse payload manually for custom parameters or etc.
 
 ```
-dEngage.handleNotificationActionBlock((notificationResponse: Object) => {
-  // handle notification Response here.
-})
+Object result = await DengageFlutter.handleNotificationActionBlock()
 ```
 
 ### DeepLinking
@@ -467,7 +462,7 @@ to get the current user information from SDK getContactKey method can be used.
 import 'package:dengage_flutter/dengage_flutter.dart';
 
 // in the code, where user information required
-const userId = await dEngage.getContactKey()
+Object result = await DengageFlutter.getContactKey()
 ```
 
 ### 2. Event Collection
@@ -509,34 +504,34 @@ import 'package:dengage_flutter/dengage_flutter.dart';
 
 
 // Home page view
-dEngage.pageView({
+DengageFlutter.pageView({
     "page_type":"home"
     // ... extra columns in page_view_events table, can be added here
 })
 
 // Category page view
-dEngage.pageView({
+DengageFlutter.pageView({
     "page_type":"category",
     "category_id":"1"
     // ... extra columns in page_view_events table, can be added here
 })
 
 // Product page view
-dEngage.pageView({
+DengageFlutter.pageView({
     "page_type":"product",
     "product_id":"1"
     // ... extra columns in page_view_events table, can be added here
 })
 
 //promotion page view
-dEngage.pageView({
+DengageFlutter.pageView({
     "page_type":"promotion",
     "promotion_id":"1"
     // ... extra columns in page_view_events table, can be added here
 })
 
 //custom page view
-dEngage.pageView({
+DengageFlutter.pageView({
     "page_type":"custom"
     // ... extra columns in page_view_events table, can be added here
 })
@@ -578,7 +573,7 @@ const addParams = {
     // ... extra columns in shopping_cart_events table, can be added here
     "cartItems":cartItems // all items in cart
 }
-dEngage.addToCart(addParams)
+DengageFlutter.addToCart(addParams)
 
 // ....
 // Remove from cart action
@@ -591,21 +586,21 @@ const removeParams = {
     // ... extra columns in shopping_cart_events table, can be added here
     "cartItems":cartItems // all items in cart
 }
-dEngage.removeFromCart(removeParams)
+DengageFlutter.removeFromCart(removeParams)
 
 // view cart action
 const viewParams = {
     // ... extra columns in shopping_cart_events table, can be added here
     "cartItems":cartItems
 }
-dEngage.viewCart(viewParams)
+DengageFlutter.viewCart(viewParams)
 
 // begin checkout action
 var checkoutParams = {
     // ... extra columns in shopping_cart_events table, can be added here
     "cartItems":cartItems
 }
-dEngage.beginCheckout(checkoutParams)
+DengageFlutter.beginCheckout(checkoutParams)
 ```
 
 ### Order Events <a name="order-events" />
@@ -642,7 +637,7 @@ const placeOrderParams = {
     // ... extra columns in order_events table, can be added here
     "cartItems":cartItems //ordered items
 }
-dEngage.placeOrder(placeOrderParams)
+DengageFlutter.placeOrder(placeOrderParams)
 
 // Cancel order action
 const cancelParams = {
@@ -653,7 +648,7 @@ const cancelParams = {
     // ... extra columns in order_events table, can be added here
     "cartItems":cartItems // // canceled items 
 }
-dEngage.cancelOrder(cancelParams)
+DengageFlutter.cancelOrder(cancelParams)
 ```
 
 ### Wishlist Event <a name="wishlist-events" />
@@ -678,7 +673,7 @@ There are 2 wishlist event functions. `addToWishlist`, `removeFromWishlist`. In 
       // ... extra columns in wishlist_events table, can be added here
       "items": wishlistItems // current items
   ]
-  dEngage.addToWishList(params)
+  DengageFlutter.addToWishList(params)
 
   // Remove from wishlist action
   const removeParams = [
@@ -686,7 +681,7 @@ There are 2 wishlist event functions. `addToWishlist`, `removeFromWishlist`. In 
       // ... extra columns in wishlist_events table, can be added here
       "items": wishlistItems // current items
   ]
-  dEngage.removeFromWishList(removeParams)
+  DengageFlutter.removeFromWishList(removeParams)
 ```
 
 ### Search Event <a name="search-event"/>
@@ -699,7 +694,7 @@ Search events will be stored in `search_events` table.
       "filters":"" //you can send extra filters selected by user here. Formating is not specified
       // ... extra columns in search_events table, can be added here
   }
-  dEngage.search(params)
+  DengageFlutter.search(params)
 ```
 
 ### 2.1 Custom Events
@@ -714,7 +709,7 @@ const params = {
     "event_name": "page_view", 
     "product_id": "1234",
 }
-dEngage.SendDeviceEvent(toEventTable: 'events', andWithEventDetails: params, (err, res) => {
+DengageFlutter.SendDeviceEvent(toEventTable: 'events', andWithEventDetails: params, (err, res) => {
   // handle error or success response.
 })
 ```
@@ -737,20 +732,20 @@ Inbox messages are kept in the memory storage of the phone until app is complete
   
   - To get app inbox messages from the server
     ```
-      const inboxMessages = await dEngage.getInboxMessages(offset, limit).catch(err => err)
+      Object result = await DengageFlutter.getInboxMessages(offset, limit).catch(err => err)
       // where offset: Int, limit: Int = 20
       // inboxMessages now either have array of Inbox messages or an error.
     ```
   - To delete a specific message from the inbox.
     ```
-      const delMsgResponse = await dEngage.deleteInboxMessage(id).catch(err => err)
+      Object result = await DengageFlutter.deleteInboxMessage(id).catch(err => err)
       // where id: String
       // delMsgResponse now either have {success: true, id: "id-of-msg-deleted"} or an error
     ```
 
   - to mark a specific message as clicked.
     ```
-      const msgSetAsClicked = await dEngage.setInboxMessageAsClicked(id).catch(err => err)
+      Object result = await DengageFlutter.setInboxMessageAsClicked(id).catch(err => err)
       // where id: String &
       // msgSetAsClicked now either have {success: true, id: "id-of-msg-deleted"} or an error
     ```
@@ -768,12 +763,12 @@ If you want to use screen name filter, you should send screen name to setNavigat
 
   #### Simple In App Messaging
   ```
-  dEngage.setNavigation()
+    DengageFlutter.setNavigation()
   ```
 
   #### In App Messaging with Screen Name
   ```
-  dEngage.setNavigation('cart')
+    DengageFlutter.setNavigation('cart')
   ```
 
   #### In App Messaging with Screen Name and Page Data
@@ -784,8 +779,8 @@ If you want to use screen name filter, you should send screen name to setNavigat
   // Scheduled: April 2021
   // if you have extra information 
   // you can send them to use screen data filters.
-  const screenData = {productId: "~hs7674", price: 1200}
-  dEngage.setNavigation('product', screenData)
+  Object screenData = {productId: "~hs7674", price: 1200}
+  DengageFlutter.setNavigation('product', screenData)
   ```
 
 ## Contributing
