@@ -17,7 +17,86 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
     case "setIntegerationKey":
         self.setIntegrationKey(call: call, result: result)
         break;
-    case "":
+    case "promptForPushNotifications":
+        self.promptForPushNotifications(call: call, result: result)
+        break;
+    case "promptForPushNotificationsWithCallback":
+        self.promptForPushNotificationsWithCallback(call: call, result: result)
+        break;
+    case "setUserPermission":
+        self.setUserPermission(call: call, result: result)
+        break;
+    case "registerForRemoteNotifications":
+        self.registerForRemoteNotifications(call: call, result: result)
+        break;
+    case "getToken":
+        self.getToken(call: call, result: result)
+        break;
+    case "getContactKey":
+        self.getContactKey(call: call, result: result)
+        break;
+    case "setToken":
+        self.setToken(call: call, result: result)
+        break;
+    case "setLogStatus":
+        self.setLogStatus(call: call, result: result)
+        break;
+    case "setContactKey":
+        self.setContactKey(call: call, result: result)
+        break;
+    case "handleNotificationActionBlock":
+        self.handleNotificationActionBlock(call: call, result: result)
+        break;
+    case "pageView":
+        self.pageView(call: call, result: result)
+        break;
+    case "addToCart":
+        self.addToCart(call: call, result: result)
+        break;
+    case "removeFromCart":
+        self.removeFromCart(call: call, result: result)
+        break;
+    case "viewCart":
+        self.viewCart(call: call, result: result)
+        break;
+    case "beginCheckout":
+        self.beginCheckout(call: call, result: result)
+        break;
+    case "placeOrder":
+        self.placeOrder(call: call, result: result)
+        break;
+    case "cancelOrder":
+        self.cancelOrder(call: call, result: result)
+        break;
+    case "addToWithList":
+        self.addToWithList(call: call, result: result)
+        break;
+    case "removeFromWishList":
+        self.removeFromWishList(call: call, result: result)
+        break;
+    case "search":
+        self.search(call: call, result: result)
+        break;
+    case "sendDeviceEvent":
+        self.sendDeviceEvent(call: call, reply: result)
+        break;
+    case "getSubscription":
+        self.getSubscription(call: call, result: result)
+        break;
+    case "getInboxMessages":
+        self.getInboxMessages(call: call, reply: result)
+        break;
+    case "deleteInboxMessage":
+        self.deleteInboxMessage(call: call, reply: result)
+        break;
+    case "setInboxMessageAsClicked":
+        self.setInboxMessageAsClicked(call: call, reply: result)
+        break;
+    case "setNavigation":
+        self.setNavigation(call: call, reply: result)
+        break;
+    case "setNavigationWithName":
+        self.setNavigationWithName(call: call, reply: result)
         break;
         default:
             result("not implemented.")
@@ -53,7 +132,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
     /** Function to prompt for push notification and
         acknowledge back .
      */
-    private func promptForPushNotifications(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    private func promptForPushNotificationsWithCallback(call: FlutterMethodCall, result: @escaping FlutterResult) {
         Dengage.promptForPushNotifications() { hasPermission in
             result(hasPermission)
         }
@@ -76,392 +155,312 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
     /**
      Method to register for remote notifications
      */
-    private func registerForRemoteNotifications () {
-        
+    private func registerForRemoteNotifications (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let enabled = arguments["enabled"] as! Bool
+        if (enabled == nil) {
+            result(FlutterError.init(code: "error", message: "Required argument 'enabled' is missing.", details: nil))
+            return
+        }
+        Dengage.registerForRemoteNotifications(enable: enabled)
+        result(nil)
+    }
+    
+    /**
+     Method to getToken
+     */
+    private func getToken (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let token = Dengage.getToken()
+        result(token)
+    }
+
+    /**
+     Method to getContactKey
+     */
+    private func getContactKey (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let contactKey = try Dengage.getContactKey()
+        result(contactKey)
+    }
+
+    /**
+     Method to setToken
+     */
+    private func setToken (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let token = arguments["token"] as! String
+        if (token.isEmpty) {
+            result(FlutterError.init(code: "error", message: "Required argument 'token' is missing.", details: nil))
+            return
+        }
+        Dengage.setToken(token: token)
+        result(nil)
+    }
+
+    /**
+     Method to setLogStatus
+     */
+    private func setLogStatus (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let isVisible = arguments["isVisible"] as! Bool
+        Dengage.setLogStatus(isVisible: isVisible)
+        result(nil)
+    }
+
+    /**
+     Method to setContactKey
+     */
+    private func setContactKey (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let contactKey = arguments["contactKey"] as! String
+        Dengage.setContactKey(contactKey: contactKey)
+        result(nil)
+    }
+    
+    /**
+     * Method to handle notification action block.
+     */
+    func handleNotificationActionBlock (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        Dengage.handleNotificationActionBlock { (notificationResponse) in
+            var response = [String:Any?]();
+            response["actionIdentifier"] = notificationResponse.actionIdentifier
+
+            var notification = [String:Any?]()
+            notification["date"] = notificationResponse.notification.date.description
+
+            var notificationReq = [String:Any?]()
+            notificationReq["identifier"] = notificationResponse.notification.request.identifier
+
+            if (notificationResponse.notification.request.trigger?.repeats != nil) {
+                var notificationReqTrigger = [String:Any?]()
+                notificationReqTrigger["repeats"] = notificationResponse.notification.request.trigger?.repeats ?? nil
+                notificationReq["trigger"] = notificationReqTrigger
+            }
+
+            var reqContent = [String:Any?]()
+            var contentAttachments = [Any]()
+            for attachement in notificationResponse.notification.request.content.attachments {
+                var contentAttachment = [String:Any?]()
+                contentAttachment["identifier"] = attachement.identifier
+                contentAttachment["url"] = attachement.url
+                contentAttachment["type"] = attachement.type
+                contentAttachments.append(contentAttachment)
+            }
+            reqContent["badge"] = notificationResponse.notification.request.content.badge
+            reqContent["body"] = notificationResponse.notification.request.content.body
+            reqContent["categoryIdentifier"] = notificationResponse.notification.request.content.categoryIdentifier
+            reqContent["launchImageName"] = notificationResponse.notification.request.content.launchImageName
+            // @NSCopying open var sound: UNNotificationSound? { get }
+            //reqContent["sound"] = notificationResponse.notification.request.content.sound // this yet ignored, will include later.
+            reqContent["subtitle"] = notificationResponse.notification.request.content.subtitle
+            reqContent["threadIdentifier"] = notificationResponse.notification.request.content.threadIdentifier
+            reqContent["title"] = notificationResponse.notification.request.content.title
+            reqContent["userInfo"] = notificationResponse.notification.request.content.userInfo // todo: make sure it is RCTCovertible & doesn't break the code
+            if #available(iOS 12.0, *) {
+                reqContent["summaryArgument"] = notificationResponse.notification.request.content.summaryArgument
+                reqContent["summaryArgumentCount"] = notificationResponse.notification.request.content.summaryArgumentCount
+            }
+            if #available(iOS 13.0, *) {
+                reqContent["targetContentIdentifier"] = notificationResponse.notification.request.content.targetContentIdentifier
+            }
+
+
+            reqContent["attachments"] = contentAttachments
+            notificationReq["content"] = reqContent
+            notification["request"] = notificationReq
+            response["notification"] = notification
+
+            result([response])
+        }
+    }
+    
+    /**
+     * Method to send pageView event data
+     */
+    func pageView (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSDictionary
+        DengageEvent.shared.pageView(params: data as! NSMutableDictionary)
+        result(nil)
+    }
+
+    /**
+     * Method to addToCart
+     */
+    func addToCart (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.addToCart(params: data)
+    }
+    
+    /**
+     * Method to addToCart
+     */
+    func removeFromCart (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.removeFromCart(params: data)
+    }
+    
+    /**
+     * Method to viewCart
+     */
+    func viewCart (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.viewCart(params: data)
+    }
+
+    /**
+     * Method to beginCheckout
+     */
+    func beginCheckout (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.beginCheckout(params: data)
+    }
+
+    /**
+     * Method to place an order
+     */
+    func placeOrder (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.order(params: data)
+    }
+
+    /**
+     * Method to cancel an order
+     */
+    func cancelOrder (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.cancelOrder(params: data)
+    }
+    
+    /**
+     * Method to addToWithList
+     */
+    func addToWithList (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.addToWithList(params: data)
+    }
+
+    /**
+     * Method to removeFromWishList
+     */
+    func removeFromWishList (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.removeFromWithList(params: data)
+    }
+
+    /**
+     * Method to search
+     */
+    func search (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["data"] as! NSMutableDictionary
+        DengageEvent.shared.search(params: data)
+    }
+    
+    /**
+     * Method to sendDeviceEvent
+     */
+    func sendDeviceEvent (call: FlutterMethodCall, reply: @escaping FlutterResult) -> Void {
+        let arguments = call.arguments as! NSDictionary
+        let withData = arguments["data"] as! NSMutableDictionary
+        let tableName = arguments["tableName"] as! String
+        Dengage.SendDeviceEvent(toEventTable: tableName, andWithEventDetails: withData)
+    }
+    
+    /**
+     * Method to getSubscription
+     */
+    func getSubscription(call: FlutterMethodCall, result: @escaping FlutterResult){
+        // this method is yet not available in iOS
+        result(FlutterError.init(code: "NO_NATIVE_METHOD_YET", message: "this method is yet not available in iOS", details: nil))
+    }
+    
+    /**
+     * Method to getInboxMessages
+     */
+    func getInboxMessages(call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        // offset: Int = 10, limit: Int = 20
+        let arguments = call.arguments as! NSDictionary
+        let offset = arguments["offset"] as! Int
+        let limit = arguments["limit"] as! Int
+
+        Dengage.getInboxMessages(offset: offset, limit: limit) { (result) in
+            switch result {
+                case .success(let resultType): // do something with the result
+                    do {
+                        let encodedData = try JSONEncoder().encode(resultType)
+                        let jsonString = String(data: encodedData,
+                                                encoding: .utf8)
+                        reply(jsonString)
+                    } catch {
+                        reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
+                    }
+                    break;
+                case .failure(let error): // Handle the error
+                    reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
+                    break;
+            }
+        }
+    }
+    
+    /**
+     * Method to deleteInboxMessage
+     */
+    func deleteInboxMessage (call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let id = arguments["id"] as! String
+        Dengage.deleteInboxMessage(with: id) { (result) in
+            switch result {
+                case .success:
+                    reply(["success": true, "id": id])
+                    break;
+                case .failure (let error):
+                    reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Method to setInboxMessageAsClicked
+     */
+    func setInboxMessageAsClicked (call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let id = arguments["id"] as! String
+        Dengage.setInboxMessageAsClicked (with: id) { (result) in
+            switch result {
+                case .success:
+                    reply(["success": true, "id": id])
+                    break;
+                case .failure (let error):
+                    reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Method to setNavigation
+     */
+    func setNavigation(call: FlutterMethodCall, reply: @escaping FlutterResult){
+        Dengage.setNavigation()
+        reply(nil)
+    }
+
+    /**
+     * Method to setNavigationWithName
+     */
+    func setNavigationWithName(call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let screenName = arguments["screenName"] as! String
+        Dengage.setNavigation(screenName: screenName)
+        reply(nil)
     }
 }
-/**
- @objc(registerForRemoteNotifications:)
- func registerForRemoteNotifications(enable: Bool) {
-     Dengage.registerForRemoteNotifications(enable: enable)
- }
-
- // _ before resolve here is neccessary, need to revisit rn docs about why.
- @objc
- func getToken(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-     do {
-         let currentToken = try Dengage.getToken()
-         resolve(currentToken)
-     } catch {
-         print("Unexpected getTOken error: \(error)")
-         reject("UNABLE_TO_RETREIVE_TOKEN", error.localizedDescription ?? "Something went wrong", error)
-     }
- }
-
- @objc
- func getContactKey(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-     do {
-         let contactKey = try Dengage.getContactKey()
-         resolve(contactKey)
-     } catch {
-         print("Unexpected getContactKey error: \(error)")
-         reject("UNABLE_TO_RETREIVE_CONTACT_KEY", error.localizedDescription ?? "Something went wrong", error)
-     }
- }
-
- @objc(setToken:)
- func setToken(token: String) {
-     Dengage.setToken(token: token)
- }
-
- @objc(setLogStatus:)
- func setLogStatus(isVisible: Bool) {
-     Dengage.setLogStatus(isVisible: isVisible)
- }
-
- @objc(setContactKey:)
- func setContactKey(contactKey: String) {
-     Dengage.setContactKey(contactKey: contactKey)
- }
-
- @objc(handleNotificationActionBlock:)
- func handleNotificationActionBlock (_ callback: @escaping RCTResponseSenderBlock) {
-     Dengage.handleNotificationActionBlock { (notificationResponse) in
-         var response = [String:Any?]();
-         response["actionIdentifier"] = notificationResponse.actionIdentifier
-
-         var notification = [String:Any?]()
-         notification["date"] = notificationResponse.notification.date.description
-
-         var notificationReq = [String:Any?]()
-         notificationReq["identifier"] = notificationResponse.notification.request.identifier
-
-         if (notificationResponse.notification.request.trigger?.repeats != nil) {
-             var notificationReqTrigger = [String:Any?]()
-             notificationReqTrigger["repeats"] = notificationResponse.notification.request.trigger?.repeats ?? nil
-             notificationReq["trigger"] = notificationReqTrigger
-         }
-
-         var reqContent = [String:Any?]()
-         var contentAttachments = [Any]()
-         for attachement in notificationResponse.notification.request.content.attachments {
-             var contentAttachment = [String:Any?]()
-             contentAttachment["identifier"] = attachement.identifier
-             contentAttachment["url"] = attachement.url
-             contentAttachment["type"] = attachement.type
-             contentAttachments.append(contentAttachment)
-         }
-         reqContent["badge"] = notificationResponse.notification.request.content.badge
-         reqContent["body"] = notificationResponse.notification.request.content.body
-         reqContent["categoryIdentifier"] = notificationResponse.notification.request.content.categoryIdentifier
-         reqContent["launchImageName"] = notificationResponse.notification.request.content.launchImageName
-         // @NSCopying open var sound: UNNotificationSound? { get }
-         //reqContent["sound"] = notificationResponse.notification.request.content.sound // this yet ignored, will include later.
-         reqContent["subtitle"] = notificationResponse.notification.request.content.subtitle
-         reqContent["threadIdentifier"] = notificationResponse.notification.request.content.threadIdentifier
-         reqContent["title"] = notificationResponse.notification.request.content.title
-         reqContent["userInfo"] = notificationResponse.notification.request.content.userInfo // todo: make sure it is RCTCovertible & doesn't break the code
-         if #available(iOS 12.0, *) {
-             reqContent["summaryArgument"] = notificationResponse.notification.request.content.summaryArgument
-             reqContent["summaryArgumentCount"] = notificationResponse.notification.request.content.summaryArgumentCount
-         }
-         if #available(iOS 13.0, *) {
-             reqContent["targetContentIdentifier"] = notificationResponse.notification.request.content.targetContentIdentifier
-         }
-
-
-         reqContent["attachments"] = contentAttachments
-         notificationReq["content"] = reqContent
-         notification["request"] = notificationReq
-         response["notification"] = notification
-
-         callback([response])
-
-         /**
-          *notification response type
-          *
-          {
-             actionIdentifier: String { get },
-             notification: UNNotification {
-                 date: Date { get }
-                 request: UNNotificationRequest {
-                  // The unique identifier for this notification request. It can be used to replace or remove a pending notification request or a delivered notification.
-                  open var identifier: String { get }
-
-
-                  // The content that will be shown on the notification.
-                  @NSCopying open var content: UNNotificationContent {
-                         // Optional array of attachments.
-                          open var attachments: [UNNotificationAttachment] {
-                              // The identifier of this attachment
-                              open var identifier: String { get }
-
-
-                              // The URL to the attachment's data. If you have obtained this attachment from UNUserNotificationCenter then the URL will be security-scoped.
-                              open var url: URL { get }
-
-
-                              // The UTI of the attachment.
-                              open var type: String { get }
-
-
-                              // Creates an attachment for the data at URL with an optional options dictionary. URL must be a file URL. Returns nil if the data at URL is not supported.
-                              public convenience init(identifier: String, url URL: URL, options: [AnyHashable : Any]? = nil) throws
-
-                          }
-
-
-                          // The application badge number.
-                          @NSCopying open var badge: NSNumber? { get }
-
-
-                          // The body of the notification.
-                          open var body: String { get }
-
-
-                          // The identifier for a registered UNNotificationCategory that will be used to determine the appropriate actions to display for the notification.
-                          open var categoryIdentifier: String { get }
-
-
-                          // The launch image that will be used when the app is opened from the notification.
-                          open var launchImageName: String { get }
-
-
-                          // The sound that will be played for the notification.
-                          @NSCopying open var sound: UNNotificationSound? { get }
-
-
-                          // The subtitle of the notification.
-                          open var subtitle: String { get }
-
-
-                          // The unique identifier for the thread or conversation related to this notification request. It will be used to visually group notifications together.
-                          open var threadIdentifier: String { get }
-
-
-                          // The title of the notification.
-                          open var title: String { get }
-
-
-                          // Apps can set the userInfo for locally scheduled notification requests. The contents of the push payload will be set as the userInfo for remote notifications.
-                          open var userInfo: [AnyHashable : Any] { get }
-
-
-                          /// The argument to be inserted in the summary for this notification.
-                          @available(iOS 12.0, *)
-                          open var summaryArgument: String { get }
-
-
-                          /// A number that indicates how many items in the summary are represented in the summary.
-                          /// For example if a podcast app sends one notification for 3 new episodes in a show,
-                          /// the argument should be the name of the show and the count should be 3.
-                          /// Default is 1 and cannot be 0.
-                          @available(iOS 12.0, *)
-                          open var summaryArgumentCount: Int { get }
-
-
-                          // An identifier for the content of the notification used by the system to customize the scene to be activated when tapping on a notification.
-                          @available(iOS 13.0, *)
-                          open var targetContentIdentifier: String? { get } // default nil
-                  }
-
-
-                  // The trigger that will or did cause the notification to be delivered. A nil trigger means deliver immediately.
-                  @NSCopying open var trigger: UNNotificationTrigger? {
-                     open var repeats: Bool { get }
-                  }
-
-
-                  // Use a nil trigger to deliver immediately.
-                  public convenience init(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger?)
-
-                 }
-             }
-          }
-          */
-
-     }
- }
-
- @objc(pageView:)
- func pageView (_ data: NSDictionary) -> Void {
-     do {
-         try DengageEvent.shared.pageView(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected pageView error: \(error)")
-     }
- }
-
- @objc(addToCart:)
- func addToCart (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.addToCart(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected addToCart error: \(error)")
-     }
- }
-
- @objc(removeFromCart:)
- func removeFromCart (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.removeFromCart(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected removeFromCart error: \(error)")
-     }
- }
-
- @objc(viewCart:)
- func viewCart (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.viewCart(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected viewCart error: \(error)")
-     }
- }
-
- @objc(beginCheckout:)
- func beginCheckout (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.beginCheckout(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected beginCheckout error: \(error)")
-     }
- }
-
- @objc(placeOrder:)
- func placeOrder (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.order(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected placeOrder error: \(error)")
-     }
- }
-
- @objc(cancelOrder:)
- func cancelOrder (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.cancelOrder(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected cancelOrder error: \(error)")
-     }
- }
-
- @objc(addToWishList:)
- func addToWishList (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.addToWithList(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected addToWishList error: \(error)")
-     }
- }
-
- @objc(removeFromWishList:)
- func removeFromWishList (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.removeFromWithList(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected removeFromWishList error: \(error)")
-     }
- }
-
- @objc(search:)
- func search (_ data: NSDictionary) -> Void {
-     do {
-         print(data)
-         try DengageEvent.shared.search(params: data as! NSMutableDictionary)
-     } catch {
-         print("Unexpected search error: \(error)")
-     }
- }
-
- @objc(SendDeviceEvent:withData:)
- func sendDeviceEvent (_ tableName: String, withData: NSDictionary) -> Void {
-     do {
-         print(withData)
-         try Dengage.SendDeviceEvent(toEventTable: tableName, andWithEventDetails: withData as! NSMutableDictionary)
-     } catch {
-         print("Unexpected search error: \(error)")
-     }
- }
-
- @objc(getSubscription:withReject:)
- func getSubscription(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock){
-     // this method is yet not available in iOS
-     reject("NO_NATIVE_METHOD_YET", "this method is yet not available in iOS", nil)
-
-//        do {
-//            let contactId = try Dengage.getContactKey()
-//            resolve(contactId)
-//        } catch {
-//            reject("UNABLE_TO_RETREIVE_CONTACT_KEY", error.localizedDescription ?? "Something went wrong", error)
-//        }
- }
-
- @objc(getInboxMessages:limit:resolve:reject:)
- func getInboxMessages(offset: Int = 10, limit: Int = 20, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock){
-     Dengage.getInboxMessages(offset: offset, limit: limit) { (result) in
-         switch result {
-             case .success(let resultType): // do something with the result
-                 do {
-                     let encodedData = try JSONEncoder().encode(resultType)
-                     let jsonString = String(data: encodedData,
-                                             encoding: .utf8)
-                     resolve(jsonString)
-                 } catch {
-                     reject("error", error.localizedDescription , error)
-                 }
-                 break;
-             case .failure(let error): // Handle the error
-                 reject("error", error.localizedDescription , error)
-                 break;
-         }
-     }
- }
- 
- @objc(deleteInboxMessage:resolve:reject:)
- func deleteInboxMessage(id: NSString, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock){
-     Dengage.deleteInboxMessage(with: id as String) { (result) in
-         switch result {
-             case .success:
-                 resolve(["success": true, "id": id])
-                 break;
-             case .failure (let error):
-                 reject("error", error.localizedDescription , error)
-                 break;
-         }
-     }
- }
-
- @objc(setInboxMessageAsClicked:resolve:reject:)
- func setInboxMessageAsClicked(id: NSString, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock){
-     Dengage.setInboxMessageAsClicked(with: id as String) { (result) in
-         switch result {
-             case .success:
-                 resolve(["success": true, "id": id])
-                 break;
-             case .failure (let error):
-                 reject("error", error.localizedDescription , error)
-                 break;
-         }
-     }
- }
-
- @objc(setNavigation)
- func setNavigation(){
-     Dengage.setNavigation()
- }
- 
- @objc(setNavigationWithName:)
- func setNavigationWithName(screenName: NSString) {
-     Dengage.setNavigation(screenName: screenName as String)
- }
-
- */

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    Object result = await DengageFlutter.setIntegerationKey("");
+    Object result = await DengageFlutter.setIntegerationKey("my-integeration-key");
     print("result: $result");
   } on PlatformException catch (error) {
     print("error: $error");

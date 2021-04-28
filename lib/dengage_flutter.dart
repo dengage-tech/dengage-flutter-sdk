@@ -12,7 +12,7 @@ class DengageFlutter {
     return "Dengage Flutter Example";
   }
 
-  static Future<String> setIntegerationKey (String key) async {
+  static Future<bool> setIntegerationKey (String key) async {
     return await _channel.invokeMethod("setIntegerationKey", {'key': key});
   }
 }
