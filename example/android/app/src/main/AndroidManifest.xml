@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.dengage_flutter_example">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <application
         android:label="dengage_flutter_example"
         android:icon="@mipmap/ic_launcher">
@@ -33,6 +36,30 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <service android:name="com.dengage.sdk.FcmMessagingService">
+            <intent-filter>
+                <action  android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <receiver android:name="com.dengage.sdk.NotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.dengage.push.intent.RECEIVE" />
+                <action android:name="com.dengage.push.intent.OPEN" />
+                <action android:name="com.dengage.push.intent.DELETE" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="den_event_api_url"
+            android:value="https://event.dengage.com" />
+        <!--      android:value="https://eventdev.dengage.com" />-->
+
+        <meta-data
+            android:name="den_push_api_url"
+            android:value="https://push.dengage.com" />
+        <!--    android:value="https://pushdev.dengage.com" />-->
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

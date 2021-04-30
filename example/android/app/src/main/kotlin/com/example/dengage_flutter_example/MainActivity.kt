@@ -9,7 +9,7 @@ class MainActivity: FlutterActivity() {
         super.onCreate(savedInstanceState)
         DengageCoordinator.sharedInstance.setupDengage(
                 true,
-                "Your-firebase-key-here",
+                "FEYl27JxJfay6TxiYCdlkP2FXeuhNfEoI8WkxI_p_l__s_l_5sLbzKmc9c88mSZxRCrLuqMK4y0e8nHajQnBt8poBNDMvNtIytYKZ6byBQZOE8kqkkgDnlye2Lb5AcW3tuIWQjYz",
                 "your-huawei-key-here",
                 applicationContext
         )
