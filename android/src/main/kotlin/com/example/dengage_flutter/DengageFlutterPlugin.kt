@@ -176,7 +176,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     try {
       val logStatus: Boolean? = call.argument("isVisible") ?: false
       DengageCoordinator.sharedInstance.dengageManager?.setLogStatus(logStatus)
-      replySuccess(true)
+      replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
@@ -189,7 +189,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     try {
       val hasPermission: Boolean? = call.argument("hasPermission") ?: false
       DengageCoordinator.sharedInstance.dengageManager?.setUserPermission(hasPermission)
-      replySuccess(nil)
+      replySuccess(result, null)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
