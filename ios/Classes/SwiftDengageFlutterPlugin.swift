@@ -11,91 +11,91 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
-        case "getPlatformVersion":
+        case "dEngage#getPlatformVersion":
             result("iOS " + UIDevice.current.systemVersion)
             break;
-    case "setIntegerationKey":
+    case "dEngage#setIntegerationKey":
         self.setIntegrationKey(call: call, result: result)
         break;
-    case "promptForPushNotifications":
+    case "dEngage#promptForPushNotifications":
         self.promptForPushNotifications(call: call, result: result)
         break;
-    case "promptForPushNotificationsWithCallback":
-        self.promptForPushNotificationsWithCallback(call: call, result: result)
+    case "dEngage#promptForPushNotificationsWithPromise":
+        self.promptForPushNotificationsWithPromise(call: call, result: result)
         break;
-    case "setUserPermission":
+    case "dEngage#setUserPermission":
         self.setUserPermission(call: call, result: result)
         break;
-    case "registerForRemoteNotifications":
+    case "dEngage#registerForRemoteNotifications":
         self.registerForRemoteNotifications(call: call, result: result)
         break;
-    case "getToken":
+    case "dEngage#getToken":
         self.getToken(call: call, result: result)
         break;
-    case "getContactKey":
+    case "dEngage#getContactKey":
         self.getContactKey(call: call, result: result)
         break;
-    case "setToken":
+    case "dEngage#setToken":
         self.setToken(call: call, result: result)
         break;
-    case "setLogStatus":
+    case "dEngage#setLogStatus":
         self.setLogStatus(call: call, result: result)
         break;
-    case "setContactKey":
+    case "dEngage#setContactKey":
         self.setContactKey(call: call, result: result)
         break;
-    case "handleNotificationActionBlock":
+    case "dEngage#handleNotificationActionBlock":
         self.handleNotificationActionBlock(call: call, result: result)
         break;
-    case "pageView":
+    case "dEngage#pageView":
         self.pageView(call: call, result: result)
         break;
-    case "addToCart":
+    case "dEngage#addToCart":
         self.addToCart(call: call, result: result)
         break;
-    case "removeFromCart":
+    case "dEngage#removeFromCart":
         self.removeFromCart(call: call, result: result)
         break;
-    case "viewCart":
+    case "dEngage#viewCart":
         self.viewCart(call: call, result: result)
         break;
-    case "beginCheckout":
+    case "dEngage#beginCheckout":
         self.beginCheckout(call: call, result: result)
         break;
-    case "placeOrder":
+    case "dEngage#placeOrder":
         self.placeOrder(call: call, result: result)
         break;
-    case "cancelOrder":
+    case "dEngage#cancelOrder":
         self.cancelOrder(call: call, result: result)
         break;
-    case "addToWithList":
+    case "dEngage#addToWithList":
         self.addToWithList(call: call, result: result)
         break;
-    case "removeFromWishList":
+    case "dEngage#removeFromWishList":
         self.removeFromWishList(call: call, result: result)
         break;
-    case "search":
+    case "dEngage#search":
         self.search(call: call, result: result)
         break;
-    case "sendDeviceEvent":
+    case "dEngage#sendDeviceEvent":
         self.sendDeviceEvent(call: call, reply: result)
         break;
-    case "getSubscription":
+    case "dEngage#getSubscription":
         self.getSubscription(call: call, result: result)
         break;
-    case "getInboxMessages":
+    case "dEngage#getInboxMessages":
         self.getInboxMessages(call: call, reply: result)
         break;
-    case "deleteInboxMessage":
+    case "dEngage#deleteInboxMessage":
         self.deleteInboxMessage(call: call, reply: result)
         break;
-    case "setInboxMessageAsClicked":
+    case "dEngage#setInboxMessageAsClicked":
         self.setInboxMessageAsClicked(call: call, reply: result)
         break;
-    case "setNavigation":
+    case "dEngage#setNavigation":
         self.setNavigation(call: call, reply: result)
         break;
-    case "setNavigationWithName":
+    case "dEngage#setNavigationWithName":
         self.setNavigationWithName(call: call, reply: result)
         break;
         default:
@@ -132,7 +132,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
     /** Function to prompt for push notification and
         acknowledge back .
      */
-    private func promptForPushNotificationsWithCallback(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    private func promptForPushNotificationsWithPromise(call: FlutterMethodCall, result: @escaping FlutterResult) {
         Dengage.promptForPushNotifications() { hasPermission in
             result(hasPermission)
         }
@@ -143,7 +143,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
      */
     private func setUserPermission (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
-        let permission = arguments["permission"] as! Bool
+        let permission = arguments["hasPermission"] as! Bool
         if (permission == nil) {
             result(FlutterError.init(code: "error", message: "Required argument 'permission' is missing.", details: nil))
             return

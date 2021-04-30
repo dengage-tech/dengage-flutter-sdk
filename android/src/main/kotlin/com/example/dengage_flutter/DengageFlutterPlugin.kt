@@ -45,60 +45,60 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      if (call.method == "setIntegerationKey") {
+      if (call.method == "dEngage#setIntegerationKey") {
         setIntegerationKey(call, result)
       }
-      else if (call.method == "setContactKey") {
+      else if (call.method == "dEngage#setContactKey") {
         setContactKey(call, result)
-      } else if (call.method == "setHuaweiIntegrationKey") {
+      } else if (call.method == "dEngage#setHuaweiIntegrationKey") {
         this.setHuaweiIntegrationKey(call, result)
-      } else if (call.method == "setFirebaseIntegrationKey") {
+      } else if (call.method == "dEngage#setFirebaseIntegrationKey") {
         this.setFirebaseIntegrationKey(call, result)
-      } else if (call.method == "setLogStatus") {
+      } else if (call.method == "dEngage#setLogStatus") {
         this.setLogStatus(call, result)
-      } else if (call.method == "setPermission") {
+      } else if (call.method == "dEngage#setPermission") {
         this.setUserPermission(call, result)
-      } else if (call.method == "setToken") {
+      } else if (call.method == "dEngage#setToken") {
         this.setToken(call, result)
-      } else if (call.method == "getToken") {
+      } else if (call.method == "dEngage#getToken") {
         this.getToken(call, result)
-      } else if (call.method == "getContactKey") {
+      } else if (call.method == "dEngage#getContactKey") {
         this.getContactKey(call, result)
-      } else if (call.method == "getUserPermission") {
+      } else if (call.method == "dEngage#getUserPermission") {
         this.getUserPermission(call, result)
-      } else if (call.method == "getSubscription") {
+      } else if (call.method == "dEngage#getSubscription") {
         this.getSubscription(call, result)
-      } else if (call.method == "pageView") {
+      } else if (call.method == "dEngage#pageView") {
         this.pageView(call, result)
-      } else if (call.method == "addToCart") {
+      } else if (call.method == "dEngage#addToCart") {
         this.addToCart(call, result)
-      } else if (call.method == "removeFromCart") {
+      } else if (call.method == "dEngage#removeFromCart") {
         this.removeFromCart(call, result)
-      } else if (call.method == "viewCart") {
+      } else if (call.method == "dEngage#viewCart") {
         this.viewCart(call, result)
-      } else if (call.method == "beginCheckout") {
+      } else if (call.method == "dEngage#beginCheckout") {
         this.beginCheckout(call, result)
-      } else if (call.method == "placeOrder") {
+      } else if (call.method == "dEngage#placeOrder") {
         this.placeOrder(call, result)
-      } else if (call.method == "cancelOrder") {
+      } else if (call.method == "dEngage#cancelOrder") {
         this.cancelOrder(call, result)
-      } else if (call.method == "addToWishList") {
+      } else if (call.method == "dEngage#addToWishList") {
         this.addToWishList(call, result)
-      } else if (call.method == "removeFromWishList") {
+      } else if (call.method == "dEngage#removeFromWishList") {
         this.removeFromWishList(call, result)
-      } else if (call.method == "search") {
+      } else if (call.method == "dEngage#search") {
         this.search(call, result)
-      } else if (call.method == "sendDeviceEvent") {
+      } else if (call.method == "dEngage#sendDeviceEvent") {
         this.sendDeviceEvent(call, result)
-      } else if (call.method == "getInboxMessages") {
+      } else if (call.method == "dEngage#getInboxMessages") {
         this.getInboxMessages(call, result)
-      } else if (call.method == "deleteInboxMessage") {
+      } else if (call.method == "dEngage#deleteInboxMessage") {
         this.deleteInboxMessage(call, result)
-      } else if (call.method == "setInboxMessageAsClicked") {
+      } else if (call.method == "dEngage#setInboxMessageAsClicked") {
         this.setInboxMessageAsClicked(call, result)
-      } else if (call.method == "setNavigation") {
+      } else if (call.method == "dEngage#setNavigation") {
         this.setNavigation(call, result)
-      } else if (call.method == "setNavigationWithName") {
+      } else if (call.method == "dEngage#setNavigationWithName") {
         this.setNavigationWithName(call, result)
       } else {
         result.notImplemented()
@@ -174,8 +174,9 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setLogStatus (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      val logStatus: Boolean? = call.argument("logStatus") ?: false
+      val logStatus: Boolean? = call.argument("isVisible") ?: false
       DengageCoordinator.sharedInstance.dengageManager?.setLogStatus(logStatus)
+      replySuccess(true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
@@ -188,6 +189,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     try {
       val hasPermission: Boolean? = call.argument("hasPermission") ?: false
       DengageCoordinator.sharedInstance.dengageManager?.setUserPermission(hasPermission)
+      replySuccess(nil)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
