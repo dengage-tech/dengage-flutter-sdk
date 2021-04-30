@@ -39,7 +39,7 @@ class DengageFlutter {
 
   // iOS only
   static Future<void> registerForRemoteNotifications (bool enabled) async {
-    return await _channel.invokeMethod("registerForRemoteNotifications", {enabled: enabled});
+    return await _channel.invokeMethod("dEngage#registerForRemoteNotifications", {enabled: enabled});
   }
 
   static Future<String> getToken () {
@@ -59,7 +59,7 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#setHuaweiIntegrationKey", {'key': key});
   }
 
-  // android only 
+  // android only
   static Future<bool> setFirebaseIntegrationKey (String key) async {
     return await _channel.invokeMethod("dEngage#setFirebaseIntegrationKey", {'key': key});
   }
@@ -84,67 +84,67 @@ class DengageFlutter {
   }
 
   static Future<Void> pageView (Object data) async {
-    return await _channel.invokeMethod("pageView", {data});
+    return await _channel.invokeMethod("dEngage#pageView", {data});
   }
 
   static Future<Void> addToCart (Object data) async {
-    return await _channel.invokeMethod("addToCart", {data});
+    return await _channel.invokeMethod("dEngage#addToCart", {data});
   }
 
   static Future<Void> removeFromCart (Object data) async {
-    return await _channel.invokeMethod("removeFromCart", {data});
+    return await _channel.invokeMethod("dEngage#removeFromCart", {data});
   }
 
   static Future<Void> viewCart (Object data) async {
-    return await _channel.invokeMethod("viewCart", {data});
+    return await _channel.invokeMethod("dEngage#viewCart", {data});
   }
 
   static Future<Void> beginCheckout (Object data) async {
-    return await _channel.invokeMethod("beginCheckout", {data});
+    return await _channel.invokeMethod("dEngage#beginCheckout", {data});
   }
 
   static Future<Void> placeOrder (Object data) async {
-    return await _channel.invokeMethod("placeOrder", {data});
+    return await _channel.invokeMethod("dEngage#placeOrder", {data});
   }
 
   static Future<Void> cancelOrder (Object data) async {
-    return await _channel.invokeMethod("cancelOrder", {data});
+    return await _channel.invokeMethod("dEngage#cancelOrder", {data});
   }
 
   static Future<Void> addToWishList (Object data) async {
-    return await _channel.invokeMethod("addToWishList", {data});
+    return await _channel.invokeMethod("dEngage#addToWishList", {data});
   }
 
   static Future<Void> removeFromWishList (Object data) async {
-    return await _channel.invokeMethod("removeFromWishList", {data});
+    return await _channel.invokeMethod("dEngage#removeFromWishList", {data});
   }
 
   static Future<Void> search (Object data) async {
-    return await _channel.invokeMethod("search", {data});
+    return await _channel.invokeMethod("dEngage#search", {data});
   }
 
   static Future<Void> sendDeviceEvent (String tableName, Object data) async {
-    return await _channel.invokeMethod("sendDeviceEvent", {tableName, data});
+    return await _channel.invokeMethod("dEngage#sendDeviceEvent", {tableName, data});
   }
 
   static Future<Void> getInboxMessages (int offset, int limit) async {
-    return await _channel.invokeMethod("getInboxMessages", {offset, limit});
+    return await _channel.invokeMethod("dEngage#getInboxMessages", {offset, limit});
   }
 
   static Future<Void> deleteInboxMessage (int id) async {
-    return await _channel.invokeMethod("deleteInboxMessage", {id});
+    return await _channel.invokeMethod("dEngage#deleteInboxMessage", {id});
   }
 
   static Future<Void> setInboxMessageAsClicked (int id) async {
-    return await _channel.invokeMethod("setInboxMessageAsClicked", {id});
+    return await _channel.invokeMethod("dEngage#setInboxMessageAsClicked", {id});
   }
 
   static Future<Void> setNavigation () async {
-    return await _channel.invokeMethod("setNavigation");
+    return await _channel.invokeMethod("dEngage#setNavigation");
   }
 
   static Future<Void> setNavigationWithName (String screenName) async {
-    return await _channel.invokeMethod("setNavigationWithName", {screenName});
+    return await _channel.invokeMethod("dEngage#setNavigationWithName", {screenName});
   }
 
 }
