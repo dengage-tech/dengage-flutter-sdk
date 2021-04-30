@@ -3,7 +3,6 @@ package com.example.dengage_flutter
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AppCompatActivity
 import com.dengage.sdk.DengageEvent
 import com.dengage.sdk.callback.DengageCallback
 import com.dengage.sdk.models.DengageError
@@ -188,7 +187,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun setUserPermission (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val hasPermission: Boolean? = call.argument("hasPermission") ?: false
-      DengageCoordinator.sharedInstance.dengageManager?.setUserPermission(hasPermission)
+      DengageCoordinator.sharedInstance.dengageManager?.setPermission(hasPermission)
       replySuccess(result, null)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
@@ -202,7 +201,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     try {
       val token: String? = call.argument("token")
       if (token != null) {
-        DengageCoordinator.sharedInstance.dengageManager?.setToken(token)
+        DengageCoordinator.sharedInstance.dengageManager?.subscription?.token = token
       } else {
         throw Exception("required argument 'token' is missing.")
       }
@@ -244,7 +243,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun getUserPermission (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      val userPermission = DengageCoordinator.sharedInstance.dengageManager?.subscription?.userPermission
+      val userPermission = DengageCoordinator.sharedInstance.dengageManager?.subscription?.permission
       replySuccess(result, userPermission)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
@@ -460,7 +459,9 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setNavigation (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
+      //todo: this feature is not yet publish in native side.
+      // will uncomment it, once available
+//      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
       replySuccess(result, true)
     } catch (ex: Exception){
       replyError(result, "error", ex.localizedMessage, ex)
@@ -472,8 +473,10 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setNavigationWithName (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      val screenName: String = call.argument("screenName")!!
-      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity, screenName)
+      //todo: this feature is not yet publish in native side.
+      // will uncomment it, once available
+//      val screenName: String = call.argument("screenName")!!
+//      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity, screenName)
       replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
