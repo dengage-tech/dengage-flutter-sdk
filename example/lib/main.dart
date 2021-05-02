@@ -147,6 +147,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('Get & Show Token'),
               ),
             ),
+            Container(
+              padding: EdgeInsets.only(top: 10.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  String subscription = await DengageFlutter.getSubscription();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(subscription),
+                      action: SnackBarAction(
+                        label: 'copy',
+                        onPressed: () {
+                          Clipboard.setData(
+                              new ClipboardData(text: subscription));
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: Text('Get & Show subscription'),
+              ),
+            ),
           ],
         ),
       ),

@@ -256,7 +256,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun getSubscription (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val subscription = DengageCoordinator.sharedInstance.dengageManager?.subscription
-      replySuccess(result, subscription)
+      replySuccess(result, Gson().toJson(subscription))
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
