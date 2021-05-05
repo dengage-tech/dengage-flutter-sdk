@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.os.Build
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -17,6 +18,7 @@ import com.dengage.sdk.Utils
 import com.dengage.sdk.models.Message
 import com.example.dengage_flutter_example.R
 import java.util.*
+
 
 /**
  * Created by Batuhan Coskun on 19 December 2020
@@ -265,4 +267,16 @@ class PushNotificationReceiver : NotificationReceiver() {
         return channelId
     }
 
+    override fun onActionClick(context: Context?, intent: Intent) {
+        val extras = intent.extras
+        if (extras != null) {
+            val actionId = extras.getString("id")
+            val notificationId = extras.getInt("notificationId")
+            val targetUrl = extras.getString("targetUrl")
+            Log.d("DenPush", "$actionId is clicked")
+        }
+
+        // Remove if you prefer to handle targetUrl which is actually correspond a deeplink.
+        super.onActionClick(context, intent)
+    }
 }
