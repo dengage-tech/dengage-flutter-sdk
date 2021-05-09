@@ -135,8 +135,6 @@ In the ```AppDelegate.swift```
 ```
 import UIKit
 import Flutter
-
-// make sure to keep import before Flipper related imports in AppDelegate.m
 import dengage_flutter          // ADD THIS IN IMPORTS
 
 @UIApplicationMain
@@ -167,8 +165,6 @@ import dengage_flutter          // ADD THIS IN IMPORTS
   ```
 import UIKit
 import Flutter
-
-// make sure to keep import before Flipper related imports in AppDelegate.m
 import dengage_flutter          // ADD THIS IN IMPORTS
 
 @UIApplicationMain
