@@ -57,7 +57,7 @@ Following extra steps after the installation of the `dengage_flutter` SDK are re
 > Note: Please see API Endpoints by Datacenter documentation in this section for end points. [here is link](https://dev.dengage.com/mobile-sdk/api-endpoints)
 
   #### 2. Add Required Capabilities
-  In Xcode, select the root project and main app target. In ***Signing & Capabilities***, select ***All*** and ***+ Capability***. Add "Push Notifications" and ***Background Modes***
+  In Xcode, select the root project and main app target. In ***Signing & Capabilities***, select ***All*** and ***+ Capability***. Add "Push Notifications" and ***Background Modes***. Kindly make sure to tick ***Remote Notifications*** in Background Modes.
   <summary> screenshot 1 </summary>
 
   ![push notifications](https://files.readme.io/17798af-dengage_push_Step1.png)
@@ -224,7 +224,7 @@ import dengage_flutter          // ADD THIS IN IMPORTS
     protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       // These three lines need to be added
-      DengageRNCoordinator coordinator = DengageRNCoordinator.Companion.getSharedInstance();
+      DengageCoordinator coordinator = DengageCoordinator.Companion.getSharedInstance();
       coordinator.injectReactInstanceManager(getReactInstanceManager());
       coordinator.setupDengage(
         true, // it is LogStatus & could be true OR false
