@@ -36,6 +36,13 @@ target 'Runner' do
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
+target 'DengageNotificationServiceExtension' do
+#  pod 'Dengage.Framework',‘~> 2.5’
+  use_frameworks!
+  pod "Dengage.Framework", :git => 'https://github.com/whitehorse-technology/Dengage.Framework.git', :branch => 'develop'
+
+end
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)

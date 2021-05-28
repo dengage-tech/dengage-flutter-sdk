@@ -3,6 +3,7 @@ package com.example.dengage_flutter
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AppCompatActivity
 import com.dengage.sdk.DengageEvent
 import com.dengage.sdk.callback.DengageCallback
 import com.dengage.sdk.models.DengageError
@@ -459,9 +460,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setNavigation (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      //todo: this feature is not yet publish in native side.
-      // will uncomment it, once available
-//      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
+      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
       replySuccess(result, true)
     } catch (ex: Exception){
       replyError(result, "error", ex.localizedMessage, ex)
@@ -473,10 +472,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setNavigationWithName (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      //todo: this feature is not yet publish in native side.
-      // will uncomment it, once available
-//      val screenName: String = call.argument("screenName")!!
-//      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity, screenName)
+      val screenName: String = call.argument("screenName")!!
+      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity, screenName)
       replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)

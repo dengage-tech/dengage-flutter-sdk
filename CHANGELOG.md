@@ -1,3 +1,7 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+Features included
+- 
+ It's an initial release with following features included
+ * Simple Text Push
+ * 

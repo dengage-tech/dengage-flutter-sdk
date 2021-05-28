@@ -15,11 +15,11 @@ class DengageFlutter {
   }
 
   // iOS only
-  static Future<bool> setIntegerationKey (String key) async {
+  static Future<bool?> setIntegerationKey (String key) async {
     return await _channel.invokeMethod("dEngage#setIntegerationKey", {'key': key});
   }
 
-  static Future<bool> setContactKey (String contactKey) async {
+  static Future<bool?> setContactKey (String contactKey) async {
     return await _channel.invokeMethod("dEngage#setContactKey", {'contactKey': contactKey});
   }
 
@@ -29,7 +29,7 @@ class DengageFlutter {
   }
 
   // iOS only
-  static Future<bool> promptForPushNotificationsWithPromise () async {
+  static Future<bool?> promptForPushNotificationsWithPromise () async {
     return await _channel.invokeMethod("dEngage#promptForPushNotifications");
   }
 
@@ -42,11 +42,11 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#registerForRemoteNotifications", {enabled: enabled});
   }
 
-  static Future<String> getToken () {
+  static Future<String?> getToken () {
     return _channel.invokeMethod("dEngage#getToken");
   }
 
-  static Future<String> getContactKey () {
+  static Future<String?> getContactKey () {
     return _channel.invokeMethod("dEngage#getContactKey");
   }
 
@@ -55,26 +55,26 @@ class DengageFlutter {
   }
 
   // android only
-  static Future<bool> setHuaweiIntegrationKey (String key) async {
+  static Future<bool?> setHuaweiIntegrationKey (String key) async {
     return await _channel.invokeMethod("dEngage#setHuaweiIntegrationKey", {'key': key});
   }
 
   // android only
-  static Future<bool> setFirebaseIntegrationKey (String key) async {
+  static Future<bool?> setFirebaseIntegrationKey (String key) async {
     return await _channel.invokeMethod("dEngage#setFirebaseIntegrationKey", {'key': key});
   }
 
-  static Future<bool> setLogStatus (bool isVisible) async {
+  static Future<bool?> setLogStatus (bool isVisible) async {
     return await _channel.invokeMethod("dEngage#setLogStatus", {'logStatus': isVisible});
   }
 
   // android Only
-  static Future<bool> getUserPermission () async {
+  static Future<bool?> getUserPermission () async {
     return _channel.invokeMethod("dEngage#getUserPermission");
   }
 
   // android only
-  static Future<Object> getSubscription () async {
+  static Future<Object?> getSubscription () async {
     return _channel.invokeMethod("dEngage#getSubscription");
   }
 
@@ -83,68 +83,68 @@ class DengageFlutter {
     return {};
   }
 
-  static Future<Void> pageView (Object data) async {
+  static Future<Void?> pageView (Object data) async {
     return await _channel.invokeMethod("dEngage#pageView", {data});
   }
 
-  static Future<Void> addToCart (Object data) async {
+  static Future<Void?> addToCart (Object data) async {
     return await _channel.invokeMethod("dEngage#addToCart", {data});
   }
 
-  static Future<Void> removeFromCart (Object data) async {
+  static Future<Void?> removeFromCart (Object data) async {
     return await _channel.invokeMethod("dEngage#removeFromCart", {data});
   }
 
-  static Future<Void> viewCart (Object data) async {
+  static Future<Void?> viewCart (Object data) async {
     return await _channel.invokeMethod("dEngage#viewCart", {data});
   }
 
-  static Future<Void> beginCheckout (Object data) async {
+  static Future<Void?> beginCheckout (Object data) async {
     return await _channel.invokeMethod("dEngage#beginCheckout", {data});
   }
 
-  static Future<Void> placeOrder (Object data) async {
+  static Future<Void?> placeOrder (Object data) async {
     return await _channel.invokeMethod("dEngage#placeOrder", {data});
   }
 
-  static Future<Void> cancelOrder (Object data) async {
+  static Future<Void?> cancelOrder (Object data) async {
     return await _channel.invokeMethod("dEngage#cancelOrder", {data});
   }
 
-  static Future<Void> addToWishList (Object data) async {
+  static Future<Void?> addToWishList (Object data) async {
     return await _channel.invokeMethod("dEngage#addToWishList", {data});
   }
 
-  static Future<Void> removeFromWishList (Object data) async {
+  static Future<Void?> removeFromWishList (Object data) async {
     return await _channel.invokeMethod("dEngage#removeFromWishList", {data});
   }
 
-  static Future<Void> search (Object data) async {
+  static Future<Void?> search (Object data) async {
     return await _channel.invokeMethod("dEngage#search", {data});
   }
 
-  static Future<Void> sendDeviceEvent (String tableName, Object data) async {
+  static Future<Void?> sendDeviceEvent (String tableName, Object data) async {
     return await _channel.invokeMethod("dEngage#sendDeviceEvent", {tableName, data});
   }
 
-  static Future<Void> getInboxMessages (int offset, int limit) async {
+  static Future<Void?> getInboxMessages (int offset, int limit) async {
     return await _channel.invokeMethod("dEngage#getInboxMessages", {offset, limit});
   }
 
-  static Future<Void> deleteInboxMessage (int id) async {
+  static Future<Void?> deleteInboxMessage (int id) async {
     return await _channel.invokeMethod("dEngage#deleteInboxMessage", {id});
   }
 
-  static Future<Void> setInboxMessageAsClicked (int id) async {
+  static Future<Void?> setInboxMessageAsClicked (int id) async {
     return await _channel.invokeMethod("dEngage#setInboxMessageAsClicked", {id});
   }
 
-  static Future<Void> setNavigation () async {
+  static Future<Void?> setNavigation () async {
     return await _channel.invokeMethod("dEngage#setNavigation");
   }
 
-  static Future<Void> setNavigationWithName (String screenName) async {
-    return await _channel.invokeMethod("dEngage#setNavigationWithName", {screenName});
+  static Future<Void?> setNavigationWithName (String screenName) async {
+    return await _channel.invokeMethod("dEngage#setNavigationWithName", {'screenName': screenName});
   }
 
 }

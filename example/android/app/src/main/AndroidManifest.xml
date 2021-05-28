@@ -71,12 +71,14 @@
         <!-- Event api url of Dengage -->
         <meta-data
             android:name="den_event_api_url"
-            android:value="https://eventdev.dengage.com" />
+            android:value="https://event.dengage.com" />
+        <!--      android:value="https://eventdev.dengage.com" />-->
 
         <!-- Push api url of Dengage -->
         <meta-data
             android:name="den_push_api_url"
-            android:value="https://pushdev.dengage.com" />
+            android:value="https://push.dengage.com" />
+        <!--    android:value="https://pushdev.dengage.com" />-->
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

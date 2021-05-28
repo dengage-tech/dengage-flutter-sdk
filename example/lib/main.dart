@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // DengageFlutter.setFirebaseIntegrationKey(
-  //     'FEYl27JxJfay6TxiYCdlkP2FXeuhNfEoI8WkxI_p_l__s_l_5sLbzKmc9c88mSZxRCrLuqMK4y0e8nHajQnBt8poBNDMvNtIytYKZ6byBQZOE8kqkkgDnlye2Lb5AcW3tuIWQjYz');
+  //  DengageFlutter.setFirebaseIntegrationKey(
+  //      'FEYl27JxJfay6TxiYCdlkP2FXeuhNfEoI8WkxI_p_l__s_l_5sLbzKmc9c88mSZxRCrLuqMK4y0e8nHajQnBt8poBNDMvNtIytYKZ6byBQZOE8kqkkgDnlye2Lb5AcW3tuIWQjYz');
   // DengageFlutter.setLogStatus(true);
 
   runApp(
@@ -32,12 +32,16 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String contactKey = '';
   var contactKeyController = TextEditingController();
+
   @override
   void initState() {
     DengageFlutter.getContactKey().then((value) {
       print("dengageContactKey: $value");
       contactKeyChanged(value);
     });
+    print("setting screen name.");
+    DengageFlutter.setNavigationWithName('MainScreen');
+
     super.initState();
   }
 
@@ -170,7 +174,55 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('Get & Show subscription'),
               ),
             ),
+            Container(
+              padding: EdgeInsets.only(top: 10.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                    DengageFlutter.setNavigationWithName('MainScreen');
+                },
+                child: Text('Set Screen Name as "MainScreen"'),
+              ),
+            ),
+                        Container(
+              padding: EdgeInsets.only(top: 10.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SecondRoute()));
+                },
+                child: Text('Navigate to "SecondScreen"'),
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  SecondRoute () {
+    print("setting screen name as SecondScreen");
+    setScreenName();
+  }
+
+  setScreenName () async {
+    DengageFlutter.setNavigationWithName("SecondScreen");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.teal,
+      appBar: AppBar(
+        backgroundColor: Colors.teal[900],
+        title: Text('Flutter Sample App, "Second Screen"'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Go back!'),
         ),
       ),
     );
