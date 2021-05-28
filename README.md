@@ -57,7 +57,7 @@ Following extra steps after the installation of the `dengage_flutter` SDK are re
 > Note: Please see API Endpoints by Datacenter documentation in this section for end points. [here is link](https://dev.dengage.com/mobile-sdk/api-endpoints)
 
   #### 2. Add Required Capabilities
-  In Xcode, select the root project and main app target. In ***Signing & Capabilities***, select ***All*** and ***+ Capability***. Add "Push Notifications" and ***Background Modes***
+  In Xcode, select the root project and main app target. In ***Signing & Capabilities***, select ***All*** and ***+ Capability***. Add "Push Notifications" and ***Background Modes***. Kindly make sure to tick ***Remote Notifications*** in Background Modes.
   <summary> screenshot 1 </summary>
 
   ![push notifications](https://files.readme.io/17798af-dengage_push_Step1.png)
@@ -128,53 +128,55 @@ Following extra steps after the installation of the `dengage_flutter` SDK are re
   ### 4. Setup Dengage SDK (it include two steps of the iOS native SDK. 1. Setting Integration Key  2. Initialization with Launch Options)
   ***Integration Key*** is genereted by CDMP Platform while defining application. It is a hash string which contains information about application.
   At the beginning of your application cycle you must set Integration Key and right after initialize sdk with launch options.
-  Following sample shows how to do that in your `AppDelegate.m` file:
+  Following sample shows how to do that in your `AppDelegate.swift` file:
 
 ***Sample:***
-In the ```AppDelegate.m```
+In the ```AppDelegate.swift```
 ```
-// make sure to keep import before Flipper related imports in AppDelegate.m
-@import dengage_flutter; // ADD THIS IN IMPORTS
+import UIKit
+import Flutter
+import dengage_flutter          // ADD THIS IN IMPORTS
 
-@implementation AppDelegate
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-  #ifdef FB_SONARKIT_ENABLED
-    InitializeFlipper(application);
-  #endif
-  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-
-  /**** Dengage Setup code Starting here ********/
-
-  DengageRNCoordinator *coordinator = [DengageRNCoordinator staticInstance];
-  [coordinator setupDengage:@"YOUR_INTEGERATION_KEY_HERE" launchOptions:launchOptions];
-  
-  /**** Dengage Setup code ends here ********/
-  
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"DengageExample"
-                                            initialProperties:nil];
-
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
-
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UIViewController *rootViewController = [UIViewController new];
-  rootViewController.view = rootView;
-  self.window.rootViewController = rootViewController;
-  [self.window makeKeyAndVisible];
-  return YES;
+@UIApplicationMain
+@objc class AppDelegate: FlutterAppDelegate {
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    GeneratedPluginRegistrant.register(with: self)
+    /************* FLutter Setup Code Starts here ********************/
+    // please Node key here is the integeration Key received while registering your iOS Application on Dengage Dashboard.
+    let coordinator = DengageCoordinator.staticInstance;
+    coordinator.setupDengage(key: "K8sbLq1mShD52Hu2ZoHyb3tvDE_s_l_h99xFTF60WiNPdHhJtvmOqekutthtzRIPiMTbAa3y_p_l_PZqpon8nanH8YnJ8yYKocDb4GCAp7kOsi5qv7mDR_p_l_qOFLLp9_p_l_lloC6ds97X", launchOptions: launchOptions as NSDictionary?);
+     /************* FLutter Setup Code Ends here ********************/
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+    
+    override func application( _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+            let coordinator = DengageCoordinator.staticInstance;
+            coordinator.registerForPushToken(deviceToken:deviceToken)
+    }
 }
+
 ```
   
   ### 5. Register for remote notification with device token
-  To register for remote notifications with device token, add following method and code inside your `AppDelegate.m` file:
+  To register for remote notifications with device token, add following method and code inside your `AppDelegate.swift` file:
   ```
-  - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-  {
-    DengageRNCoordinator *coordinator = [DengageRNCoordinator staticInstance];
-    [coordinator registerForPushToken:deviceToken];
-  }
+import UIKit
+import Flutter
+import dengage_flutter          // ADD THIS IN IMPORTS
+
+@UIApplicationMain
+@objc class AppDelegate: FlutterAppDelegate {
+    // ... other things here ...
+    
+    /**************** Here this method override *****************/
+    override func application( _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+            let coordinator = DengageCoordinator.staticInstance;
+            coordinator.registerForPushToken(deviceToken:deviceToken)
+    }
+}
   ```
 </details>
 
@@ -222,7 +224,7 @@ In the ```AppDelegate.m```
     protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       // These three lines need to be added
-      DengageRNCoordinator coordinator = DengageRNCoordinator.Companion.getSharedInstance();
+      DengageCoordinator coordinator = DengageCoordinator.Companion.getSharedInstance();
       coordinator.injectReactInstanceManager(getReactInstanceManager());
       coordinator.setupDengage(
         true, // it is LogStatus & could be true OR false
