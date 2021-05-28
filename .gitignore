@@ -53,3 +53,5 @@ android/keystores/debug.keystore
 .expo/*
 
 *.lock
+*.iml
+
