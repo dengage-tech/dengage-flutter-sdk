@@ -124,7 +124,7 @@ class DengageFlutter {
   }
 
   static Future<Void?> sendDeviceEvent (String tableName, Object data) async {
-    return await _channel.invokeMethod("dEngage#sendDeviceEvent", {tableName, data});
+    return await _channel.invokeMethod("dEngage#sendDeviceEvent", {"tableName": tableName, "data": data});
   }
 
   static Future<Void?> getInboxMessages (int offset, int limit) async {
