@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dengage_flutter/dengage_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -145,12 +147,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         label: 'copy token',
                         onPressed: () {
                           Clipboard.setData(new ClipboardData(text: token));
-                        },
+                          },
                       ),
                     ),
                   );
                 },
                 child: Text('Get & Show Token'),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 10.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  Map data = new HashMap<String, dynamic>();
+                  data["name"] = "Nawaz";
+                  await DengageFlutter.sendDeviceEvent("tableName", data);
+                },
+                child: Text('Send Device Event'),
               ),
             ),
             Container(
