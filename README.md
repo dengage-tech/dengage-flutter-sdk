@@ -12,7 +12,7 @@ a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
 ```sh
 
 dependencies:
-    dengage_flutter: ^0.0.2
+    dengage_flutter: ^0.0.3
     
 ```
 
@@ -24,7 +24,7 @@ c)  In your Dart code, access DengageFlutter with:
 // at top in imports
 import 'package:dengage_flutter/dengage_flutter.dart'
 
-// somewhere down in the code 
+// somewhere down in the code
   try {
     Object result = await DengageFlutter.setIntegerationKey("");
     print("result: $result");
