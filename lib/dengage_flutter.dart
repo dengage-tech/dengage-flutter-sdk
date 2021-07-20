@@ -123,7 +123,7 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#search", {data});
   }
 
-  static Future<Void?> sendDeviceEvent (String tableName, Object data) async {
+  static Future<bool> sendDeviceEvent (String tableName, Object data) async {
     return await _channel.invokeMethod("dEngage#sendDeviceEvent", {"tableName": tableName, "data": data});
   }
 
