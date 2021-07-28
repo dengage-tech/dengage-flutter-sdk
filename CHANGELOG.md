@@ -1,4 +1,4 @@
-## 0.0.2
+## 0.0.5
 
 Features included
 - 
@@ -9,4 +9,5 @@ Features included
  * Carousel Push
  * Event Collection
  * App Inbox
+ * minor fixes & optimizations
  
