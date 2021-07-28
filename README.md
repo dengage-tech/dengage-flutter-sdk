@@ -12,7 +12,7 @@ a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
 ```sh
 
 dependencies:
-    dengage_flutter: ^0.0.3
+    dengage_flutter: ^0.0.4
     
 ```
 
@@ -100,7 +100,7 @@ Following extra steps after the installation of the `dengage_flutter` SDK are re
   
   ```Ruby
     target 'DengageNotificationServiceExtension' do
-      pod 'Dengage.Framework',‘~> 2.5’
+      pod 'Dengage.Framework',‘~> 3.0.6’
     end
   ```
   
@@ -223,15 +223,13 @@ import dengage_flutter          // ADD THIS IN IMPORTS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      // These three lines need to be added
-      DengageCoordinator coordinator = DengageCoordinator.Companion.getSharedInstance();
-      coordinator.injectReactInstanceManager(getReactInstanceManager());
-      coordinator.setupDengage(
-        true, // it is LogStatus & could be true OR false
-        "YOURE_FIREBASE_KEY_HERE", // null in case no firebase key
-        "YOURE_HUAWEI_KEY_HERE", // null in case no huawei key
-        getApplicationContext()
-      );    
+      // Following line need to be added
+      DengageCoordinator.sharedInstance.setupDengage(
+                true,
+                "FEYl27JxJfay6TxiYCdlkP2FXeuhNfEoI8WkxI_p_l__s_l_5sLbzKmc9c88mSZxRCrLuqMK4y0e8nHajQnBt8poBNDMvNtIytYKZ6byBQZOE8kqkkgDnlye2Lb5AcW3tuIWQjYz",
+                "your-huawei-key-here",
+                applicationContext
+        )    
     }
   ```
   
@@ -240,20 +238,28 @@ import dengage_flutter          // ADD THIS IN IMPORTS
   ### Change Subscription Api Endpoint
   You can change subscription api endpoint by adding following metadata tag in `YourProject/android/src/main/AndroidManifest.xml` 
   
-  ```
-  <meta-data
-    android:name="den_push_api_url"
-    android:value="https://your_push_api_endpoint" />
-  ```
+```
+        // for prod
+        <meta-data
+            android:name="den_push_api_url"
+            android:value="https://push.dengage.com" />
+
+        // for dev
+        <!--    android:value="https://pushdev.dengage.com" />-->  
+```
   
   Note: Please see API Endpoints By Datacenter to set your subscription end point.
   
   ### Changing Event Api Endpoint
   similar to subscription endpoints, you can change event api endpoints by setting following metadata tag in `YourProject/android/src/main/AndroidManifest.xml` 
   ```
-  <meta-data
-    android:name="den_push_api_url"
-    android:value="https://your_push_api_endpoint" />
+        // for prod
+        <meta-data
+            android:name="den_event_api_url"
+            android:value="https://event.dengage.com" />
+        
+        // for dev
+        <!--      android:value="https://eventdev.dengage.com" />-->
   ```
   
   Note: Please see API Endpoints By Datacenter to set your event end point.
@@ -707,13 +713,9 @@ You can use `sendDeviceEvent` function for sending events for the device. Events
 // and events table has "key", "event_date", "event_name", "product_id" columns
 // you just have to send the columns except "key" and "event_date", because those columns sent by the SDK
 // methodSignature => dengage(‘sendDeviceEvent’, tableName: String, dataObject, callback);
-const params = {
-    "event_name": "page_view", 
-    "product_id": "1234",
-}
-DengageFlutter.SendDeviceEvent(toEventTable: 'events', andWithEventDetails: params, (err, res) => {
-  // handle error or success response.
-})
+  Map data = new HashMap<String, dynamic>();
+  data["name"] = "Kamran Younis";
+  await DengageFlutter.sendDeviceEvent("tableName", data);
 ```
 
 ### App Inbox
