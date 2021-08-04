@@ -5,7 +5,8 @@ For further details about D·engage please [visit here](https://dev.dengage.com)
 
 This package makes it easy to integrate, D·engage, with your React-Native iOS and/or Android apps. Following are instructions for installation of react-native-dengage SDK to your react-native applications.
 
-#### For a Quick Video Guide [Click Here](https://youtu.be/fG286Pvke4w)
+#### Quick Video Guide [Part 1 (iOS)] (https://youtu.be/JloBIqjXpsU)
+#### Quick Video Guide [Part 2 (android)] (https://youtu.be/JloBIqjXpsU)
 
 ## Installation
 
