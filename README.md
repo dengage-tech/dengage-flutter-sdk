@@ -5,6 +5,14 @@ For further details about D·engage please [visit here](https://dev.dengage.com)
 
 This package makes it easy to integrate, D·engage, with your React-Native iOS and/or Android apps. Following are instructions for installation of react-native-dengage SDK to your react-native applications.
 
+#### Quick Video Guide 
+Here is a quick video guide on how to install dengage_flutter SDK to your flutter application using this documentation. 
+Guide consists of 2 parts please watch both in sequence.
+
+[Part 1] (https://youtu.be/YP1WZdn7rgE)
+[Part 2] (https://youtu.be/SMmAtPCtZUY)
+
+
 ## Installation
 
 a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
