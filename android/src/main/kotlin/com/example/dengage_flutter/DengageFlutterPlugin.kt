@@ -16,9 +16,17 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-
-
-// import io.flutter.plugin.common.PluginRegistry.Registrar
+import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.EventChannel.EventSink;
+import io.flutter.plugin.common.EventChannel.StreamHandler;
+import android.content.Intent
+import com.dengage.sdk.NotificationReceiver
+import android.content.IntentFilter
+import android.util.Log
+import com.dengage.sdk.models.Message
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import org.json.JSONObject
 
 /** DengageFlutterPlugin */
 class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder(), ActivityAware {
@@ -29,9 +37,33 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private lateinit var appContext: Context
   private lateinit var appActivity: Activity
 
+  private val ON_NOTIFICATION_CLICKED = "com.dengage.flutter/onNotificationClicked"
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dengage_flutter")
     channel.setMethodCallHandler(this)
+
+    var notifReceiver: NotificationReceiver? = null
+    EventChannel(flutterPluginBinding.flutterEngine.dartExecutor, ON_NOTIFICATION_CLICKED).setStreamHandler(
+            object : StreamHandler {
+              override fun onListen(arguments: Any?, events: EventSink?) {
+                Log.d("den/flutter", "RegisteringNotificationListeners.")
+
+                val filter = IntentFilter()
+                filter.addAction("com.dengage.push.intent.RECEIVE")
+                filter.addAction("com.dengage.push.intent.OPEN")
+                notifReceiver = createNotifReciever(events)
+
+                appContext.registerReceiver(notifReceiver, filter)
+              }
+
+              override fun onCancel(arguments: Any?) {
+                appContext.unregisterReceiver(notifReceiver)
+                notifReceiver = null
+              }
+            }
+    )
+
     appContext = flutterPluginBinding.applicationContext
   }
 
@@ -105,6 +137,41 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       }
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+  private fun createNotifReciever(events: EventSink?): NotificationReceiver? {
+    return object : NotificationReceiver() {
+      override fun onReceive(context: Context?, intent: Intent) {
+        Log.d("den/Flutter", "inOnReceiveOfCreateNotifReceiver.")
+        val intentAction = intent.action
+        if (intentAction != null) {
+          when (intentAction.hashCode()) {
+            -825236177 -> {
+              if (intentAction == "com.dengage.push.intent.RECEIVE") {
+                Log.d("den/Flutter", "received new push.")
+                val message: Message = intent.getExtras()?.let { Message(it) }!!
+                if (events != null) {
+                  // todo: later when required emit seperate event for onNotificationReceived
+//                  events.success(Gson().toJson(message))
+                } else {
+                  Log.d("den/flutter", "events is null while received push")
+                }
+              }
+            }
+            -520704162 -> {
+              // intentAction == "com.dengage.push.intent.RECEIVE"
+              Log.d("den/Flutter", "push is clicked.")
+              val message: Message = intent.getExtras()?.let { Message(it) }!!
+              if (events != null) {
+                events.success(Gson().toJson(message))
+              } else {
+                Log.d("den/flutter", "events is null while clicked push")
+              }
+            }
+          }
+        }
+      }
     }
   }
 

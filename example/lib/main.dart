@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:dengage_flutter/dengage_flutter.dart';
@@ -35,14 +36,28 @@ class _MyHomePageState extends State<MyHomePage> {
   String contactKey = '';
   var contactKeyController = TextEditingController();
 
+static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNotificationClicked");
+
+  void _onEvent(Object event) {
+    print("in on Event object is: ");
+    print(event);
+  }
+
+  void _onError(Object error) {
+    print("in on Error Object is: ");
+    print(error);
+  }
+
   @override
   void initState() {
     DengageFlutter.getContactKey().then((value) {
       print("dengageContactKey: $value");
       contactKeyChanged(value);
     });
-    print("setting screen name.");
-    DengageFlutter.setNavigationWithName('MainScreen');
+    // print("setting screen name.");
+    // DengageFlutter.setNavigationWithName('MainScreen');
+
+    eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
 
     super.initState();
   }

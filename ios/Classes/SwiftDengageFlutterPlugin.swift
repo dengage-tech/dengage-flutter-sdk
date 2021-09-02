@@ -2,13 +2,36 @@ import Flutter
 import UIKit
 import Dengage_Framework
 
-public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
+enum EventChannelName {
+  static let onNotificationClicked = "com.dengage.flutter/onNotificationClicked"
+}
+
+public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
+    
+  private var eventSink: FlutterEventSink?
+    
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "dengage_flutter", binaryMessenger: registrar.messenger())
     let instance = SwiftDengageFlutterPlugin()
+
+    let notificationEventChannel = FlutterEventChannel(name: EventChannelName.onNotificationClicked,
+                                                       binaryMessenger: registrar.messenger())
+    notificationEventChannel.setStreamHandler(instance.self)
+
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 
+    public func onListen(withArguments arguments: Any?,
+                         eventSink: @escaping FlutterEventSink) -> FlutterError? {
+      self.eventSink = eventSink
+      self.listenForNotification()
+      return nil
+    }
+    
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        return nil
+    }
+    
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
         case "dEngage#getPlatformVersion":
@@ -219,6 +242,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
     /**
      * Method to handle notification action block.
      */
+    
     func handleNotificationActionBlock (call: FlutterMethodCall, result: @escaping FlutterResult) {
         Dengage.handleNotificationActionBlock { (notificationResponse) in
             var response = [String:Any?]();
@@ -463,4 +487,67 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
         Dengage.setNavigation(screenName: screenName)
         reply(nil)
     }
+    
+    
+    /**
+     * Method to listen for notification click.
+     */
+    
+    func listenForNotification () {
+        Dengage.handleNotificationActionBlock { (notificationResponse) in
+            var response = [String:Any?]();
+            response["actionIdentifier"] = notificationResponse.actionIdentifier
+
+            var notification = [String:Any?]()
+            notification["date"] = notificationResponse.notification.date.description
+
+            var notificationReq = [String:Any?]()
+            notificationReq["identifier"] = notificationResponse.notification.request.identifier
+
+            if (notificationResponse.notification.request.trigger?.repeats != nil) {
+                var notificationReqTrigger = [String:Any?]()
+                notificationReqTrigger["repeats"] = notificationResponse.notification.request.trigger?.repeats ?? nil
+                notificationReq["trigger"] = notificationReqTrigger
+            }
+
+            var reqContent = [String:Any?]()
+            var contentAttachments = [Any]()
+            for attachement in notificationResponse.notification.request.content.attachments {
+                var contentAttachment = [String:Any?]()
+                contentAttachment["identifier"] = attachement.identifier
+                contentAttachment["url"] = attachement.url
+                contentAttachment["type"] = attachement.type
+                contentAttachments.append(contentAttachment)
+            }
+            reqContent["badge"] = notificationResponse.notification.request.content.badge
+            reqContent["body"] = notificationResponse.notification.request.content.body
+            reqContent["categoryIdentifier"] = notificationResponse.notification.request.content.categoryIdentifier
+            reqContent["launchImageName"] = notificationResponse.notification.request.content.launchImageName
+            // @NSCopying open var sound: UNNotificationSound? { get }
+            //reqContent["sound"] = notificationResponse.notification.request.content.sound // this yet ignored, will include later.
+            reqContent["subtitle"] = notificationResponse.notification.request.content.subtitle
+            reqContent["threadIdentifier"] = notificationResponse.notification.request.content.threadIdentifier
+            reqContent["title"] = notificationResponse.notification.request.content.title
+            reqContent["userInfo"] = notificationResponse.notification.request.content.userInfo // todo: make sure it is RCTCovertible & doesn't break the code
+            if #available(iOS 12.0, *) {
+                reqContent["summaryArgument"] = notificationResponse.notification.request.content.summaryArgument
+                reqContent["summaryArgumentCount"] = notificationResponse.notification.request.content.summaryArgumentCount
+            }
+            if #available(iOS 13.0, *) {
+                reqContent["targetContentIdentifier"] = notificationResponse.notification.request.content.targetContentIdentifier
+            }
+
+
+            reqContent["attachments"] = contentAttachments
+            notificationReq["content"] = reqContent
+            notification["request"] = notificationReq
+            response["notification"] = notification
+
+            guard let eventSink = self.eventSink else {
+              return
+            }
+            eventSink([response])
+        }
+    }
+
 }
