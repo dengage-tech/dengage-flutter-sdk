@@ -1,3 +1,11 @@
+## 0.0.8
+
+Features included
+- 
+ This release includes:
+ * bumped version & README updated to include documentation about
+ `onNotificationClicked` event.
+ 
 ## 0.0.7
 
 Features included

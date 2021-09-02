@@ -20,7 +20,7 @@ a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
 ```sh
 
 dependencies:
-    dengage_flutter: ^0.0.7
+    dengage_flutter: ^0.0.8
     
 ```
 
@@ -390,7 +390,7 @@ To validate your inputs you can enable SDK’s log by a method.
 DengageFlutter.setLogStatus(isVisible)
 ```
 
-### Handling Notification Action Callback
+### Handling Notification Action using onNotificationClicked event
 SDK provides a listener if you want to get and parse payload manually, whenever a push notification is clicked.
 
 ```
