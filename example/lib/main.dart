@@ -41,6 +41,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
   void _onEvent(Object event) {
     print("in on Event object is: ");
     print(event);
+
   }
 
   void _onError(Object error) {
@@ -234,6 +235,10 @@ class SecondRoute extends StatelessWidget {
   }
 
   setScreenName () async {
+    DengageFlutter.pageView({
+      "page_type":"SecondScreen"
+      // ... extra columns in page_view_events table, can be added here
+    });
     DengageFlutter.setNavigationWithName("SecondScreen");
   }
 
