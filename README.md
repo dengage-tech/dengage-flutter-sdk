@@ -20,7 +20,7 @@ a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
 ```sh
 
 dependencies:
-    dengage_flutter: ^0.0.8
+    dengage_flutter: ^0.1.1
     
 ```
 
@@ -542,34 +542,49 @@ import 'package:dengage_flutter/dengage_flutter.dart';
 
 // Home page view
 DengageFlutter.pageView({
-    "page_type":"home"
-    // ... extra columns in page_view_events table, can be added here
-})
+      "page_type":"home",
+      "page_title": "home",
+      "app_type": "Mobile",
+      "page_url": ""
+      // ... extra columns in page_view_events table, can be added here
+    });
 
 // Category page view
 DengageFlutter.pageView({
     "page_type":"category",
-    "category_id":"1"
+    "category_id":"1",
+    "page_title": "",
+    "app_type": "Mobile",
+    "page_url": ""
     // ... extra columns in page_view_events table, can be added here
 })
 
 // Product page view
 DengageFlutter.pageView({
     "page_type":"product",
-    "product_id":"1"
+    "product_id":"1",
+    "page_title": "",
+    "app_type": "Mobile",
+    "page_url": ""
     // ... extra columns in page_view_events table, can be added here
 })
 
 //promotion page view
 DengageFlutter.pageView({
     "page_type":"promotion",
-    "promotion_id":"1"
+    "promotion_id":"1",
+    "page_title": "",
+    "app_type": "Mobile",
+    "page_url": ""
     // ... extra columns in page_view_events table, can be added here
 })
 
 //custom page view
 DengageFlutter.pageView({
     "page_type":"custom"
+    "page_title": "custom",
+    "app_type": "Mobile",
+    "page_url": ""
     // ... extra columns in page_view_events table, can be added here
 })
 

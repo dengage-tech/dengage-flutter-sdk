@@ -523,7 +523,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setNavigation (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
+      // todo: appActivity has to be AppCompatActivity but flutter activity isn't yet appcompat.
+      // DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
       replySuccess(result, true)
     } catch (ex: Exception){
       replyError(result, "error", ex.localizedMessage, ex)

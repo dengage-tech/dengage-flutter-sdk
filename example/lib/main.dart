@@ -250,6 +250,10 @@ class SecondRoute extends StatelessWidget {
   }
 
   setScreenName () async {
+    DengageFlutter.pageView({
+      "page_type":"SecondScreen"
+      // ... extra columns in page_view_events table, can be added here
+    });
     DengageFlutter.setNavigationWithName("SecondScreen");
   }
 

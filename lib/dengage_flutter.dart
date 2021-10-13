@@ -83,44 +83,44 @@ class DengageFlutter {
     return {};
   }
 
-  static Future<Void?> pageView (Object data) async {
-    return await _channel.invokeMethod("dEngage#pageView", {data});
+  static Future<bool?> pageView (Object data) async {
+    return await _channel.invokeMethod("dEngage#pageView", {'data': data});
   }
 
   static Future<Void?> addToCart (Object data) async {
-    return await _channel.invokeMethod("dEngage#addToCart", {data});
+    return await _channel.invokeMethod("dEngage#addToCart", {'data': data});
   }
 
   static Future<Void?> removeFromCart (Object data) async {
-    return await _channel.invokeMethod("dEngage#removeFromCart", {data});
+    return await _channel.invokeMethod("dEngage#removeFromCart", {'data': data});
   }
 
   static Future<Void?> viewCart (Object data) async {
-    return await _channel.invokeMethod("dEngage#viewCart", {data});
+    return await _channel.invokeMethod("dEngage#viewCart", {'data': data});
   }
 
   static Future<Void?> beginCheckout (Object data) async {
-    return await _channel.invokeMethod("dEngage#beginCheckout", {data});
+    return await _channel.invokeMethod("dEngage#beginCheckout", {'data': data});
   }
 
   static Future<Void?> placeOrder (Object data) async {
-    return await _channel.invokeMethod("dEngage#placeOrder", {data});
+    return await _channel.invokeMethod("dEngage#placeOrder", {'data': data});
   }
 
   static Future<Void?> cancelOrder (Object data) async {
-    return await _channel.invokeMethod("dEngage#cancelOrder", {data});
+    return await _channel.invokeMethod("dEngage#cancelOrder", {'data': data});
   }
 
   static Future<Void?> addToWishList (Object data) async {
-    return await _channel.invokeMethod("dEngage#addToWishList", {data});
+    return await _channel.invokeMethod("dEngage#addToWishList", {'data': data});
   }
 
   static Future<Void?> removeFromWishList (Object data) async {
-    return await _channel.invokeMethod("dEngage#removeFromWishList", {data});
+    return await _channel.invokeMethod("dEngage#removeFromWishList", {'data': data});
   }
 
   static Future<Void?> search (Object data) async {
-    return await _channel.invokeMethod("dEngage#search", {data});
+    return await _channel.invokeMethod("dEngage#search", {'data': data});
   }
 
   static Future<bool> sendDeviceEvent (String tableName, Object data) async {
@@ -132,11 +132,11 @@ class DengageFlutter {
   }
 
   static Future<Void?> deleteInboxMessage (int id) async {
-    return await _channel.invokeMethod("dEngage#deleteInboxMessage", {id});
+    return await _channel.invokeMethod("dEngage#deleteInboxMessage", {'id': id});
   }
 
   static Future<Void?> setInboxMessageAsClicked (int id) async {
-    return await _channel.invokeMethod("dEngage#setInboxMessageAsClicked", {id});
+    return await _channel.invokeMethod("dEngage#setInboxMessageAsClicked", {'id': id});
   }
 
   static Future<Void?> setNavigation () async {
