@@ -19,7 +19,7 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#setIntegerationKey", {'key': key});
   }
 
-  static Future<bool?> setContactKey (String contactKey) async {
+  static Future<bool?> setContactKey (String? contactKey) async {
     return await _channel.invokeMethod("dEngage#setContactKey", {'contactKey': contactKey});
   }
 

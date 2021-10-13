@@ -193,12 +193,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun setContactKey (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val contactKey: String? = call.argument("contactKey")
-      if (contactKey != null) {
-        DengageCoordinator.sharedInstance.dengageManager?.setContactKey(contactKey)
-        replySuccess(result, true)
-      } else {
-        throw Exception("required argument 'contactKey' is missing.");
-      }
+      DengageCoordinator.sharedInstance.dengageManager?.setContactKey(contactKey)
+      replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }

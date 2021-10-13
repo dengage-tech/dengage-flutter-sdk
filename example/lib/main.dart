@@ -34,13 +34,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String contactKey = '';
+  String lastPush = '';
   var contactKeyController = TextEditingController();
+  var lastPushController = TextEditingController();
 
 static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNotificationClicked");
 
   void _onEvent(Object event) {
     print("in on Event object is: ");
     print(event);
+    lastPushController.text = event.toString();
   }
 
   void _onError(Object error) {
@@ -114,11 +117,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               child: ElevatedButton(
                 onPressed: () {
                   String msg = contactKey;
-                  if (contactKey.isEmpty) {
-                    msg = 'Please enter proper value.';
-                  } else {
-                    DengageFlutter.setContactKey(contactKey);
-                  }
+                  DengageFlutter.setContactKey(contactKey);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(msg),
@@ -219,6 +218,23 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
                 },
                 child: Text('Navigate to "SecondScreen"'),
               ),
+            ),
+            TextFormField(
+              controller: lastPushController,
+              decoration: const InputDecoration(
+                icon: const Icon(
+                  Icons.input,
+                  color: Colors.black54,
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+              cursorColor: Colors.black54,
+              keyboardType: TextInputType.text,
+              onChanged: contactKeyChanged,
             ),
           ],
         ),
