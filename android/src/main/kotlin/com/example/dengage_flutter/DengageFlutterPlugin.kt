@@ -524,7 +524,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun setNavigation (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       // todo: appActivity has to be AppCompatActivity but flutter activity isn't yet appcompat.
-      // DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
+       DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity)
       replySuccess(result, true)
     } catch (ex: Exception){
       replyError(result, "error", ex.localizedMessage, ex)
@@ -537,7 +537,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun setNavigationWithName (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val screenName: String = call.argument("screenName")!!
-      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity, screenName)
+      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity, screenName)
       replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
