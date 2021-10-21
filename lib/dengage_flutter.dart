@@ -128,7 +128,7 @@ class DengageFlutter {
   }
 
   static Future<Void?> getInboxMessages (int offset, int limit) async {
-    return await _channel.invokeMethod("dEngage#getInboxMessages", {offset, limit});
+    return await _channel.invokeMethod("dEngage#getInboxMessages", {'offset': offset, 'limit': limit});
   }
 
   static Future<Void?> deleteInboxMessage (int id) async {
