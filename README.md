@@ -20,7 +20,7 @@ a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
 ```sh
 
 dependencies:
-    dengage_flutter: ^0.1.2
+    dengage_flutter: ^0.1.4
     
 ```
 
@@ -780,7 +780,7 @@ Inbox messages are kept in the memory storage of the phone until app is complete
   
   - To get app inbox messages from the server
     ```
-      Object result = await DengageFlutter.getInboxMessages(offset, limit).catch(err => err)
+      Map<String, dynamic> result = await DengageFlutter.getInboxMessages(offset, limit).catch(err => err)
       // where offset: Int, limit: Int = 20
       // inboxMessages now either have array of Inbox messages or an error.
     ```

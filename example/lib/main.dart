@@ -255,7 +255,8 @@ class SecondRoute extends StatelessWidget {
       // ... extra columns in page_view_events table, can be added here
     });
     DengageFlutter.setNavigationWithName("SecondScreen");
-    DengageFlutter.getInboxMessages(0, 10);
+    List<Object> data = await DengageFlutter.getInboxMessages(0, 10);
+    print(data);
   }
 
   @override

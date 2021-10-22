@@ -31,17 +31,21 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  pod "Dengage.Framework", :git => 'https://github.com/whitehorse-technology/Dengage.Framework.git', :branch => 'develop'
+  
+  pod 'Dengage.Framework',‘~> 3.0.6’
+  pod 'Dengage.Framework.Extensions','1.0.10'
+  
+  target 'DengageNotificationServiceExtension' do
+    use_frameworks!
+    inherit! :search_paths
+    
+
+  end
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
-target 'DengageNotificationServiceExtension' do
-#  pod 'Dengage.Framework',‘~> 2.5’
-  use_frameworks!
-  pod "Dengage.Framework", :git => 'https://github.com/whitehorse-technology/Dengage.Framework.git', :branch => 'develop'
 
-end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

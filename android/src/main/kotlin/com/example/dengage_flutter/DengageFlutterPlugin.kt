@@ -483,7 +483,16 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         }
 
         override fun onResult(response: List<InboxMessage>) {
-          replySuccess(result, Gson().toJson(response))
+          val list = mutableListOf<Map<String, Any?>>()
+          for (message in response) {
+            val json = Gson().toJson(message)
+            android.util.Log.d("getInboxMessages", json)
+            var map: Map<String, Any?> = HashMap<String, Any?>()
+            map = Gson().fromJson(json, map::class.java)
+            android.util.Log.d("getInboxMessages", map.size.toString())
+            list.add(map)
+          }
+          replySuccess(result, list)
         }
       }
       DengageCoordinator.sharedInstance.dengageManager?.getInboxMessages(limit, offset, callback)

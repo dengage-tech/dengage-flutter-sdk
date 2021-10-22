@@ -1,6 +1,5 @@
 
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
@@ -87,39 +86,39 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#pageView", {'data': data});
   }
 
-  static Future<Void?> addToCart (Object data) async {
+  static Future<void> addToCart (Object data) async {
     return await _channel.invokeMethod("dEngage#addToCart", {'data': data});
   }
 
-  static Future<Void?> removeFromCart (Object data) async {
+  static Future<void> removeFromCart (Object data) async {
     return await _channel.invokeMethod("dEngage#removeFromCart", {'data': data});
   }
 
-  static Future<Void?> viewCart (Object data) async {
+  static Future<void> viewCart (Object data) async {
     return await _channel.invokeMethod("dEngage#viewCart", {'data': data});
   }
 
-  static Future<Void?> beginCheckout (Object data) async {
+  static Future<void> beginCheckout (Object data) async {
     return await _channel.invokeMethod("dEngage#beginCheckout", {'data': data});
   }
 
-  static Future<Void?> placeOrder (Object data) async {
+  static Future<void> placeOrder (Object data) async {
     return await _channel.invokeMethod("dEngage#placeOrder", {'data': data});
   }
 
-  static Future<Void?> cancelOrder (Object data) async {
+  static Future<void> cancelOrder (Object data) async {
     return await _channel.invokeMethod("dEngage#cancelOrder", {'data': data});
   }
 
-  static Future<Void?> addToWishList (Object data) async {
+  static Future<void> addToWishList (Object data) async {
     return await _channel.invokeMethod("dEngage#addToWishList", {'data': data});
   }
 
-  static Future<Void?> removeFromWishList (Object data) async {
+  static Future<void> removeFromWishList (Object data) async {
     return await _channel.invokeMethod("dEngage#removeFromWishList", {'data': data});
   }
 
-  static Future<Void?> search (Object data) async {
+  static Future<void> search (Object data) async {
     return await _channel.invokeMethod("dEngage#search", {'data': data});
   }
 
@@ -127,23 +126,23 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#sendDeviceEvent", {"tableName": tableName, "data": data});
   }
 
-  static Future<Void?> getInboxMessages (int offset, int limit) async {
+  static Future<List<Object?>> getInboxMessages (int offset, int limit) async {
     return await _channel.invokeMethod("dEngage#getInboxMessages", {'offset': offset, 'limit': limit});
   }
 
-  static Future<Void?> deleteInboxMessage (int id) async {
+  static Future<void> deleteInboxMessage (int id) async {
     return await _channel.invokeMethod("dEngage#deleteInboxMessage", {'id': id});
   }
 
-  static Future<Void?> setInboxMessageAsClicked (int id) async {
+  static Future<void> setInboxMessageAsClicked (int id) async {
     return await _channel.invokeMethod("dEngage#setInboxMessageAsClicked", {'id': id});
   }
 
-  static Future<Void?> setNavigation () async {
+  static Future<void> setNavigation () async {
     return await _channel.invokeMethod("dEngage#setNavigation");
   }
 
-  static Future<Void?> setNavigationWithName (String screenName) async {
+  static Future<void> setNavigationWithName (String screenName) async {
     return await _channel.invokeMethod("dEngage#setNavigationWithName", {'screenName': screenName});
   }
 
