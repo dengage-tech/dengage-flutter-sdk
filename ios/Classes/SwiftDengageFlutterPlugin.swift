@@ -495,27 +495,27 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     
     func listenForNotification () {
         Dengage.handleNotificationActionBlock { (notificationResponse) in
-            var response = [String:Any?]();
+
+            var response:Dictionary<String,Any> = Dictionary()// = [String:Any?]();
             response["actionIdentifier"] = notificationResponse.actionIdentifier
 
-            var notification = [String:Any?]()
+            var notification:Dictionary<String,Any> = Dictionary()
             notification["date"] = notificationResponse.notification.date.description
 
-            var notificationReq = [String:Any?]()
+            var notificationReq:Dictionary<String,Any> = Dictionary()
             notificationReq["identifier"] = notificationResponse.notification.request.identifier
-
             if (notificationResponse.notification.request.trigger?.repeats != nil) {
-                var notificationReqTrigger = [String:Any?]()
+                var notificationReqTrigger:Dictionary<String,Any> = Dictionary()
                 notificationReqTrigger["repeats"] = notificationResponse.notification.request.trigger?.repeats ?? nil
                 notificationReq["trigger"] = notificationReqTrigger
             }
 
-            var reqContent = [String:Any?]()
-            var contentAttachments = [Any]()
+            var reqContent:Dictionary<String,Any> = Dictionary()
+            var contentAttachments = [Dictionary<String,Any>]()
             for attachement in notificationResponse.notification.request.content.attachments {
-                var contentAttachment = [String:Any?]()
+                var contentAttachment:Dictionary<String,Any> = Dictionary()
                 contentAttachment["identifier"] = attachement.identifier
-                contentAttachment["url"] = attachement.url
+                contentAttachment["url"] = attachement.url.absoluteString
                 contentAttachment["type"] = attachement.type
                 contentAttachments.append(contentAttachment)
             }
@@ -523,19 +523,25 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             reqContent["body"] = notificationResponse.notification.request.content.body
             reqContent["categoryIdentifier"] = notificationResponse.notification.request.content.categoryIdentifier
             reqContent["launchImageName"] = notificationResponse.notification.request.content.launchImageName
-            // @NSCopying open var sound: UNNotificationSound? { get }
-            //reqContent["sound"] = notificationResponse.notification.request.content.sound // this yet ignored, will include later.
+//
+//            // @NSCopying open var sound: UNNotificationSound? { get }
+//            //reqContent["sound"] = notificationResponse.notification.request.content.sound // this yet ignored, will include later.
+//
             reqContent["subtitle"] = notificationResponse.notification.request.content.subtitle
             reqContent["threadIdentifier"] = notificationResponse.notification.request.content.threadIdentifier
             reqContent["title"] = notificationResponse.notification.request.content.title
-            reqContent["userInfo"] = notificationResponse.notification.request.content.userInfo // todo: make sure it is RCTCovertible & doesn't break the code
-            if #available(iOS 12.0, *) {
-                reqContent["summaryArgument"] = notificationResponse.notification.request.content.summaryArgument
-                reqContent["summaryArgumentCount"] = notificationResponse.notification.request.content.summaryArgumentCount
-            }
-            if #available(iOS 13.0, *) {
-                reqContent["targetContentIdentifier"] = notificationResponse.notification.request.content.targetContentIdentifier
-            }
+            reqContent["userInfo"] = notificationResponse.notification.request.content.userInfo
+            // todo: make sure it is RCTCovertible & doesn't break the code
+
+           // todo: will include this only if required.
+           if #available(iOS 12.0, *) {
+               reqContent["summaryArgument"] = notificationResponse.notification.request.content.summaryArgument
+               reqContent["summaryArgumentCount"] = notificationResponse.notification.request.content.summaryArgumentCount
+           }
+
+           if #available(iOS 13.0, *) {
+               reqContent["targetContentIdentifier"] = notificationResponse.notification.request.content.targetContentIdentifier
+           }
 
 
             reqContent["attachments"] = contentAttachments

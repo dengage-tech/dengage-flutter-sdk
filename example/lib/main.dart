@@ -40,13 +40,14 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
 
   void _onEvent(Object event) {
     print("in on Event object is: ");
-    print(event);
+    print(event.toString());
+    // print(event);
 
   }
 
   void _onError(Object error) {
     print("in on Error Object is: ");
-    print(error);
+    // print(error);
   }
 
   @override
