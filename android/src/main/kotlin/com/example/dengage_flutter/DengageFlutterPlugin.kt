@@ -193,12 +193,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun setContactKey (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val contactKey: String? = call.argument("contactKey")
-      if (contactKey != null) {
-        DengageCoordinator.sharedInstance.dengageManager?.setContactKey(contactKey)
-        replySuccess(result, true)
-      } else {
-        throw Exception("required argument 'contactKey' is missing.");
-      }
+      DengageCoordinator.sharedInstance.dengageManager?.setContactKey(contactKey)
+      replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
@@ -487,7 +483,16 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         }
 
         override fun onResult(response: List<InboxMessage>) {
-          replySuccess(result, Gson().toJson(response))
+          val list = mutableListOf<Map<String, Any?>>()
+          for (message in response) {
+            val json = Gson().toJson(message)
+            android.util.Log.d("getInboxMessages", json)
+            var map: Map<String, Any?> = HashMap<String, Any?>()
+            map = Gson().fromJson(json, map::class.java)
+            android.util.Log.d("getInboxMessages", map.size.toString())
+            list.add(map)
+          }
+          replySuccess(result, list)
         }
       }
       DengageCoordinator.sharedInstance.dengageManager?.getInboxMessages(limit, offset, callback)
@@ -527,7 +532,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setNavigation (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity)
+      // todo: appActivity has to be AppCompatActivity but flutter activity isn't yet appcompat.
+       DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity)
       replySuccess(result, true)
     } catch (ex: Exception){
       replyError(result, "error", ex.localizedMessage, ex)
@@ -540,7 +546,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun setNavigationWithName (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val screenName: String = call.argument("screenName")!!
-      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity as AppCompatActivity, screenName)
+      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity, screenName)
       replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
