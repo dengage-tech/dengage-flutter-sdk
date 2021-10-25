@@ -1,3 +1,10 @@
+## 0.1.6
+Features included
+- 
+This release includes:
+* `setupDengageAndroid` Method added for Android
+* `setupDengageIos` Method added for iOS
+
 ## 0.1.5
 Features included
 - 
