@@ -7,9 +7,9 @@ enum EventChannelName {
 }
 
 public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
-    
+
   private var eventSink: FlutterEventSink?
-    
+
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "dengage_flutter", binaryMessenger: registrar.messenger())
     let instance = SwiftDengageFlutterPlugin()
@@ -27,11 +27,11 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       self.listenForNotification()
       return nil
     }
-    
+
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         return nil
     }
-    
+
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
         case "dEngage#getPlatformVersion":
@@ -128,7 +128,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             result("not implemented.")
     }
   }
-    
+
     /**
      Function to set Integeration key
         to the value from argument.
@@ -145,7 +145,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         Dengage.setIntegrationKey(key: key as! String)
         result(true)
     }
-    
+
     /**
      Function to prompt push permission
      to take user's consent.
@@ -154,7 +154,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         Dengage.promptForPushNotifications()
         result(nil)
     }
-    
+
     /** Function to prompt for push notification and
         acknowledge back .
      */
@@ -177,7 +177,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         Dengage.setUserPermission(permission: permission)
         result(nil)
     }
-    
+
     /**
      Method to register for remote notifications
      */
@@ -191,7 +191,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         Dengage.registerForRemoteNotifications(enable: enabled)
         result(nil)
     }
-    
+
     /**
      Method to getToken
      */
@@ -241,11 +241,11 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         Dengage.setContactKey(contactKey: contactKey)
         result(nil)
     }
-    
+
     /**
      * Method to handle notification action block.
      */
-    
+
     func handleNotificationActionBlock (call: FlutterMethodCall, result: @escaping FlutterResult) {
         Dengage.handleNotificationActionBlock { (notificationResponse) in
             var response = [String:Any?]();
@@ -299,7 +299,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             result([response])
         }
     }
-    
+
     /**
      * Method to send pageView event data
      */
@@ -318,7 +318,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let data = arguments["data"] as! NSMutableDictionary
         DengageEvent.shared.addToCart(params: data)
     }
-    
+
     /**
      * Method to addToCart
      */
@@ -327,7 +327,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let data = arguments["data"] as! NSMutableDictionary
         DengageEvent.shared.removeFromCart(params: data)
     }
-    
+
     /**
      * Method to viewCart
      */
@@ -363,7 +363,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let data = arguments["data"] as! NSMutableDictionary
         DengageEvent.shared.cancelOrder(params: data)
     }
-    
+
     /**
      * Method to addToWithList
      */
@@ -390,7 +390,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let data = arguments["data"] as! NSMutableDictionary
         DengageEvent.shared.search(params: data)
     }
-    
+
     /**
      * Method to sendDeviceEvent
      */
@@ -400,7 +400,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let tableName = arguments["tableName"] as! String
         Dengage.SendDeviceEvent(toEventTable: tableName, andWithEventDetails: withData)
     }
-    
+
     /**
      * Method to getSubscription
      */
@@ -408,7 +408,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         // this method is yet not available in iOS
         result(FlutterError.init(code: "NO_NATIVE_METHOD_YET", message: "this method is yet not available in iOS", details: nil))
     }
-    
+
     /**
      * Method to getInboxMessages
      */
@@ -436,7 +436,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             }
         }
     }
-    
+
     /**
      * Method to deleteInboxMessage
      */
@@ -497,7 +497,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     func setTags(call: FlutterMethodCall, reply: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let data = arguments["tags"] as! [NSDictionary]
-        
+
         var tags: [TagItem] = []
         for tag in data {
             let tagItem:TagItem = TagItem.init(
@@ -511,12 +511,26 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         }
         Dengage.setTags(tags)
         reply(nil)
-    }    
-    
+    }
+
+    /**
+     * Method to setupDengage
+     */
+    func setupDengage(call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+
+        let integrationKey = arguments["integrationKey"] as! NSString
+
+        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, launchOptions: nil)
+
+        reply(nil)
+    }
+
+
     /**
      * Method to listen for notification click.
      */
-    
+
     func listenForNotification () {
         Dengage.handleNotificationActionBlock { (notificationResponse) in
 

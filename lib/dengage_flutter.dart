@@ -150,4 +150,12 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#setTags", {'tags': tags});
   }
 
+  static Future<void> setupDengageAndroid (bool logStatus, String firebaseKey, String huaweiKey) async {
+    return await _channel.invokeMethod("dEngage#setupDengage", {'logStatus': logStatus, 'firebaseKey': firebaseKey, 'huaweiKey': huaweiKey});
+  }
+
+  static Future<void> setupDengageIos (String integrationKey) async {
+    return await _channel.invokeMethod("dEngage#setupDengage", {'integrationKey': integrationKey});
+  }
+
 }
