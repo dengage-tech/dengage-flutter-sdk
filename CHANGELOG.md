@@ -1,3 +1,17 @@
+## 0.1.5
+Features included
+- 
+ This release includes:
+ * `setTags` Method added for both Android & iOS
+ * carousel Notification Click crashes fixed.
+
+## 0.1.1
+Features included
+- 
+ This release includes:
+ * now you can call `setContactKey` with `null` as argument.
+ * setNavigation method will not crash but also will not work, due to `AppCompatActivity` requirement, yet not fullfiled by `FlutterActivity`
+
 ## 0.0.8
 
 Features included

@@ -146,4 +146,8 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#setNavigationWithName", {'screenName': screenName});
   }
 
+  static Future<void> setTags (List<Object> tags) async {
+    return await _channel.invokeMethod("dEngage#setTags", {'tags': tags});
+  }
+
 }

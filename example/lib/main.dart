@@ -48,7 +48,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
 
   void _onError(Object error) {
     print("in on Error Object is: ");
-    // print(error);
+    print(error);
   }
 
   @override
@@ -174,7 +174,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               child: ElevatedButton(
                 onPressed: () async {
                   Map data = new HashMap<String, dynamic>();
-                  data["name"] = "Nawaz";
+                  data["name"] = "Kamran Younis";
                   await DengageFlutter.sendDeviceEvent("tableName", data);
                 },
                 child: Text('Send Device Event'),
@@ -205,12 +205,18 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                    DengageFlutter.setNavigationWithName('MainScreen');
+                    DengageFlutter.setTags([{
+                          "tagName": "kamranTesting",
+                          "tagValue": "My Test Tag Value",
+    // let changeTime: String?
+    // let removeTime: String?
+    // let changeValue: String?
+                    }]);
                 },
-                child: Text('Set Screen Name as "MainScreen"'),
+                child: Text('set Tags'),
               ),
             ),
-                        Container(
+            Container(
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
@@ -219,6 +225,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
                 child: Text('Navigate to "SecondScreen"'),
               ),
             ),
+            Text('Last Push Received.'),
             TextFormField(
               controller: lastPushController,
               decoration: const InputDecoration(
@@ -250,13 +257,7 @@ class SecondRoute extends StatelessWidget {
   }
 
   setScreenName () async {
-    DengageFlutter.pageView({
-      "page_type":"SecondScreen"
-      // ... extra columns in page_view_events table, can be added here
-    });
     DengageFlutter.setNavigationWithName("SecondScreen");
-    List<Object> data = await DengageFlutter.getInboxMessages(0, 10);
-    print(data);
   }
 
   @override

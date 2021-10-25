@@ -121,6 +121,9 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     case "dEngage#setNavigationWithName":
         self.setNavigationWithName(call: call, reply: result)
         break;
+    case "dEngage#setTags":
+        self.setTags(call: call, reply: result)
+        break;
         default:
             result("not implemented.")
     }
@@ -487,7 +490,28 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         Dengage.setNavigation(screenName: screenName)
         reply(nil)
     }
-    
+
+    /**
+     * Method to setNavigationWithName
+     */
+    func setTags(call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let data = arguments["tags"] as! [NSDictionary]
+        
+        var tags: [TagItem] = []
+        for tag in data {
+            let tagItem:TagItem = TagItem.init(
+                tagName: tag["tagName"] as! String,
+                tagValue: tag["tagValue"] as! String,
+                changeTime: tag["changeTime"] as! Date?,
+                removeTime: tag["removeTime"] as! Date?,
+                changeValue: tag["changeValue"] as! String?
+            )
+            tags.append(tagItem)
+        }
+        Dengage.setTags(tags)
+        reply(nil)
+    }    
     
     /**
      * Method to listen for notification click.
