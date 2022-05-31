@@ -1,3 +1,13 @@
+## 0.1.9
+- 
+This release includes:
+* updated ios sdk version
+
+## 0.1.8
+- 
+This release includes:
+* updated android sdk version
+
 ## 0.1.7
 Features included
 - 
