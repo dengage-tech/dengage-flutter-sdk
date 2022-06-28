@@ -2,6 +2,7 @@
 - 
 This release includes:
 * updated ios sdk version
+* Minor bugs fixed
 
 ## 0.1.8
 - 
