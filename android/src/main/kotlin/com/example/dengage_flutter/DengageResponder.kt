@@ -28,7 +28,7 @@ abstract class DengageResponder {
      * It has the @UiThread annotation and must be run on UI thread, otherwise a RuntimeException will be thrown
      * This will communicate error back to Dart
      */
-    fun replyError(reply: MethodChannel.Result, tag: String?, message: String?, response: Any?) {
+    fun replyError(reply: MethodChannel.Result, tag: String, message: String?, response: Any?) {
         //todo: check if this works without running on main Thread.
         // otherwise uncomment it and run on main thread.
 
