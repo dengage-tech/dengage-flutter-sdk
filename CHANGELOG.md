@@ -1,3 +1,9 @@
+## 0.2.0
+- 
+This release includes:
+* ios inbox messages response bug fixed 
+
+
 ## 0.1.9
 - 
 This release includes:

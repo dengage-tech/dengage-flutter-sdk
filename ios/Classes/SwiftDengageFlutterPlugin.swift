@@ -422,10 +422,44 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             switch result {
                 case .success(let resultType): // do something with the result
                     do {
-                        let encodedData = try JSONEncoder().encode(resultType)
+
+                        var arrDict = [[String:Any]]()
+                        var arrCarousel = [[String:String]]()
+
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                        formatter.timeZone = TimeZone(abbreviation: "UTC")
+
+
+                        for dict in resultType
+                        {
+                            if let items = dict.carouselItems
+                            {
+                                for carousel in items
+                                {
+                                    arrCarousel.append(["id": carousel.id ?? "", "title":carousel.title ?? "" , "descriptionText":carousel.descriptionText ?? "" , "mediaUrl": carousel.mediaUrl ?? "" ,  "targetUrl":carousel.targetUrl ?? ""])
+
+
+                                }
+
+                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetURL ?? "" , "iosCarouselContent": arrCarousel, "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetURL ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
+                            }
+                            else
+                            {
+                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetURL ?? "" , "iosCarouselContent": [], "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetURL ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
+                            }
+
+
+
+                        }
+
+                        let encodedData = try JSONSerialization.data(withJSONObject: arrDict, options: .prettyPrinted)
+
                         let jsonString = String(data: encodedData,
                                                 encoding: .utf8)
+                        print("JSON String of inbox API \(jsonString)")
                         reply(jsonString)
+
                     } catch {
                         reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
                     }
