@@ -1,3 +1,10 @@
+## 0.2.1
+- 
+This release includes:
+* ios send device event bug fixed
+
+
+
 ## 0.2.0
 - 
 This release includes:

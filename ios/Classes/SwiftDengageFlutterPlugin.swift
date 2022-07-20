@@ -398,7 +398,18 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let arguments = call.arguments as! NSDictionary
         let withData = arguments["data"] as! NSMutableDictionary
         let tableName = arguments["tableName"] as! String
-        Dengage.SendDeviceEvent(toEventTable: tableName, andWithEventDetails: withData)
+        let result = Dengage.SendDeviceEvent(toEventTable: tableName, andWithEventDetails: withData)
+        if result
+
+        {
+            reply(true)
+
+        }
+        else
+        {
+            reply(false)
+
+        }
     }
 
     /**
