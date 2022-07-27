@@ -146,12 +146,12 @@ class DengageFlutter {
     }
   }
 
-  static Future<void> deleteInboxMessage(int id) async {
+  static Future<void> deleteInboxMessage(String id) async {
     return await _channel
         .invokeMethod("dEngage#deleteInboxMessage", {'id': id});
   }
 
-  static Future<void> setInboxMessageAsClicked(int id) async {
+  static Future<void> setInboxMessageAsClicked(String id) async {
     return await _channel
         .invokeMethod("dEngage#setInboxMessageAsClicked", {'id': id});
   }

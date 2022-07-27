@@ -20,7 +20,7 @@ a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
 ```sh
 
 dependencies:
-    dengage_flutter: ^0.2.1
+    dengage_flutter: ^0.2.2
     
 ```
 

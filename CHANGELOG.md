@@ -1,3 +1,10 @@
+## 0.2.2
+- 
+This release includes:
+* InboxMessageClicked and delete id type changed from int to string 
+
+
+
 ## 0.2.1
 - 
 This release includes:
