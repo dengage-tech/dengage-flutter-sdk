@@ -124,6 +124,18 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     case "dEngage#setTags":
         self.setTags(call: call, reply: result)
         break;
+         case "dEngage#requestLocationPermissions":
+                self.requestLocationPermissions(call: call, reply: result)
+                break;
+         case "dEngage#stopGeofence":
+               self.stopGeofence(call: call, reply: result)
+                 break;
+          case "dEngage#enableGeoFence":
+                self.enableGeoFence(call: call, reply: result)
+                 break;
+          case "dEngage#startGeofence":
+                self.startGeofence(call: call, reply: result)
+                 break;
         default:
             result("not implemented.")
     }
@@ -639,4 +651,33 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         }
     }
 
+
+    private func requestLocationPermissions (call: FlutterMethodCall, result: @escaping FlutterResult) {
+
+        //call location permission function here
+        result(nil)
+    }
+
+
+    private func enableGeoFence (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let isVisible = arguments["isEnabled"] as! Bool
+
+            //call enable geofence function here
+            result(nil)
+        }
+
+
+     private func stopGeofence (call: FlutterMethodCall, result: @escaping FlutterResult) {
+
+                    //call stop geofence function here
+                    result(nil)
+                }
+
+
+      private func startGeofence (call: FlutterMethodCall, result: @escaping FlutterResult) {
+
+                                    //call start geofence function here
+                                    result(nil)
+                                }
 }
