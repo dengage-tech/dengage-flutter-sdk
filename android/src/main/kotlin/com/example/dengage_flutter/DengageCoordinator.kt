@@ -6,7 +6,13 @@ import com.dengage.sdk.DengageManager
 class DengageCoordinator private constructor() {
     var dengageManager: DengageManager? = null
 
-    fun setupDengage (logStatus: Boolean, firebaseKey: String?, huaweiKey: String?, context: Context) {
+    fun setupDengage(
+        logStatus: Boolean,
+        firebaseKey: String?,
+        huaweiKey: String?,
+        enableGeoFence: Boolean,
+        context: Context
+    ) {
         if (firebaseKey == null && huaweiKey == null) {
             throw Error("Both firebase key and huawei key can't be null at the same time.");
         }
@@ -14,22 +20,25 @@ class DengageCoordinator private constructor() {
         when {
             huaweiKey == null -> {
                 dengageManager = DengageManager.getInstance(context)
-                        .setLogStatus(logStatus)
-                        .setFirebaseIntegrationKey(firebaseKey)
-                        .init()
+                    .setLogStatus(logStatus)
+                    .setFirebaseIntegrationKey(firebaseKey)
+                    .isGeofenceEnabled(enableGeoFence)
+                    .init()
             }
             firebaseKey == null -> {
                 dengageManager = DengageManager.getInstance(context)
-                        .setLogStatus(logStatus)
-                        .setHuaweiIntegrationKey(huaweiKey)
-                        .init()
+                    .setLogStatus(logStatus)
+                    .setHuaweiIntegrationKey(huaweiKey)
+                    .isGeofenceEnabled(enableGeoFence)
+                    .init()
             }
             else -> {
                 dengageManager = DengageManager.getInstance(context)
-                        .setLogStatus(logStatus)
-                        .setHuaweiIntegrationKey(huaweiKey)
-                        .setFirebaseIntegrationKey(firebaseKey)
-                        .init()
+                    .setLogStatus(logStatus)
+                    .setHuaweiIntegrationKey(huaweiKey)
+                    .setFirebaseIntegrationKey(firebaseKey)
+                    .isGeofenceEnabled(enableGeoFence)
+                    .init()
             }
         }
     }

@@ -135,7 +135,17 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         this.setTags(call, result)
       } else if (call.method == "dEngage#setupDengage") {
         this.setupDengage(call, result)
-      } else {
+      }else if (call.method == "dEngage#enableGeoFence") {
+        this.enableGeoFence(call, result)
+      }else if (call.method == "dEngage#requestLocationPermissions") {
+        this.requestLocationPermissions(call, result)
+      } else if (call.method == "dEngage#stopGeofence") {
+        this.stopGeofence(call, result)
+      }
+      else if (call.method == "dEngage#startGeofence") {
+        this.startGeofence(call, result)
+      }
+      else {
         result.notImplemented()
       }
     } catch (ex: Exception) {
@@ -601,8 +611,9 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val logStatus: Boolean = call.argument("logStatus")!!
       val firebaseKey: String? = call.argument("firebaseKey")
       val huaweiKey: String? = call.argument("huaweiKey")
+      val enableGeofence: Boolean = call.argument("enableGeofence")!!
 
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, appContext);
+      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, enableGeofence,appContext);
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
@@ -620,5 +631,45 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
   override fun onDetachedFromActivityForConfigChanges () {
     // todo: could be used for clearing app Activity.
+  }
+
+
+  private fun requestLocationPermissions (@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      DengageCoordinator.sharedInstance.dengageManager!!.requestLocationPermissions(appActivity)
+      replySuccess(result, true)
+    } catch (ex: Exception){
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+
+  private fun enableGeoFence (@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      val isEnabled: Boolean = call.argument("isEnabled")!!
+      DengageCoordinator.sharedInstance.dengageManager!!.isGeofenceEnabled(isEnabled)
+      replySuccess(result, true)
+    } catch (ex: Exception){
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+
+  private fun stopGeofence (@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      DengageCoordinator.sharedInstance.dengageManager!!.stopGeofence()
+      replySuccess(result, true)
+    } catch (ex: Exception){
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+  private fun startGeofence (@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      DengageCoordinator.sharedInstance.dengageManager!!.startGeofence()
+      replySuccess(result, true)
+    } catch (ex: Exception){
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
   }
 }
