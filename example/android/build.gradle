@@ -1,25 +1,21 @@
 buildscript {
-    ext.kotlin_version = '1.6.0'
+    ext.kotlin_version = '1.7.10'
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:7.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.gms:google-services:4.3.13'// dengage firebase
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
-        maven {
-            url 'https://developer.huawei.com/repo/'
-        }
-        maven { url 'https://jitpack.io' }
+        mavenCentral()
     }
 }
 
@@ -34,4 +30,4 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-apply plugin: 'com.google.gms.google-services' // Add this line
+apply plugin: 'com.google.gms.google-services' // dengage firebase

@@ -1,14 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.dengage_flutter_example">
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <application
+    package="com.emintolgahanpolat.dengage_flutter_example">
+   <application
         android:label="dengage_flutter_example"
+        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -22,68 +20,30 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-            <!-- Displays an Android View that continues showing the launch screen
-                 Drawable until Flutter paints its first frame, then this splash
-                 screen fades out. A splash screen is useful to avoid any visual
-                 gap between the end of Android's launch screen and the painting of
-                 Flutter's first frame. -->
-            <meta-data
-              android:name="io.flutter.embedding.android.SplashScreenDrawable"
-              android:resource="@drawable/launch_background"
-              />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!-- Fcm Messaging Service for handling push messages comes from firebase -->
-        <service
-            android:name="com.dengage.sdk.FcmMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <!-- Hms Messaging Service for handling push messages comes from huawei messaging service -->
-<!--        <service-->
-<!--            android:name="com.dengage.sdk.HmsMessagingService"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.huawei.push.action.MESSAGING_EVENT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
-
-        <!-- For handling push notifications comes to messaging service classes -->
-        <receiver
-            android:name=".push.PushNotificationReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.dengage.push.intent.RECEIVE" />
-                <action android:name="com.dengage.push.intent.OPEN" />
-                <action android:name="com.dengage.push.intent.DELETE" />
-                <action android:name="com.dengage.push.intent.ACTION_CLICK" />
-                <action android:name="com.dengage.push.intent.ITEM_CLICK" />
-                <action android:name="com.dengage.push.intent.CAROUSEL_ITEM_CLICK" />
-            </intent-filter>
-        </receiver>
-
-        <!-- Event api url of Dengage -->
-        <meta-data
-            android:name="den_event_api_url"
-            android:value="https://event.dengage.com" />
-        <!--      android:value="https://eventdev.dengage.com" />-->
-
-        <!-- Push api url of Dengage -->
-        <meta-data
-            android:name="den_push_api_url"
-            android:value="https://push.dengage.com" />
-        <!--    android:value="https://pushdev.dengage.com" />-->
-
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+                         <!-- Event api url of Dengage -->
+        <meta-data
+            android:name="den_event_api_url"
+            android:value="https://tr-event.dengage.com/api/event" />
+
+        <!-- Push api url of Dengage -->
+        <meta-data
+            android:name="den_push_api_url"
+            android:value="https://tr-push.dengage.com" />
+
+                    <!-- Push api url of Dengage -->
+        <meta-data
+            android:name="den_geofence_api_url"
+            android:value="https://tr-geofence.dengage.com/geoapi" />
     </application>
 </manifest>
