@@ -647,7 +647,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   private fun enableGeoFence (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val isEnabled: Boolean = call.argument("isEnabled")!!
-      DengageCoordinator.sharedInstance.dengageManager!!.isGeofenceEnabled(isEnabled)
+      DengageCoordinator.sharedInstance.dengageManager!!.setGeofenceStatus(isEnabled)
       replySuccess(result, true)
     } catch (ex: Exception){
       replyError(result, "error", ex.localizedMessage, ex)

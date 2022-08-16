@@ -22,14 +22,14 @@ class DengageCoordinator private constructor() {
                 dengageManager = DengageManager.getInstance(context)
                     .setLogStatus(logStatus)
                     .setFirebaseIntegrationKey(firebaseKey)
-                    .isGeofenceEnabled(enableGeoFence)
+                    .setGeofenceStatus(enableGeoFence)
                     .init()
             }
             firebaseKey == null -> {
                 dengageManager = DengageManager.getInstance(context)
                     .setLogStatus(logStatus)
                     .setHuaweiIntegrationKey(huaweiKey)
-                    .isGeofenceEnabled(enableGeoFence)
+                    .setGeofenceStatus(enableGeoFence)
                     .init()
             }
             else -> {
@@ -37,7 +37,7 @@ class DengageCoordinator private constructor() {
                     .setLogStatus(logStatus)
                     .setHuaweiIntegrationKey(huaweiKey)
                     .setFirebaseIntegrationKey(firebaseKey)
-                    .isGeofenceEnabled(enableGeoFence)
+                    .setGeofenceStatus(enableGeoFence)
                     .init()
             }
         }
