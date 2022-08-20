@@ -125,16 +125,16 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         self.setTags(call: call, reply: result)
         break;
          case "dEngage#requestLocationPermissions":
-                self.requestLocationPermissions(call: call, reply: result)
+        self.requestLocationPermissions(call: call, result: result)
                 break;
          case "dEngage#stopGeofence":
-               self.stopGeofence(call: call, reply: result)
+               self.stopGeofence(call: call, result: result)
                  break;
           case "dEngage#enableGeoFence":
-                self.enableGeoFence(call: call, reply: result)
+                self.enableGeoFence(call: call, result: result)
                  break;
           case "dEngage#startGeofence":
-                self.startGeofence(call: call, reply: result)
+                self.startGeofence(call: call, result: result)
                  break;
         default:
             result("not implemented.")
@@ -577,8 +577,9 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let arguments = call.arguments as! NSDictionary
 
         let integrationKey = arguments["integrationKey"] as! NSString
+        let enableGeofence = arguments["enableGeofence"] as! DarwinBoolean
 
-        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, launchOptions: nil)
+        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, enableGeoFence: ObjCBool.init(enableGeofence.boolValue), launchOptions: nil)
 
         reply(nil)
     }
@@ -652,32 +653,43 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     }
 
 
-    private func requestLocationPermissions (call: FlutterMethodCall, result: @escaping FlutterResult) {
+    func requestLocationPermissions (call: FlutterMethodCall, result: @escaping FlutterResult) {
 
         //call location permission function here
+        Dengage.requestLocationPermissions()
+
         result(nil)
     }
 
 
-    private func enableGeoFence (call: FlutterMethodCall, result: @escaping FlutterResult) {
+    func enableGeoFence (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let isVisible = arguments["isEnabled"] as! Bool
 
+        Dengage.requestLocationPermissions()
+
             //call enable geofence function here
             result(nil)
-        }
+       
+    
+    }
 
 
-     private func stopGeofence (call: FlutterMethodCall, result: @escaping FlutterResult) {
+    func stopGeofence (call: FlutterMethodCall, result: @escaping FlutterResult) {
 
                     //call stop geofence function here
-                    result(nil)
+        Dengage.stopGeofence()
+
+        result(nil)
                 }
 
 
-      private func startGeofence (call: FlutterMethodCall, result: @escaping FlutterResult) {
+    func startGeofence (call: FlutterMethodCall, result: @escaping FlutterResult) {
 
                                     //call start geofence function here
+        
+        Dengage.requestLocationPermissions()
+        
                                     result(nil)
                                 }
 }

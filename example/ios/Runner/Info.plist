@@ -24,8 +24,16 @@
 	<string>https://push.dengage.com</string>
 	<key>DengageEventApiUrl</key>
 	<string>https://event.dengage.com</string>
+	<key>DengageGeofenceApiUrl</key>
+	<string>https://dev-push.dengage.com/geoapi</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Dengage will use your location always and when in use!</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string> Dengage will use your location always!</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Dengage will use your location when in use!</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
