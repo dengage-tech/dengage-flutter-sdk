@@ -7,7 +7,7 @@
 
 import Foundation
 import Flutter
-import Dengage_Framework
+import Dengage
 
 @objc(DengageCoordinator)
 public class DengageCoordinator: NSObject {
@@ -17,15 +17,17 @@ public class DengageCoordinator: NSObject {
     @objc var integerationKey: String?
     @objc var launchOptions: [UIApplication.LaunchOptionsKey: Any]?
 
-    @objc(setupDengage:enableGeoFence:launchOptions:)
-    public func setupDengage(key:NSString,enableGeoFence:ObjCBool, launchOptions:NSDictionary?) {
+    @objc(setupDengage:enableGeoFence:launchOptions:application:)
+    public func setupDengage(key:NSString,enableGeoFence:ObjCBool, launchOptions:NSDictionary?,application:UIApplication?) {
         Dengage.setIntegrationKey(key: key as String)
         
         
         if (launchOptions != nil) {
-            Dengage.initWithLaunchOptions(withLaunchOptions: launchOptions as! [UIApplication.LaunchOptionsKey : Any])
+            Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared, withLaunchOptions: launchOptions as! [UIApplication.LaunchOptionsKey : Any])
+            
+           
         } else {
-            Dengage.initWithLaunchOptions(withLaunchOptions: nil)
+            Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared , withLaunchOptions: [:])
         }
         
         if (enableGeoFence.boolValue == true)
@@ -48,12 +50,29 @@ public class DengageCoordinator: NSObject {
             let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
             token = tokenParts.joined()
         }
-        sendToken(token)
+        //sendToken(token)
+        
+        Dengage.register(deviceToken: deviceToken)
     }
     
     private func sendToken(_ token: String ){
         Dengage.setToken(token: token)
     }
     
+    @objc(didReceivePush:response:withCompletionHandler:)
+    public func didReceivePush(_ center: UNUserNotificationCenter,
+                                            _ response: UNNotificationResponse,
+                                            withCompletionHandler completionHandler: @escaping () -> Void) {
+
+        Dengage.didReceivePush(center, response, withCompletionHandler: completionHandler)
+
+    }
+    
+    @objc(didReceive:)
+    public func didReceive(with userInfo: [AnyHashable: Any]) {
+        
+        Dengage.didReceive(with: userInfo)
+        
+    }
     
 }

@@ -1,6 +1,6 @@
 import Flutter
 import UIKit
-import Dengage_Framework
+import Dengage
 
 enum EventChannelName {
   static let onNotificationClicked = "com.dengage.flutter/onNotificationClicked"
@@ -200,7 +200,10 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             result(FlutterError.init(code: "error", message: "Required argument 'enabled' is missing.", details: nil))
             return
         }
-        Dengage.registerForRemoteNotifications(enable: enabled)
+       // Dengage.registerForRemoteNotifications(enable: enabled)
+        
+        Dengage.promptForPushNotifications()
+        
         result(nil)
     }
 
@@ -208,7 +211,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
      Method to getToken
      */
     private func getToken (call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let token = Dengage.getToken()
+        let token = Dengage.getDeviceToken()
         result(token)
     }
 
@@ -316,9 +319,9 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
      * Method to send pageView event data
      */
     func pageView (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSDictionary
-        DengageEvent.shared.pageView(params: data as! NSMutableDictionary)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.pageView(parameters: data)
         result(nil)
     }
 
@@ -326,102 +329,93 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
      * Method to addToCart
      */
     func addToCart (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.addToCart(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.addToCart(parameters: data)
     }
 
     /**
      * Method to addToCart
      */
     func removeFromCart (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.removeFromCart(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.removeFromCart(parameters: data)
     }
 
     /**
      * Method to viewCart
      */
     func viewCart (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.viewCart(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.viewCart(parameters: data)
+        
     }
 
     /**
      * Method to beginCheckout
      */
     func beginCheckout (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.beginCheckout(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.beginCheckout(parameters: data)
     }
 
     /**
      * Method to place an order
      */
     func placeOrder (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.order(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.order(parameters: data)
     }
 
     /**
      * Method to cancel an order
      */
     func cancelOrder (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.cancelOrder(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.cancelOrder(parameters: data)
     }
 
     /**
      * Method to addToWithList
      */
     func addToWithList (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.addToWithList(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.addToWithList(parameters: data)
     }
 
     /**
      * Method to removeFromWishList
      */
     func removeFromWishList (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.removeFromWithList(params: data)
+        let arguments = call.arguments as! [String : Any]
+        let data = arguments["data"] as! [String : Any]
+        Dengage.removeFromWithList(parameters: data)
     }
 
     /**
      * Method to search
      */
     func search (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let data = arguments["data"] as! NSMutableDictionary
-        DengageEvent.shared.search(params: data)
+        let arguments = call.arguments as! [String:Any]
+        let data = arguments["data"] as! [String:Any]
+        Dengage.search(parameters: data)
     }
 
     /**
      * Method to sendDeviceEvent
      */
     func sendDeviceEvent (call: FlutterMethodCall, reply: @escaping FlutterResult) -> Void {
-        let arguments = call.arguments as! NSDictionary
-        let withData = arguments["data"] as! NSMutableDictionary
+        let arguments = call.arguments as! [String:Any]
+        let withData = arguments["data"] as! [String:Any]
         let tableName = arguments["tableName"] as! String
-        let result = Dengage.SendDeviceEvent(toEventTable: tableName, andWithEventDetails: withData)
-        if result
-
-        {
-            reply(true)
-
-        }
-        else
-        {
-            reply(false)
-
-        }
+        Dengage.sendCustomEvent(eventTable: tableName, parameters: withData)
+        reply(true)
     }
 
     /**
@@ -465,11 +459,11 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
                                 }
 
-                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetURL ?? "" , "iosCarouselContent": arrCarousel, "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetURL ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
+                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetUrl ?? "" , "iosCarouselContent": arrCarousel, "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetUrl ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
                             }
                             else
                             {
-                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetURL ?? "" , "iosCarouselContent": [], "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetURL ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
+                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetUrl ?? "" , "iosCarouselContent": [], "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetUrl ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
                             }
 
 
@@ -578,8 +572,10 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
         let integrationKey = arguments["integrationKey"] as! NSString
         let enableGeofence = arguments["enableGeofence"] as! DarwinBoolean
+        let application = arguments["application"] as? UIApplication
 
-        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, enableGeoFence: ObjCBool.init(enableGeofence.boolValue), launchOptions: nil)
+
+        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, enableGeoFence: ObjCBool.init(enableGeofence.boolValue), launchOptions: nil, application: application)
 
         reply(nil)
     }
