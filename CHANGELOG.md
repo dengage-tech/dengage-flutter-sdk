@@ -1,3 +1,10 @@
+## 0.2.6
+Features included
+- 
+This release includes:
+* Upgraded to new sdsk
+* This version is without geofence and without huawei
+
 ## 0.2.3
 - 
 This release includes:
