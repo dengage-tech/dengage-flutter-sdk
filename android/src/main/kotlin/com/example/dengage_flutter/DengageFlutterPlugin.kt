@@ -82,8 +82,6 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       }
       else if (call.method == "dEngage#setContactKey") {
         setContactKey(call, result)
-      } else if (call.method == "dEngage#setHuaweiIntegrationKey") {
-        this.setHuaweiIntegrationKey(call, result)
       } else if (call.method == "dEngage#setFirebaseIntegrationKey") {
         this.setFirebaseIntegrationKey(call, result)
       } else if (call.method == "dEngage#setLogStatus") {
@@ -205,21 +203,6 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     }
   }
 
-  /**
-   * Method to set the value for Huawei Integeration Key
-   */
-  private fun setHuaweiIntegrationKey (@NonNull call: MethodCall, @NonNull result: Result) {
-    try {
-      val key: String? = call.argument("key")
-      if (key != null) {
-        DengageCoordinator.sharedInstance.dengageManager?.setHuaweiIntegrationKey(key)
-      } else {
-        throw Exception("required arugment 'key' is missing.")
-      }
-    } catch (ex: Exception) {
-      replyError(result, "error", ex.localizedMessage, ex)
-    }
-  }
 
   /**
    * Method to set the value for Firebase Integration Key
@@ -605,7 +588,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val huaweiKey: String? = call.argument("huaweiKey")
       val enableGeofence: Boolean = call.argument("enableGeofence")!!
 
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, enableGeofence,appContext);
+      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey,appContext);
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
