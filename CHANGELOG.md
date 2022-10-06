@@ -1,3 +1,12 @@
+## 0.2.5.1
+Features included
+- 
+This release includes:
+* Upgraded to new sdsk
+* This version is without geofence and with geofence
+
+
+
 ## 0.2.3
 - 
 This release includes:
