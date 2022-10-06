@@ -6,7 +6,7 @@
 //
 
 import UserNotifications
-import Dengage_Framework
+import Dengage
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -21,7 +21,7 @@ class NotificationService: UNNotificationServiceExtension {
             // Modify the notification content here...
             bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
             // add this line of code
-            Dengage.didReceiveNotificationExtentionRequest(receivedRequest: request, withNotificationContent: bestAttemptContent)
+            Dengage.didReceiveNotificationRequest(bestAttemptContent, withContentHandler: contentHandler)
             contentHandler(bestAttemptContent)
         }
     }

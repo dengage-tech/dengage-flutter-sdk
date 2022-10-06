@@ -32,8 +32,7 @@ target 'Runner' do
   use_modular_headers!
 
   
-  pod 'Dengage.Framework'
-  pod 'Dengage.Framework.Extensions','1.0.10'
+  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.0.10.1'
   
   target 'DengageNotificationServiceExtension' do
     use_frameworks!
