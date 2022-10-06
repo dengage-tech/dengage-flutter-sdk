@@ -57,6 +57,12 @@ class DengageFlutter {
   }
 
   // android only
+  static Future<bool?> setHuaweiIntegrationKey(String key) async {
+    return await _channel
+        .invokeMethod("dEngage#setHuaweiIntegrationKey", {'key': key});
+  }
+
+  // android only
   static Future<bool?> setFirebaseIntegrationKey(String key) async {
     return await _channel
         .invokeMethod("dEngage#setFirebaseIntegrationKey", {'key': key});
@@ -164,11 +170,17 @@ class DengageFlutter {
   }
 
   static Future<void> setupDengageAndroid(
-      bool logStatus, String firebaseKey) async {
+      bool logStatus, String firebaseKey, String huaweiKey) async {
     return await _channel.invokeMethod("dEngage#setupDengage", {
       'logStatus': logStatus,
-      'firebaseKey': firebaseKey
+      'firebaseKey': firebaseKey,
+      'huaweiKey': huaweiKey
     });
   }
+
+   static Future<void> setupDengageIos(String integrationKey) async {
+     return await _channel.invokeMethod(
+         "dEngage#setupDengage", {'integrationKey': integrationKey});
+   }
 
 }
