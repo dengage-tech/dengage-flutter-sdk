@@ -56,11 +56,7 @@ class DengageFlutter {
     return _channel.invokeMethod("dEngage#setToken", {'token': token});
   }
 
-  // android only
-  static Future<bool?> setHuaweiIntegrationKey(String key) async {
-    return await _channel
-        .invokeMethod("dEngage#setHuaweiIntegrationKey", {'key': key});
-  }
+
 
   // android only
   static Future<bool?> setFirebaseIntegrationKey(String key) async {
@@ -170,11 +166,10 @@ class DengageFlutter {
   }
 
   static Future<void> setupDengageAndroid(
-      bool logStatus, String firebaseKey, String huaweiKey,bool enableGeofence) async {
+      bool logStatus, String firebaseKey, bool enableGeofence) async {
     return await _channel.invokeMethod("dEngage#setupDengage", {
       'logStatus': logStatus,
       'firebaseKey': firebaseKey,
-      'huaweiKey': huaweiKey,
       'enableGeofence' : enableGeofence
     });
   }

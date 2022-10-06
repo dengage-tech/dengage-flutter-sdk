@@ -82,9 +82,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       }
       else if (call.method == "dEngage#setContactKey") {
         setContactKey(call, result)
-      } else if (call.method == "dEngage#setHuaweiIntegrationKey") {
-        this.setHuaweiIntegrationKey(call, result)
-      } else if (call.method == "dEngage#setFirebaseIntegrationKey") {
+      }  else if (call.method == "dEngage#setFirebaseIntegrationKey") {
         this.setFirebaseIntegrationKey(call, result)
       } else if (call.method == "dEngage#setLogStatus") {
         this.setLogStatus(call, result)
@@ -194,7 +192,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setIntegerationKey (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      throw Exception("This method is not available in android. please use 'setHuaweiIntegrationKey' OR 'setFirebaseIntegrationKey' instead.")
+      throw Exception("This method is not available in android. please use 'setFirebaseIntegrationKey' instead.")
     } catch (ex: Exception) {
       replyError(result, "Error:Method not available", ex.localizedMessage, ex)
     }
@@ -214,21 +212,6 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     }
   }
 
-  /**
-   * Method to set the value for Huawei Integeration Key
-   */
-  private fun setHuaweiIntegrationKey (@NonNull call: MethodCall, @NonNull result: Result) {
-    try {
-      val key: String? = call.argument("key")
-      if (key != null) {
-        DengageCoordinator.sharedInstance.dengageManager?.setHuaweiIntegrationKey(key)
-      } else {
-        throw Exception("required arugment 'key' is missing.")
-      }
-    } catch (ex: Exception) {
-      replyError(result, "error", ex.localizedMessage, ex)
-    }
-  }
 
   /**
    * Method to set the value for Firebase Integration Key
@@ -611,10 +594,9 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     try {
       val logStatus: Boolean = call.argument("logStatus")!!
       val firebaseKey: String? = call.argument("firebaseKey")
-      val huaweiKey: String? = call.argument("huaweiKey")
       val enableGeofence: Boolean = call.argument("enableGeofence")!!
 
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, enableGeofence,appContext);
+      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, enableGeofence,appContext);
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
