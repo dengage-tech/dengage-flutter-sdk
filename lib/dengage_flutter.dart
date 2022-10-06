@@ -178,4 +178,9 @@ class DengageFlutter {
     });
   }
 
+   static Future<void> setupDengageIos(String integrationKey) async {
+     return await _channel.invokeMethod(
+         "dEngage#setupDengage", {'integrationKey': integrationKey});
+   }
+
 }
