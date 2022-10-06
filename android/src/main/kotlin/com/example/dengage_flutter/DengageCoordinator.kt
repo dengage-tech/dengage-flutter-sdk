@@ -10,7 +10,6 @@ class DengageCoordinator private constructor() {
         logStatus: Boolean,
         firebaseKey: String?,
         huaweiKey: String?,
-        enableGeoFence: Boolean,
         context: Context
     ) {
         if (firebaseKey == null && huaweiKey == null) {

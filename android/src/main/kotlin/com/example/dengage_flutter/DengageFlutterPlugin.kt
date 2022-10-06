@@ -603,9 +603,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val logStatus: Boolean = call.argument("logStatus")!!
       val firebaseKey: String? = call.argument("firebaseKey")
       val huaweiKey: String? = call.argument("huaweiKey")
-      val enableGeofence: Boolean = call.argument("enableGeofence")!!
 
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, enableGeofence,appContext);
+      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, appContext);
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
