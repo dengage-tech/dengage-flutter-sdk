@@ -136,15 +136,6 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         this.setTags(call, result)
       } else if (call.method == "dEngage#setupDengage") {
         this.setupDengage(call, result)
-      }else if (call.method == "dEngage#enableGeoFence") {
-        this.enableGeoFence(call, result)
-      }else if (call.method == "dEngage#requestLocationPermissions") {
-        this.requestLocationPermissions(call, result)
-      } else if (call.method == "dEngage#stopGeofence") {
-        this.stopGeofence(call, result)
-      }
-      else if (call.method == "dEngage#startGeofence") {
-        this.startGeofence(call, result)
       }
       else {
         result.notImplemented()
@@ -635,42 +626,4 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   }
 
 
-  private fun requestLocationPermissions (@NonNull call: MethodCall, @NonNull result: Result) {
-    try {
-      DengageCoordinator.sharedInstance.dengageManager!!.requestLocationPermissions(appActivity)
-      replySuccess(result, true)
-    } catch (ex: Exception){
-      replyError(result, "error", ex.localizedMessage, ex)
-    }
-  }
-
-
-  private fun enableGeoFence (@NonNull call: MethodCall, @NonNull result: Result) {
-    try {
-      val isEnabled: Boolean = call.argument("isEnabled")!!
-      DengageCoordinator.sharedInstance.dengageManager!!.setGeofenceStatus(isEnabled)
-      replySuccess(result, true)
-    } catch (ex: Exception){
-      replyError(result, "error", ex.localizedMessage, ex)
-    }
-  }
-
-
-  private fun stopGeofence (@NonNull call: MethodCall, @NonNull result: Result) {
-    try {
-      DengageCoordinator.sharedInstance.dengageManager!!.stopGeofence()
-      replySuccess(result, true)
-    } catch (ex: Exception){
-      replyError(result, "error", ex.localizedMessage, ex)
-    }
-  }
-
-  private fun startGeofence (@NonNull call: MethodCall, @NonNull result: Result) {
-    try {
-      DengageCoordinator.sharedInstance.dengageManager!!.startGeofence()
-      replySuccess(result, true)
-    } catch (ex: Exception){
-      replyError(result, "error", ex.localizedMessage, ex)
-    }
-  }
 }
