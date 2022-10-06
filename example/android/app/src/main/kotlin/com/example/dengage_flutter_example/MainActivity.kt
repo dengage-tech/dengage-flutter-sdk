@@ -10,7 +10,7 @@ class MainActivity : FlutterFragmentActivity() {
         super.onCreate(savedInstanceState)
         DengageCoordinator.sharedInstance.setupDengage(
             true,
-            "7VJRT9FBZdxMBoe2pNX4_s_l_7z3SkzvQTMEoZ_s_l_MmV9QvULukRdACg_s_l_GyMduz_s_l_qlxyO4Bs9W4B6U007IgfiNCxvKL4fDz29kxT9qUUJHSzOLbaI24Co0N4Dw1sZrBuAWkKQCEV_p_l_0vXZtOSXV_s_l_jizKYpqGg_e_q__e_q_",
+            "iDaLcms9gAObZ_s_l_wv47OqqDFbBwCjj0Xzo6X93kEFaVDfuPFE_s_l_LcCEemlf_p_l_SKqCUeTXkySY5_p_l_7r2oUif0K1cZonyTyzmSY2MHxHaY0tN_s_l_gk2nPpkbZ8hkU9p1ZycYNPCECKXBmzzaPA9hr_p_l_L5aZvpXA_e_q__e_q_",
             "your-huawei-key-here",
             true,
             applicationContext

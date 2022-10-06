@@ -38,7 +38,7 @@
         </activity>
         <!-- Fcm Messaging Service for handling push messages comes from firebase -->
         <service
-            android:name="com.dengage.sdk.FcmMessagingService"
+            android:name="com.dengage.sdk.push.FcmMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
