@@ -183,7 +183,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setIntegerationKey (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      throw Exception("This method is not available in android. please use 'setHuaweiIntegrationKey' OR 'setFirebaseIntegrationKey' instead.")
+      throw Exception("This method is not available in android.'setFirebaseIntegrationKey' instead.")
     } catch (ex: Exception) {
       replyError(result, "Error:Method not available", ex.localizedMessage, ex)
     }
@@ -585,8 +585,6 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     try {
       val logStatus: Boolean = call.argument("logStatus")!!
       val firebaseKey: String? = call.argument("firebaseKey")
-      val huaweiKey: String? = call.argument("huaweiKey")
-      val enableGeofence: Boolean = call.argument("enableGeofence")!!
 
       DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey,appContext);
       replySuccess(result, true)
