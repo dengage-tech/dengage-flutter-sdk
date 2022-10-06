@@ -1,4 +1,4 @@
-## 0.2.5.1
+## 0.2.5
 Features included
 - 
 This release includes:
