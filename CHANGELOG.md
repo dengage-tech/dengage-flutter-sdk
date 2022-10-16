@@ -1,3 +1,39 @@
+## 0.3.2
+Features included
+- 
+This release includes:
+* Open event exposed
+* This version is with geofence and without huawei
+
+
+
+## 0.3.1
+Features included
+- 
+This release includes:
+* Open event exposed
+* This version is with geofence and with huawei
+
+
+## 0.3.0
+Features included
+- 
+This release includes:
+* Open event exposed
+* This version is without geofence and without huawei
+
+
+## 0.2.9
+Features included
+- 
+This release includes:
+* Open event exposed
+* This version is without geofence and with huawei
+
+
+
+
+
 ## 0.2.8
 Features included
 - 
