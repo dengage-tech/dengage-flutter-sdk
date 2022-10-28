@@ -1,3 +1,36 @@
+## 0.3.6
+Features included
+- 
+This release includes:
+* libraries updated
+* This version is with geofence and without huawei
+
+
+
+## 0.3.5
+Features included
+- 
+This release includes:
+* libraries updated
+* This version is with geofence and with huawei
+
+
+## 0.3.4
+Features included
+- 
+This release includes:
+* libraries updated
+* This version is without geofence and without huawei
+
+
+## 0.3.3
+Features included
+- 
+This release includes:
+* libraries updated
+* This version is without geofence and with huawei
+
+
 ## 0.3.2
 Features included
 - 
