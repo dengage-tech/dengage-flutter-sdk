@@ -1,3 +1,36 @@
+## 0.4.0
+Features included
+- 
+This release includes:
+* events issue fixed
+* This version is with geofence and without huawei
+
+
+
+## 0.3.9
+Features included
+- 
+This release includes:
+* events issue fixed
+* This version is with geofence and with huawei
+
+
+## 0.3.8
+Features included
+- 
+This release includes:
+* events issue fixed
+* This version is without geofence and without huawei
+
+
+## 0.3.7
+Features included
+- 
+This release includes:
+* events issue fixed
+* This version is without geofence and with huawei
+
+
 ## 0.3.6
 Features included
 - 
