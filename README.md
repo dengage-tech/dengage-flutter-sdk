@@ -20,28 +20,19 @@ a) Edit your project's `pubspec.yaml` file to include the `dengage_flutter` SDK:
 ```sh
 
 dependencies:
-    dengage_flutter: ^0.2.3
+0.3.7 without geofence with huawei
+
+0.3.8 without geofence without huawei
+
+0.3.9 with geofence with huawei
+
+0.4.0 with geofence without huawei
+
     
 ```
 
 b) Run `flutter pub get` to install the SDK.
 
-c)  In your Dart code, access DengageFlutter with:
-
-```
-// at top in imports
-import 'package:dengage_flutter/dengage_flutter.dart'
-
-// somewhere down in the code
-  try {
-    Object result = await DengageFlutter.setIntegerationKey("");
-    print("result: $result");
-  } on PlatformException catch (error) {
-    print("error: $error");
-  } on Exception catch (error) {
-    print("exception: $error");
-  }
-```
 
 ## Platform Specific Extra Steps
 Following extra steps after the installation of the `dengage_flutter` SDK are required for it to work properly.
@@ -155,7 +146,13 @@ import dengage_flutter          // ADD THIS IN IMPORTS
     /************* FLutter Setup Code Starts here ********************/
     // please Node key here is the integeration Key received while registering your iOS Application on Dengage Dashboard.
     let coordinator = DengageCoordinator.staticInstance;
-    coordinator.setupDengage(key: "K8sbLq1mShD52Hu2ZoHyb3tvDE_s_l_h99xFTF60WiNPdHhJtvmOqekutthtzRIPiMTbAa3y_p_l_PZqpon8nanH8YnJ8yYKocDb4GCAp7kOsi5qv7mDR_p_l_qOFLLp9_p_l_lloC6ds97X", launchOptions: launchOptions as NSDictionary?);
+  For geofence: 
+      coordinator.setupDengage(key: "4vPb6ldynxkMe5_p_l_j5mk_s_l_Mzf5IDjqoARjx_s_l_KQEBB1iw6c2EDnH7bz6QTIHsdGSCkeJP2kO7ZSD_s_l_PDTkB6jyG8ebacnSdRsenDLujyQwFZTxQNOUiiGgoLCoEJ_s_l_NhkNVg2UQOFMZPpAXr6P_p_l_R6PXBujw_e_q__e_q_", enableGeoFence : true,launchOptions: launchOptions as NSDictionary?, application: application);
+ 
+ 
+Without geofence: 
+    coordinator.setupDengage(key: "4vPb6ldynxkMe5_p_l_j5mk_s_l_Mzf5IDjqoARjx_s_l_KQEBB1iw6c2EDnH7bz6QTIHsdGSCkeJP2kO7ZSD_s_l_PDTkB6jyG8ebacnSdRsenDLujyQwFZTxQNOUiiGgoLCoEJ_s_l_NhkNVg2UQOFMZPpAXr6P_p_l_R6PXBujw_e_q__e_q_",launchOptions: launchOptions as NSDictionary?, application: application);
+
      /************* FLutter Setup Code Ends here ********************/
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
@@ -164,6 +161,8 @@ import dengage_flutter          // ADD THIS IN IMPORTS
             let coordinator = DengageCoordinator.staticInstance;
             coordinator.registerForPushToken(deviceToken:deviceToken)
     }
+    
+    
 }
 
 ```
@@ -184,6 +183,18 @@ import dengage_flutter          // ADD THIS IN IMPORTS
             let coordinator = DengageCoordinator.staticInstance;
             coordinator.registerForPushToken(deviceToken:deviceToken)
     }
+    
+     override func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let coordinator = DengageCoordinator.staticInstance;
+        coordinator.didReceivePush(center, response, withCompletionHandler: completionHandler)
+        
+    }
+    
+    override func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .sound, .badge])
+        
+    }
+
 }
   ```
 </details>
@@ -232,12 +243,25 @@ import dengage_flutter          // ADD THIS IN IMPORTS
     protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       // Following line need to be added
+    
+    for geofence:
+      DengageCoordinator.sharedInstance.setupDengage(
+                true,
+                "FEYl27JxJfay6TxiYCdlkP2FXeuhNfEoI8WkxI_p_l__s_l_5sLbzKmc9c88mSZxRCrLuqMK4y0e8nHajQnBt8poBNDMvNtIytYKZ6byBQZOE8kqkkgDnlye2Lb5AcW3tuIWQjYz",
+                "your-huawei-key-here",
+                 true,
+                applicationContext
+        )    
+    
+     
+    for non geofence:
       DengageCoordinator.sharedInstance.setupDengage(
                 true,
                 "FEYl27JxJfay6TxiYCdlkP2FXeuhNfEoI8WkxI_p_l__s_l_5sLbzKmc9c88mSZxRCrLuqMK4y0e8nHajQnBt8poBNDMvNtIytYKZ6byBQZOE8kqkkgDnlye2Lb5AcW3tuIWQjYz",
                 "your-huawei-key-here",
                 applicationContext
-        )    
+        )   
+    
     }
   ```
   
