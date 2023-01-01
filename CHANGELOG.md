@@ -3,7 +3,7 @@ Features included
 - 
 This release includes:
 * libraries updated
-* This version is without geofence and without huawei
+* This version is without geofence and with huawei
 
 
 
