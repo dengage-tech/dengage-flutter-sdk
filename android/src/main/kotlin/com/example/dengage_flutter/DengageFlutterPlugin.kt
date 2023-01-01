@@ -146,6 +146,28 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       else if (call.method == "dEngage#startGeofence") {
         this.startGeofence(call, result)
       }
+      else if (call.method == "dEngage#showRealTimeInApp") {
+        this.showRealTimeInApp(call, result)
+      }
+      else if (call.method == "dEngage#setCity") {
+        this.setCity(call, result)
+      }
+      else if (call.method == "dEngage#setState") {
+        this.setState(call, result)
+      }
+      else if (call.method == "dEngage#setCartAmount") {
+        this.setCartAmount(call, result)
+      }
+      else if (call.method == "dEngage#setCartItemCount") {
+        this.setCartItemCount(call, result)
+      }
+      else if (call.method == "dEngage#setCategoryPath") {
+        this.setCategoryPath(call, result)
+      }
+      else if (call.method == "dEngage#setPartnerDeviceId") {
+        this.setPartnerDeviceId(call, result)
+      }
+
       else {
         result.notImplemented()
       }
@@ -672,5 +694,139 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     } catch (ex: Exception){
       replyError(result, "error", ex.localizedMessage, ex)
     }
+  }
+
+  private fun setCartItemCount(@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      val count: String = call.argument("count")!!
+
+      Dengage.setCartItemCount(count)
+      replySuccess(result, true)
+    }
+    catch (ex:java.lang.Exception)
+    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+  /**
+   * Set cart amount for using in real time in app comparisons
+   */
+
+  private fun setCartAmount(@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      val amount: String = call.argument("amount")!!
+
+      Dengage.setCartAmount(amount)
+      replySuccess(result, true)
+    }
+    catch (ex:java.lang.Exception)
+    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+
+  }
+
+  /**
+   * Set state for using in real time in app comparisons
+   */
+
+  private fun setState(@NonNull call: MethodCall, @NonNull result: Result) {
+
+    try {
+      val state: String = call.argument("state")!!
+
+
+      Dengage.setState(state)
+      replySuccess(result, true)
+    }
+    catch (ex:java.lang.Exception)
+    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+
+
+  }
+
+  /**
+   * Set city for using in real time in app comparisons
+   */
+
+  private fun setCity(@NonNull call: MethodCall, @NonNull result: Result) {
+
+    try {
+      val city: String = call.argument("city")!!
+
+      Dengage.setCity(city)
+      replySuccess(result, true)
+    }
+    catch (ex:java.lang.Exception)
+    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+
+  }
+
+
+  private fun showRealTimeInApp(
+    @NonNull call: MethodCall, @NonNull result: Result
+  ) {
+    try {
+      val data: Map<String, Any>? = call.argument("data")
+      val screenName: String = call.argument("screenName")!!
+
+      Dengage.showRealTimeInApp(appActivity, screenName, data as HashMap<String, String>?)
+      replySuccess(result, true)
+    }
+    catch (ex:java.lang.Exception)
+    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+  /**
+   * Set category path for using in real time in app comparisons
+   */
+
+  private fun setPartnerDeviceId(@NonNull call: MethodCall, @NonNull result: Result) {
+
+    try {
+      val adid: String = call.argument("adid")!!
+      Dengage.setPartnerDeviceId(adid)
+      replySuccess(result, true)
+    }
+    catch (ex:java.lang.Exception)
+    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+
+
+  }
+
+
+  /**
+   * Set category path for using in real time in app comparisons
+   */
+
+  private fun setCategoryPath(@NonNull call: MethodCall, @NonNull result: Result) {
+
+    try {
+      val adid: String = call.argument("path")!!
+      Dengage.setCategoryPath(adid)
+      replySuccess(result, true)
+    }
+    catch (ex:java.lang.Exception)
+    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+
+
   }
 }
