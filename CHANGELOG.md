@@ -1,3 +1,19 @@
+## 0.4.2
+Features included
+- 
+This release includes:
+* Real time inapp and adjust id released 
+* This version is without geofence and without huawei
+
+
+## 0.4.1
+Features included
+- 
+This release includes:
+* Real time inapp and adjust id integration released
+* This version is without geofence and with huawei
+
+
 ## 0.4.0
 Features included
 - 

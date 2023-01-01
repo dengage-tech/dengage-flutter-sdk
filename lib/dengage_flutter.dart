@@ -182,5 +182,44 @@ class DengageFlutter {
      return await _channel.invokeMethod(
          "dEngage#setupDengage", {'integrationKey': integrationKey});
    }
+  static Future<void> showRealTimeInApp(String screenName,Object data) async {
+    return await _channel.invokeMethod(
+        "dEngage#showRealTimeInApp", {'screenName': screenName, "data": data});
+  }
+
+
+  static Future<void> setCity(String city) async {
+    return await _channel.invokeMethod(
+        "dEngage#setCity", {'city': city});
+  }
+
+
+  static Future<void> setState(String state) async {
+    return await _channel.invokeMethod(
+        "dEngage#setState", {'state': state});
+  }
+
+
+  static Future<void> setCartAmount(String amount) async {
+    return await _channel.invokeMethod(
+        "dEngage#setCartAmount", {'amount': amount});
+  }
+
+
+  static Future<void> setCartItemCount(String count) async {
+    return await _channel.invokeMethod(
+        "dEngage#setCartItemCount", {'count': count});
+  }
+
+
+  static Future<void> setCategoryPath(String path) async {
+    return await _channel.invokeMethod(
+        "dEngage#setCategoryPath", {'path': path});
+  }
+
+  static Future<void> setPartnerDeviceId(String adid) async {
+    return await _channel.invokeMethod(
+        "dEngage#setPartnerDeviceId", {'adid': adid});
+  }
 
 }
