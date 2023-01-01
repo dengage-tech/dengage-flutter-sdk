@@ -1,3 +1,12 @@
+## 0.4.1
+Features included
+- 
+This release includes:
+* libraries updated
+* This version is without geofence and without huawei
+
+
+
 ## 0.4.0
 Features included
 - 
