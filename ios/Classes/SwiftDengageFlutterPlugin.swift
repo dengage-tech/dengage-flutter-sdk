@@ -124,6 +124,27 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     case "dEngage#setTags":
         self.setTags(call: call, reply: result)
         break;
+    case "dEngage#showRealTimeInApp":
+        self.showRealTimeInApp(call: call, reply: result)
+        break;
+    case "dEngage#setCity":
+        self.setCity(call: call, result: result)
+        break;
+    case "dEngage#setState":
+        self.setState(call: call, result: result)
+        break;
+    case "dEngage#setCartAmount":
+        self.setCartAmount(call: call, result: result)
+        break;
+    case "dEngage#setCartItemCount":
+        self.setCartItemCount(call: call, result: result)
+        break;
+    case "dEngage#setCategoryPath":
+        self.setCategoryPath(call: call, result: result)
+        break;
+    case "dEngage#setPartnerDeviceId":
+        self.setPartnerDeviceId(call: call, result: result)
+        break;
         default:
             result("not implemented.")
     }
@@ -636,5 +657,62 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     }
 
 
-  
+    /**
+     * Method to sendDeviceEvent
+     */
+    func showRealTimeInApp (call: FlutterMethodCall, reply: @escaping FlutterResult)  {
+        let arguments = call.arguments as! [String:Any]
+        let data = arguments["data"] as! Dictionary<String, String>?
+        let screenName = arguments["screenName"] as! String
+        Dengage.showRealTimeInApp(screenName: screenName, params: data)
+        reply(nil)
+    }
+    
+    private func setCity (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let city = arguments["city"] as! String
+      
+        Dengage.setCity(name: city)
+        result(nil)
+    }
+    
+    private func setState (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let state = arguments["state"] as! String
+      
+        Dengage.setState(name: state)
+        result(nil)
+    }
+    
+    private func setCartAmount (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let amount = arguments["amount"] as! String
+      
+        Dengage.setCart(amount: amount)
+        result(nil)
+    }
+    
+    private func setCartItemCount (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let count = arguments["count"] as! String
+      
+        Dengage.setCart(itemCount: count)
+        result(nil)
+    }
+    
+    private func setCategoryPath (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let path = arguments["path"] as! String
+      
+        Dengage.setCategory(path: path)
+        result(nil)
+    }
+    
+    private func setPartnerDeviceId (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let adid = arguments["adid"] as! String
+      
+        Dengage.setPartnerDeviceId(adid: adid)
+        result(nil)
+    }
 }

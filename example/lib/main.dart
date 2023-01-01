@@ -176,7 +176,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
                 onPressed: () async {
                   Map data = new HashMap<String, dynamic>();
                   data["name"] = "Kamran Younis";
-                  await DengageFlutter.sendDeviceEvent("tableName", data);
+                  await DengageFlutter.setPartnerDeviceId("hasnainHaider");
                 },
                 child: Text('Send Device Event'),
               ),
