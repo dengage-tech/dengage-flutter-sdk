@@ -1,3 +1,29 @@
+## 0.4.8
+Features included
+- 
+This release includes:
+* libraries updated
+
+## 0.4.7
+Features included
+- 
+This release includes:
+* libraries updated
+
+## 0.4.6
+Features included
+- 
+This release includes:
+* libraries updated
+
+
+## 0.4.5
+Features included
+- 
+This release includes:
+* libraries updated
+
+
 ## 0.4.4
 Features included
 - 
