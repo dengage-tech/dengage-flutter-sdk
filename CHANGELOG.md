@@ -1,3 +1,10 @@
+## 0.4.2
+Features included
+- 
+This release includes:
+* libraries updated
+
+
 ## 0.4.1
 Features included
 - 
