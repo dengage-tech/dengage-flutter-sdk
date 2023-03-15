@@ -1,3 +1,30 @@
+## 0.5.0
+Features included
+- 
+This release includes:
+* compile sdk changed to 33
+
+
+
+## 0.4.9
+Features included
+- 
+This release includes:
+* compile sdk changed to 33
+
+
+## 0.4.8
+Features included
+- 
+This release includes:
+* libraries updated
+
+## 0.4.7
+Features included
+- 
+This release includes:
+* libraries updated
+
 ## 0.4.6
 Features included
 - 
