@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -21,13 +23,13 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>DengageApiUrl</key>
-	<string>https://push.dengage.com</string>
+	<string>https://us-push.dengage.com</string>
+	<key>DengageDeviceIdApiUrl</key>
+	<string>https://us-push.dengage.com</string>
 	<key>DengageEventApiUrl</key>
-	<string>https://event.dengage.com</string>
+	<string>https://us-event.dengage.com</string>
 	<key>DengageGeofenceApiUrl</key>
 	<string>https://dev-push.dengage.com/geoapi</string>
-	<key>DengageDeviceIdApiUrl</key>
-	<string>https://push.dengage.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -38,6 +40,7 @@
 	<string>Dengage will use your location when in use!</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -59,7 +62,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
 </dict>
 </plist>

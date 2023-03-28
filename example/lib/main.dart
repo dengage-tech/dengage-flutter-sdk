@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNotificationClicked");
 
   void _onEvent(Object event) {
-    print("in on Event object is: ");
+    print("in on Event object is: $event");
     print(event);
     lastPushController.text = event.toString();
   }
@@ -52,7 +52,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
   }
 
   @override
-  void initState() {
+  Future<void> initState() {
     DengageFlutter.getContactKey().then((value) {
       print("dengageContactKey: $value");
       contactKeyChanged(value);
@@ -64,6 +64,14 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
     eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
 
     super.initState();
+  }
+
+  void showAlert(BuildContext context,String value) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text("hi"),
+        ));
   }
 
   contactKeyChanged(String value) {
@@ -154,14 +162,16 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  String token = await DengageFlutter.getToken();
+                  print("inbox");
+                  List< dynamic> s=  await DengageFlutter.getInboxMessages(0, 10);
+                  print(s.toString());
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('token: $token'),
+                      content: Text('token: $s'),
                       action: SnackBarAction(
                         label: 'copy token',
                         onPressed: () {
-                          Clipboard.setData(new ClipboardData(text: token));
+                          Clipboard.setData(new ClipboardData(text: s.toString()));
                           },
                       ),
                     ),
@@ -185,7 +195,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  String subscription = await DengageFlutter.getSubscription();
+                  String subscription = await DengageFlutter.getLastPushPayload();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(subscription),

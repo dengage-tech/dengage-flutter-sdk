@@ -72,13 +72,13 @@
         <!-- Event api url of Dengage -->
         <meta-data
             android:name="den_event_api_url"
-            android:value="https://dev-event.dengage.com" />
+            android:value="https://event.dengage.com" />
         <!--      android:value="https://eventdev.dengage.com" />-->
 
         <!-- Push api url of Dengage -->
         <meta-data
             android:name="den_push_api_url"
-            android:value="https://dev-push.dengage.com" />
+            android:value="https://push.dengage.com" />
 
         <meta-data
             android:name="den_geofence_api_url"
