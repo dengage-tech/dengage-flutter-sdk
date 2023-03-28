@@ -234,4 +234,8 @@ class DengageFlutter {
     return await _channel.invokeMethod(
         "dEngage#setPartnerDeviceId", {'adid': adid});
   }
+
+  static Future<String?> getLastPushPayload() {
+    return _channel.invokeMethod("dEngage#getLastPushPayload");
+  }
 }

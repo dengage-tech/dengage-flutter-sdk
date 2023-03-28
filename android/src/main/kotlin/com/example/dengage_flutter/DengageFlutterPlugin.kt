@@ -55,6 +55,17 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
                 notifReceiver = createNotifReciever(events)
 
                 appContext.registerReceiver(notifReceiver, filter)
+
+                try {
+
+                  val pushPayload =Dengage.getLastPushPayload()
+                  if (!pushPayload.isNullOrEmpty()) {
+
+                    Log.d("den/flutter", "RegisteringNotificationListeners $pushPayload")
+                    events?.success(pushPayload)
+                  }
+                }
+                catch (e:Exception){}
               }
 
               override fun onCancel(arguments: Any?) {
@@ -165,8 +176,11 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       else if (call.method == "dEngage#setPartnerDeviceId") {
         this.setPartnerDeviceId(call, result)
       }
+      if (call.method == "dEngage#getLastPushPayload") {
+        this.getLastPushPayload(call, result)
+      }
       else {
-        result.notImplemented()
+       // result.notImplemented()
       }
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
@@ -497,7 +511,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val limit: Int = call.argument("limit") ?: 15
       val callback = object : DengageCallback<List<InboxMessage>> {
         override fun onError(error: DengageError) {
-          replyError(result, "error", error.errorMessage, error)
+          val list = mutableListOf<Map<String, Any?>>()
+          replySuccess(result, list)
         }
 
         override fun onResult(response: List<InboxMessage>) {
@@ -515,7 +530,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       }
       DengageCoordinator.sharedInstance.dengageManager?.getInboxMessages(limit, offset, callback)
     } catch (ex: Exception){
-      replyError(result, "error", ex.localizedMessage, ex)
+      val list = mutableListOf<Map<String, Any?>>()
+      replySuccess(result, list)
     }
   }
 
@@ -809,5 +825,15 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     }
 
 
+  }
+
+  private fun getLastPushPayload (@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      val pushPayload = Dengage.getLastPushPayload()
+      replySuccess(result, pushPayload)
+      return
+    } catch (ex: Exception) {
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
   }
 }

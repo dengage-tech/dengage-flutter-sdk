@@ -157,9 +157,15 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             case "dEngage#setPartnerDeviceId":
                 self.setPartnerDeviceId(call: call, result: result)
                 break;
+        
+    case "dEngage#getLastPushPayload":
+              self.getLastPushPayload(call: call, result: result)
+              break;
 
         default:
-            result("not implemented.")
+            //result("not implemented.")
+        self.getSubscription(call: call, result: result)
+                       break;
     }
   }
 
@@ -500,12 +506,12 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                         reply(jsonString)
 
                     } catch {
-                        reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
+                        reply("[\n\n]")
                     }
                     break;
                 case .failure(let error): // Handle the error
-                    reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
-                    break;
+                reply("[\n\n]")
+                break;
             }
         }
     }
@@ -769,6 +775,11 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                   Dengage.setPartnerDeviceId(adid: adid)
                   result(nil)
               }
+    
+    private func getLastPushPayload (call: FlutterMethodCall, result: @escaping FlutterResult) {
+              let pushPayLoad = Dengage.getLastPushPayload()
+              result(pushPayLoad)
+          }
     
     
 }
