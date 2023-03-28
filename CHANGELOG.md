@@ -6,7 +6,7 @@ This release includes:
 * push payload not being fetched from background fixed
 * pod version updated from 5.7.2 to 5.21.2
 * gradle android dependency updated from 6.0.18.3 to 6.0.23.3
-* this version is with geofence without huawei
+* this version is with geofence with huawei
 
 ## 0.5.4
 Features included
