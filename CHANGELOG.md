@@ -1,3 +1,36 @@
+## 0.5.3
+Features included
+- 
+This release includes:
+* inbox messages issue fixed for ios and android
+* push payload not being fetched from background fixed
+* pod version updated from 5.7.1 to 5.21.1
+* gradle android dependency updated from 6.0.18.1 to 6.0.23.1
+* this version is without geofence with huawei
+
+
+## 0.5.2
+Features included
+- 
+This release includes:
+* compile sdk changed to 33
+
+
+## 0.5.1
+Features included
+- 
+This release includes:
+* compile sdk changed to 33
+
+
+## 0.5.0
+Features included
+- 
+This release includes:
+* compile sdk changed to 33
+
+
+
 ## 0.4.9
 Features included
 - 
