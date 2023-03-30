@@ -5,7 +5,7 @@ This release includes:
 * subscription configuration glitch removed
 * pod version 5.21.2
 * gradle android dependency updated from 6.0.23.2 to 6.0.24.2
-* this version is without geofence with huawei
+* this version is without geofence without huawei
 
 
 ## 0.5.7
