@@ -1,3 +1,44 @@
+## 0.5.8
+Features included
+- 
+This release includes:
+* subscription configuration glitch removed
+* pod version 5.21.2
+* gradle android dependency updated from 6.0.23.2 to 6.0.24.2
+* this version is without geofence with huawei
+
+
+## 0.5.7
+Features included
+- 
+This release includes:
+* subscription configuration glitch removed
+* pod version 5.21.2
+* gradle android dependency updated from 6.0.23.1 to 6.0.24.1
+* this version is without geofence with huawei
+
+
+## 0.5.6
+Features included
+- 
+This release includes:
+* inbox messages issue fixed for ios and android
+* push payload not being fetched from background fixed
+* pod version updated from 5.7.2 to 5.21.2
+* gradle android dependency updated from 6.0.18.4 to 6.0.23.4
+* this version is with geofence without huawei
+
+
+## 0.5.5
+Features included
+- 
+This release includes:
+* inbox messages issue fixed for ios and android
+* push payload not being fetched from background fixed
+* pod version updated from 5.7.2 to 5.21.2
+* gradle android dependency updated from 6.0.18.3 to 6.0.23.3
+* this version is with geofence with huawei
+
 ## 0.5.4
 Features included
 - 
