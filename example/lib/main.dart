@@ -57,7 +57,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
       print("dengageContactKey: $value");
       contactKeyChanged(value);
     });
-    //DengageFlutter.startGeofence();
+    DengageFlutter.startGeofence();
     // print("setting screen name.");
     // DengageFlutter.setNavigationWithName('MainScreen');
 

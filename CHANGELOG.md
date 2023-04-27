@@ -1,3 +1,42 @@
+## 0.6.4
+Features included
+- 
+This release includes:
+* Notification redirection issue resolved
+* pod version 5.23.2
+* gradle android dependency updated from 6.0.24.4 to 6.0.28.4
+* this version is with geofence without huawei
+
+
+## 0.6.3
+Features included
+- 
+This release includes:
+* Notification redirection issue resolved
+* pod version 5.23.2
+* gradle android dependency updated from 6.0.24.3 to 6.0.28.3
+* this version is with geofence with huawei
+
+
+## 0.6.2
+Features included
+- 
+This release includes:
+* Notification redirection issue resolved
+* pod version 5.23.1
+* gradle android dependency updated from 6.0.24.2 to 6.0.28.2
+* this version is without geofence without huawei
+
+## 0.6.1
+Features included
+- 
+This release includes:
+* Notification redirection issue resolved
+* pod version 5.23.1
+* gradle android dependency updated from 6.0.24.1 to 6.0.28.1
+* this version is without geofence with huawei
+
+
 ## 0.6.0
 Features included
 - 
