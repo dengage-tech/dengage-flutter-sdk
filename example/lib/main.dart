@@ -60,7 +60,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
     //DengageFlutter.startGeofence();
     // print("setting screen name.");
     // DengageFlutter.setNavigationWithName('MainScreen');
-
+DengageFlutter.requestLocationPermissions();
     eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
 
     super.initState();
