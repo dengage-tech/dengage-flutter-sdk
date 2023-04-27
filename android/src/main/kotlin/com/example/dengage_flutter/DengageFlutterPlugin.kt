@@ -624,7 +624,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val logStatus: Boolean = call.argument("logStatus")!!
       val firebaseKey: String? = call.argument("firebaseKey")
 
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey,appContext);
+      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey,false,appContext);
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)

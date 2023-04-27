@@ -1,6 +1,7 @@
 package com.example.dengage_flutter
 
 import android.content.Context
+import com.dengage.sdk.Dengage
 import com.dengage.sdk.DengageManager
 
 class DengageCoordinator private constructor() {
@@ -9,6 +10,7 @@ class DengageCoordinator private constructor() {
     fun setupDengage(
         logStatus: Boolean,
         firebaseKey: String?,
+        restartApplication :Boolean?,
         context: Context
     ) {
         if (firebaseKey == null ) {
@@ -18,6 +20,12 @@ class DengageCoordinator private constructor() {
                     .setLogStatus(logStatus)
                     .setFirebaseIntegrationKey(firebaseKey)
                     .init()
+        try {
+            if (restartApplication != null) {
+                Dengage.restartApplicationAfterPushClick(restartApplication)
+            }
+        }
+        catch (e : Exception){}
 
         }
 
