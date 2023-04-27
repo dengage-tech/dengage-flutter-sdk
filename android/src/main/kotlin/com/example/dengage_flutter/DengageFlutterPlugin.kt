@@ -642,7 +642,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val firebaseKey: String? = call.argument("firebaseKey")
       val huaweiKey: String? = call.argument("huaweiKey")
 
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, appContext);
+      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey,false, appContext);
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
