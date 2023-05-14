@@ -55,16 +55,16 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
                 notifReceiver = createNotifReciever(events)
 
                 appContext.registerReceiver(notifReceiver, filter)
-                try {
-
-                  var pushPayload =Dengage.getLastPushPayload()
-                  if (!pushPayload.isNullOrEmpty()) {
-
-                    Log.d("den/flutter", "RegisteringNotificationListeners.fsdf $pushPayload")
-                    events?.success(pushPayload)
-                  }
-                }
-                catch (e:Exception){}
+//                try {
+//
+//                  var pushPayload =Dengage.getLastPushPayload()
+//                  if (!pushPayload.isNullOrEmpty()) {
+//
+//                    Log.d("den/flutter", "RegisteringNotificationListeners.fsdf $pushPayload")
+//                    events?.success(pushPayload)
+//                  }
+//                }
+//                catch (e:Exception){}
               }
 
               override fun onCancel(arguments: Any?) {
