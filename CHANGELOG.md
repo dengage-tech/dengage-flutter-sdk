@@ -5,7 +5,7 @@ This release includes:
 * GetLastPushPayload removed from notification listener
 * pod version 5.23.1
 * gradle android dependency updated from 6.0.28.1 to 6.0.30.1
-* this version is without geofence without huawei
+* this version is without geofence with huawei
 
 
 ## 0.6.4
