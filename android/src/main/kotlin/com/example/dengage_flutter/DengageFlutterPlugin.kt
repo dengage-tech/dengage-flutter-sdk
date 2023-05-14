@@ -56,7 +56,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
                 appContext.registerReceiver(notifReceiver, filter)
 
-                try {
+              /*  try {
 
                   val pushPayload =Dengage.getLastPushPayload()
                   if (!pushPayload.isNullOrEmpty()) {
@@ -65,7 +65,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
                     events?.success(pushPayload)
                   }
                 }
-                catch (e:Exception){}
+                catch (e:Exception){}*/
               }
 
               override fun onCancel(arguments: Any?) {
