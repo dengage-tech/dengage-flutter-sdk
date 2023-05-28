@@ -549,9 +549,9 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
      * Method to setNavigationWithName
      */
     func setNavigationWithName(call: FlutterMethodCall, reply: @escaping FlutterResult) {
-       // let arguments = call.arguments as! NSDictionary
-      //  let screenName = arguments["screenName"] as! String
-        Dengage.setNavigation()
+        let arguments = call.arguments as! NSDictionary
+        let screenName = arguments["screenName"] as! String
+        Dengage.setNavigation(screenName: screenName)
         reply(nil)
     }
 
