@@ -201,6 +201,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
               }
             }
             -520704162 -> {
+            Dengage.getLastPushPayload()
               // intentAction == "com.dengage.push.intent.RECEIVE"
               Log.d("den/Flutter", "push is clicked.")
               val message: Message = intent?.getExtras()?.let { Message.createFromIntent(it) }!!
