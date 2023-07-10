@@ -1,3 +1,13 @@
+## 0.7.1
+Features included
+-
+This release includes:
+* Inbox parsing issue resolved
+* pod version 5.33.3
+* gradle android dependency updated from 6.0.35.2 to 6.0.35.2
+* this version is without geofence without huawei
+
+
 ## 0.7.0
 Features included
 -

@@ -21,9 +21,9 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>DengageApiUrl</key>
-	<string>https://dev-push.dengage.com</string>
+	<string>https://us-push.dengage.com</string>
 	<key>DengageEventApiUrl</key>
-	<string>https://dev-event.dengage.com</string>
+	<string>https://us-event.dengage.com</string>
 	<key>DengageGeofenceApiUrl</key>
 	<string>https://dev-push.dengage.com/geoapi</string>
 	<key>LSRequiresIPhoneOS</key>
