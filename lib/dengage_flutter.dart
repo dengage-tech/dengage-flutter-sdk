@@ -226,4 +226,8 @@ static Future<void> setPartnerDeviceId(String adid) async {
   static Future<String?> getLastPushPayload() {
     return _channel.invokeMethod("dEngage#getLastPushPayload");
   }
+
+  static Future<void> setInAppLinkConfiguration(String deepLink) {
+    return _channel.invokeMethod("dEngage#setInAppLinkConfiguration", {'deepLink': deepLink});
+  }
 }

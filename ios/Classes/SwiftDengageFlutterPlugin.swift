@@ -4,6 +4,7 @@ import Dengage
 
 enum EventChannelName {
   static let onNotificationClicked = "com.dengage.flutter/onNotificationClicked"
+    static let inAppLinkRetrieval = "com.dengage.flutter/inAppLinkRetrieval"
 }
 
 public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
@@ -16,7 +17,13 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
     let notificationEventChannel = FlutterEventChannel(name: EventChannelName.onNotificationClicked,
                                                        binaryMessenger: registrar.messenger())
+    let inappLinkEventChannel = FlutterEventChannel(name: EventChannelName.inAppLinkRetrieval,
+                                                         binaryMessenger: registrar.messenger())
+     
     notificationEventChannel.setStreamHandler(instance.self)
+      
+    inappLinkEventChannel.setStreamHandler(instance.self)
+
 
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
@@ -25,13 +32,16 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
       self.eventSink = eventSink
       self.listenForNotification()
+        Dengage.setDevelopmentStatus(isDebug: true)
+        self.registerInAppListener()
       return nil
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         return nil
     }
-
+   
+    
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
         case "dEngage#getPlatformVersion":
@@ -144,6 +154,9 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         break;
     case "dEngage#setPartnerDeviceId":
         self.setPartnerDeviceId(call: call, result: result)
+        break;
+    case "dEngage#setInAppLinkConfiguration":
+        self.setInAppLinkConfiguration(call: call, result: result)
         break;
     case "dEngage#getLastPushPayload":
         self.getLastPushPayload(call: call, result: result)
@@ -724,4 +737,30 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let pushPayLoad = Dengage.getLastPushPayload()
         result(pushPayLoad)
     }
+    
+    func registerInAppListener ()
+    {Dengage.handleInAppDeeplink{ url in
+                var response = [String:Any?]();
+                response["targetUrl"] = url
+                print(url)
+        guard let eventSink = self.eventSink else {
+          return
+        }
+        eventSink([response])
+               
+        }
+    }
+    
+    private func setInAppLinkConfiguration (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let deeplink = arguments["deepLink"] as! String
+        if (deeplink.isEmpty) {
+            result(FlutterError.init(code: "error", message: "Required argument 'deeplink' is missing.", details: nil))
+            return
+        }
+        Dengage.inAppLinkConfiguration(deeplink: deeplink)
+        result(nil)
+    }
+    
+    
 }

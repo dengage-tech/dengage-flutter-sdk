@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  //MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => new _MyHomePageState();
@@ -38,30 +38,37 @@ class _MyHomePageState extends State<MyHomePage> {
   var contactKeyController = TextEditingController();
   var lastPushController = TextEditingController();
 
-static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNotificationClicked");
+  static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNotificationClicked");
+  static const EventChannel eventChannel2 = EventChannel("com.dengage.flutter/inAppLinkRetrieval");
 
-  void _onEvent(Object event) {
+  void _onEvent(dynamic event) {
     print("in on Event object is: $event");
     print(event);
     lastPushController.text = event.toString();
   }
 
-  void _onError(Object error) {
+  void _onError(dynamic error) {
     print("in on Error Object is: ");
     print(error);
   }
 
   @override
-  Future<void> initState() {
+  void initState() {
     DengageFlutter.getContactKey().then((value) {
       print("dengageContactKey: $value");
-      contactKeyChanged(value);
+      //contactKeyChanged(value);
     });
     //DengageFlutter.startGeofence();
     // print("setting screen name.");
     // DengageFlutter.setNavigationWithName('MainScreen');
 
-    eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
+    DengageFlutter.handleNotificationActionBlock().then((value) {
+      print("dengageContactKey: $value");
+      //contactKeyChanged(value);
+    });
+
+
+    eventChannel2.receiveBroadcastStream().listen(_onEvent, onError: _onError);
 
     super.initState();
   }
@@ -144,10 +151,10 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  String msg = await DengageFlutter.getContactKey();
+                   await DengageFlutter.setInAppLinkConfiguration("kjkjkj");
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(msg),
+                      content: Text("msg".toString()),
                       action: SnackBarAction(
                         label: 'Ok',
                         onPressed: () {},
@@ -172,7 +179,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
                         label: 'copy token',
                         onPressed: () {
                           Clipboard.setData(new ClipboardData(text: s.toString()));
-                          },
+                        },
                       ),
                     ),
                   );
@@ -195,15 +202,14 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  String subscription = await DengageFlutter.getLastPushPayload();
+                  // String subscription = await DengageFlutter.getLastPushPayload();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(subscription),
+                      content: Text("subscription"),
                       action: SnackBarAction(
                         label: 'copy',
                         onPressed: () {
-                          Clipboard.setData(
-                              new ClipboardData(text: subscription));
+
                         },
                       ),
                     ),
@@ -216,13 +222,13 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                    DengageFlutter.setTags([{
-                          "tagName": "kamranTesting",
-                          "tagValue": "My Test Tag Value",
-    // let changeTime: String?
-    // let removeTime: String?
-    // let changeValue: String?
-                    }]);
+                  DengageFlutter.setTags([{
+                    "tagName": "kamranTesting",
+                    "tagValue": "My Test Tag Value",
+                    // let changeTime: String?
+                    // let removeTime: String?
+                    // let changeValue: String?
+                  }]);
                 },
                 child: Text('set Tags'),
               ),
@@ -231,7 +237,7 @@ static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNot
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SecondRoute()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SecondRoute()));
                 },
                 child: Text('Navigate to "SecondScreen"'),
               ),
