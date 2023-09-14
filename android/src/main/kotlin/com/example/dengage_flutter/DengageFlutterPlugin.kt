@@ -129,9 +129,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         setIntegerationKey(call, result)
       } else if (call.method == "dEngage#setContactKey") {
         setContactKey(call, result)
-      } else if (call.method == "dEngage#setHuaweiIntegrationKey") {
-        this.setHuaweiIntegrationKey(call, result)
-      } else if (call.method == "dEngage#setFirebaseIntegrationKey") {
+      }  else if (call.method == "dEngage#setFirebaseIntegrationKey") {
         this.setFirebaseIntegrationKey(call, result)
       } else if (call.method == "dEngage#setLogStatus") {
         this.setLogStatus(call, result)
