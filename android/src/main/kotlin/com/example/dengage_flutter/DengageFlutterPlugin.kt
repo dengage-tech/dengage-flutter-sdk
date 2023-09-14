@@ -106,7 +106,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 }
 
                 override fun onCancel(arguments: Any?) {
-                    appContext.unregisterReceiver(notifReceiver)
+                    appContext.unregisterReceiver(inappReceiver)
                     notifReceiver = null
                 }
             }
@@ -861,9 +861,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         }
     }
 
-    /**
-     * Method to set the user's token.
-     */
+
     private fun setInAppLinkConfiguration(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val deeplink: String? = call.argument("deepLink")
