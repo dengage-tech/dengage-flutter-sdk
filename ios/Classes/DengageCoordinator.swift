@@ -60,14 +60,14 @@ public class DengageCoordinator: NSObject {
                                             _ response: UNNotificationResponse,
                                             withCompletionHandler completionHandler: @escaping () -> Void) {
 
-      //  Dengage.didReceivePush(center, response, withCompletionHandler: completionHandler)
+        Dengage.didReceivePush(center, response, withCompletionHandler: completionHandler)
 
     }
 
     @objc(didReceive:)
     public func didReceive(with userInfo: [AnyHashable: Any]) {
 
-       // Dengage.didReceive(with: userInfo)
+        Dengage.didReceive(with: userInfo)
         
     }
     

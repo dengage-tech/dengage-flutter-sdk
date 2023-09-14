@@ -13,6 +13,7 @@ import com.dengage.sdk.callback.DengageError
 import com.dengage.sdk.domain.inboxmessage.model.InboxMessage
 import com.dengage.sdk.domain.push.model.Message
 import com.dengage.sdk.domain.tag.model.TagItem
+import com.dengage.sdk.inapp.InAppBroadcastReceiver
 import com.dengage.sdk.push.NotificationReceiver
 import com.google.gson.Gson
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -25,11 +26,12 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
 
 /** DengageFlutterPlugin */
-class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder(), ActivityAware {
+class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(), ActivityAware {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -39,39 +41,75 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
   private val ON_NOTIFICATION_CLICKED = "com.dengage.flutter/onNotificationClicked"
 
+  private val INAPP_LINK_RETRIEVAL = "com.dengage.flutter/inAppLinkRetrieval"
+
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dengage_flutter")
     channel.setMethodCallHandler(this)
 
     var notifReceiver: NotificationReceiver? = null
-    EventChannel(flutterPluginBinding.flutterEngine.dartExecutor, ON_NOTIFICATION_CLICKED).setStreamHandler(
-            object : StreamHandler {
-              override fun onListen(arguments: Any?, events: EventSink?) {
-                Log.d("den/flutter", "RegisteringNotificationListeners.")
+    var inappReceiver: InAppBroadcastReceiver? = null
+    EventChannel(flutterPluginBinding.flutterEngine.dartExecutor,
+      ON_NOTIFICATION_CLICKED).setStreamHandler(
+      object : StreamHandler {
+        override fun onListen(arguments: Any?, events: EventSink?) {
+          Log.d("den/flutter", "RegisteringNotificationListeners.")
 
-                val filter = IntentFilter()
-                filter.addAction("com.dengage.push.intent.RECEIVE")
-                filter.addAction("com.dengage.push.intent.OPEN")
-                notifReceiver = createNotifReciever(events)
+          val filter = IntentFilter()
+          filter.addAction("com.dengage.push.intent.RECEIVE")
+          filter.addAction("com.dengage.push.intent.OPEN")
+          notifReceiver = createNotifReciever(events)
 
-                appContext.registerReceiver(notifReceiver, filter)
-                /*try {
+          appContext.registerReceiver(notifReceiver, filter)
+//                try {
+//
+//                  var pushPayload =Dengage.getLastPushPayload()
+//                  if (!pushPayload.isNullOrEmpty()) {
+//
+//                    Log.d("den/flutter", "RegisteringNotificationListeners.fsdf $pushPayload")
+//                    events?.success(pushPayload)
+//                  }
+//                }
+//                catch (e:Exception){}
+        }
 
-                  val pushPayload =Dengage.getLastPushPayload()
-                  if (!pushPayload.isNullOrEmpty()) {
+        override fun onCancel(arguments: Any?) {
+          appContext.unregisterReceiver(notifReceiver)
+          notifReceiver = null
+        }
+      }
+    )
 
-                    Log.d("den/flutter", "RegisteringNotificationListeners $pushPayload")
-                    events?.success(pushPayload)
-                  }
-                }
-                catch (e:Exception){}*/
-              }
+    EventChannel(flutterPluginBinding.flutterEngine.dartExecutor,
+      INAPP_LINK_RETRIEVAL).setStreamHandler(
+      object : StreamHandler {
+        override fun onListen(arguments: Any?, events: EventSink?) {
+          Dengage.setDevelopmentStatus(true)
+          Dengage.inAppLinkConfiguration("ddd")
+          Log.d("den/flutter", "RegisteringNotificationListeners.")
 
-              override fun onCancel(arguments: Any?) {
-                appContext.unregisterReceiver(notifReceiver)
-                notifReceiver = null
-              }
-            }
+          val filter = IntentFilter()
+          filter.addAction("com.dengage.inapp.LINK_RETRIEVAL")
+          inappReceiver = createInAppLinkReciever(events)
+          appContext.registerReceiver(inappReceiver, filter)
+//                try {
+//
+//                  var pushPayload =Dengage.getLastPushPayload()
+//                  if (!pushPayload.isNullOrEmpty()) {
+//
+//                    Log.d("den/flutter", "RegisteringNotificationListeners.fsdf $pushPayload")
+//                    events?.success(pushPayload)
+//                  }
+//                }
+//                catch (e:Exception){}
+        }
+
+        override fun onCancel(arguments: Any?) {
+          appContext.unregisterReceiver(notifReceiver)
+          notifReceiver = null
+        }
+      }
     )
 
     appContext = flutterPluginBinding.applicationContext
@@ -89,9 +127,10 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     try {
       if (call.method == "dEngage#setIntegerationKey") {
         setIntegerationKey(call, result)
-      }
-      else if (call.method == "dEngage#setContactKey") {
+      } else if (call.method == "dEngage#setContactKey") {
         setContactKey(call, result)
+      } else if (call.method == "dEngage#setHuaweiIntegrationKey") {
+        this.setHuaweiIntegrationKey(call, result)
       } else if (call.method == "dEngage#setFirebaseIntegrationKey") {
         this.setFirebaseIntegrationKey(call, result)
       } else if (call.method == "dEngage#setLogStatus") {
@@ -144,35 +183,27 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         this.setTags(call, result)
       } else if (call.method == "dEngage#setupDengage") {
         this.setupDengage(call, result)
-      }
-      else if (call.method == "dEngage#showRealTimeInApp") {
+      } else if (call.method == "dEngage#showRealTimeInApp") {
         this.showRealTimeInApp(call, result)
-      }
-      else if (call.method == "dEngage#setCity") {
+      } else if (call.method == "dEngage#setCity") {
         this.setCity(call, result)
-      }
-      else if (call.method == "dEngage#setState") {
+      } else if (call.method == "dEngage#setState") {
         this.setState(call, result)
-      }
-      else if (call.method == "dEngage#setCartAmount") {
+      } else if (call.method == "dEngage#setCartAmount") {
         this.setCartAmount(call, result)
-      }
-      else if (call.method == "dEngage#setCartItemCount") {
+      } else if (call.method == "dEngage#setCartItemCount") {
         this.setCartItemCount(call, result)
-      }
-      else if (call.method == "dEngage#setCategoryPath") {
+      } else if (call.method == "dEngage#setCategoryPath") {
         this.setCategoryPath(call, result)
-      }
-      else if (call.method == "dEngage#setPartnerDeviceId") {
+      } else if (call.method == "dEngage#setPartnerDeviceId") {
         this.setPartnerDeviceId(call, result)
+      } else if (call.method == "dEngage#setInAppLinkConfiguration") {
+        this.setInAppLinkConfiguration(call, result)
       }
       if (call.method == "dEngage#getLastPushPayload") {
         this.getLastPushPayload(call, result)
-      }
-
-
-      else {
-       // result.notImplemented()
+      } else {
+        // result.notImplemented()
       }
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
@@ -189,7 +220,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
             -825236177 -> {
               if (intentAction == "com.dengage.push.intent.RECEIVE") {
                 Log.d("den/Flutter", "received new push.")
-              //  val message: Message = intent?.getExtras()?.let { Message(it) }!!
+                //  val message: Message = intent?.getExtras()?.let { Message(it) }!!
                 if (events != null) {
                   // todo: later when required emit seperate event for onNotificationReceived
 //                  events.success(Gson().toJson(message))
@@ -199,10 +230,11 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
               }
             }
             -520704162 -> {
-              // intentAction == "com.dengage.push.intent.RECEIVE"
               Dengage.getLastPushPayload()
+              // intentAction == "com.dengage.push.intent.RECEIVE"
               Log.d("den/Flutter", "push is clicked.")
-              val message: Message = intent?.getExtras()?.let { Message.createFromIntent(it) }!!
+              val message: Message =
+                intent?.getExtras()?.let { Message.createFromIntent(it) }!!
               if (events != null) {
                 events.success(Gson().toJson(message))
               } else {
@@ -215,12 +247,29 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     }
   }
 
+  private fun createInAppLinkReciever(events: EventSink?): InAppBroadcastReceiver? {
+    return object : InAppBroadcastReceiver() {
+      override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d("den/Flutter", "inInAppRetrieval.")
+
+        val jsonObject = JSONObject()
+        jsonObject.put("targetUrl", intent?.extras?.getString("targetUrl"))
+
+        if (events != null) {
+          events.success(Gson().toJson(jsonObject.toString()))
+        } else {
+          Log.d("den/flutter", "events is null while clicked push")
+        }
+      }
+    }
+  }
+
   /**
    * Method to set the integeration key.
    */
-  private fun setIntegerationKey (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setIntegerationKey(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      throw Exception("This method is not available in android.'setFirebaseIntegrationKey' instead.")
+      throw Exception("This method is not available in android. please use 'setHuaweiIntegrationKey' OR 'setFirebaseIntegrationKey' instead.")
     } catch (ex: Exception) {
       replyError(result, "Error:Method not available", ex.localizedMessage, ex)
     }
@@ -230,7 +279,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    * Method to set contact key
    * by setting contactKey, subscription get activated automatically.
    */
-  private fun setContactKey (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setContactKey(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val contactKey: String? = call.argument("contactKey")
       DengageCoordinator.sharedInstance.dengageManager?.setContactKey(contactKey)
@@ -240,11 +289,10 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     }
   }
 
-
   /**
    * Method to set the value for Firebase Integration Key
    */
-  private fun setFirebaseIntegrationKey (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setFirebaseIntegrationKey(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val key: String? = call.argument("key")
       if (key != null) {
@@ -260,7 +308,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to set Log Status
    */
-  private fun setLogStatus (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setLogStatus(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val logStatus: Boolean? = call.argument("isVisible") ?: false
       DengageCoordinator.sharedInstance.dengageManager?.setLogStatus(logStatus)
@@ -273,7 +321,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to set user permission
    */
-  private fun setUserPermission (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setUserPermission(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val hasPermission: Boolean? = call.argument("hasPermission") ?: false
       DengageCoordinator.sharedInstance.dengageManager?.setPermission(hasPermission)
@@ -286,7 +334,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to set the user's token.
    */
-  private fun setToken (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setToken(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val token: String? = call.argument("token")
       if (token != null) {
@@ -302,7 +350,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to get the user's token
    */
-  private fun getToken (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun getToken(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val token = DengageCoordinator.sharedInstance.dengageManager?.subscription?.token
       if (token !== null) {
@@ -318,9 +366,10 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to get user's ContactKey
    */
-  private fun getContactKey (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun getContactKey(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      val contactKey = DengageCoordinator.sharedInstance.dengageManager?.subscription?.contactKey
+      val contactKey =
+        DengageCoordinator.sharedInstance.dengageManager?.subscription?.contactKey
       replySuccess(result, contactKey)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
@@ -330,9 +379,10 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to get current permission status
    */
-  private fun getUserPermission (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun getUserPermission(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      val userPermission = DengageCoordinator.sharedInstance.dengageManager?.subscription?.permission
+      val userPermission =
+        DengageCoordinator.sharedInstance.dengageManager?.subscription?.permission
       replySuccess(result, userPermission)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
@@ -342,7 +392,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to get current subscription
    */
-  private fun getSubscription (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun getSubscription(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val subscription = DengageCoordinator.sharedInstance.dengageManager?.subscription
       replySuccess(result, Gson().toJson(subscription))
@@ -354,7 +404,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to set pageView events
    */
-  private fun pageView (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun pageView(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.pageView(data as HashMap<String, Any>)
@@ -367,12 +417,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to add items To Cart
    */
-  private fun addToCart (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun addToCart(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.addToCart(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -380,12 +430,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to remove items from cart
    */
-  private fun removeFromCart (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun removeFromCart(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.removeFromCart(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -393,12 +443,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to view cart
    */
-  private fun viewCart (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun viewCart(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.viewCart(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -406,12 +456,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to begin checkout
    */
-  private fun beginCheckout (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun beginCheckout(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.beginCheckout(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -419,12 +469,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to place an Order
    */
-  private fun placeOrder (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun placeOrder(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.order(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -432,12 +482,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to cancel an Order
    */
-  private fun cancelOrder (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun cancelOrder(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.cancelOrder(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -445,12 +495,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to add an order to WishList
    */
-  private fun addToWishList (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun addToWishList(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.addToWishList(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -458,12 +508,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to remove an order from WishList
    */
-  private fun removeFromWishList (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun removeFromWishList(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.removeFromWishList(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -471,12 +521,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to search
    */
-  private fun search (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun search(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       Dengage.search(data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -484,13 +534,13 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to sendDeviceEvent
    */
-  private fun sendDeviceEvent (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun sendDeviceEvent(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: Map<String, Any>? = call.argument("data")
       val tableName: String = call.argument("tableName")!!
       Dengage.sendDeviceEvent(tableName, data as HashMap<String, Any>)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -498,7 +548,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to getInboxMessages
    */
-  private fun getInboxMessages (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun getInboxMessages(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val offset: Int = call.argument("offset")!!
       val limit: Int = call.argument("limit") ?: 15
@@ -521,8 +571,10 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
           replySuccess(result, list)
         }
       }
-      DengageCoordinator.sharedInstance.dengageManager?.getInboxMessages(limit, offset, callback)
-    } catch (ex: Exception){
+      DengageCoordinator.sharedInstance.dengageManager?.getInboxMessages(limit,
+        offset,
+        callback)
+    } catch (ex: Exception) {
       val list = mutableListOf<Map<String, Any?>>()
       replySuccess(result, list)
     }
@@ -531,12 +583,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to deleteInboxMessage
    */
-  private fun deleteInboxMessage (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun deleteInboxMessage(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val id: String = call.argument("id")!!
       DengageCoordinator.sharedInstance.dengageManager!!.deleteInboxMessage(id)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -544,12 +596,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to setInboxMessageAsClicked
    */
-  private fun setInboxMessageAsClicked (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setInboxMessageAsClicked(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val id: String = call.argument("id")!!
       DengageCoordinator.sharedInstance.dengageManager!!.setInboxMessageAsClicked(id)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -557,12 +609,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to setNavigation
    */
-  private fun setNavigation (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setNavigation(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       // todo: appActivity has to be AppCompatActivity but flutter activity isn't yet appcompat.
-       DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity)
+      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity)
       replySuccess(result, true)
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
@@ -570,10 +622,11 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to setNavigation with screen name.
    */
-  private fun setNavigationWithName (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setNavigationWithName(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val screenName: String = call.argument("screenName")!!
-      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity, screenName)
+      DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity,
+        screenName)
       replySuccess(result, true)
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
@@ -583,7 +636,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to setTags.
    */
-  private fun setTags (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setTags(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val data: List<HashMap<String, Any>> = call.argument("tags")!!
       Log.d("V/Den/RN/Android", data.toString())
@@ -592,16 +645,16 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         if (it["tagName"] != null && it["tagValue"] != null) {
           if (it["changeTime"] != null && it["changeValue"] != null && it["removeTime"] != null) {
             TagItem(
-                    it["tagName"] as String,
-                    it["tagValue"] as String,
-                    it["changeTime"] as Date?,
-                    it["changeValue"]?.toString(),
-                    it["removeTime"] as Date?
+              it["tagName"] as String,
+              it["tagValue"] as String,
+              it["changeTime"] as Date?,
+              it["changeValue"]?.toString(),
+              it["removeTime"] as Date?
             )
           } else {
             TagItem(
-                    it["tagName"] as String,
-                    it["tagValue"] as String
+              it["tagName"] as String,
+              it["tagValue"] as String
             )
           }
         } else {
@@ -620,12 +673,15 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /**
    * Method to setupDengage.
    */
-  private fun setupDengage (@NonNull call: MethodCall, @NonNull result: Result) {
+  private fun setupDengage(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val logStatus: Boolean = call.argument("logStatus")!!
       val firebaseKey: String? = call.argument("firebaseKey")
 
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey,false,appContext);
+      DengageCoordinator.sharedInstance.setupDengage(logStatus,
+        firebaseKey,
+        false,
+        appContext);
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
@@ -637,11 +693,11 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
     channel.setMethodCallHandler(null)
   }
 
-  override fun onDetachedFromActivity () {
+  override fun onDetachedFromActivity() {
     // todo: could be used for clearing app Activity.
   }
 
-  override fun onDetachedFromActivityForConfigChanges () {
+  override fun onDetachedFromActivityForConfigChanges() {
     // todo: could be used for clearing app Activity.
   }
 
@@ -651,9 +707,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
       Dengage.setCartItemCount(count)
       replySuccess(result, true)
-    }
-    catch (ex:java.lang.Exception)
-    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+    } catch (ex: java.lang.Exception) {
+      Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
 
       replyError(result, "error", ex.localizedMessage, ex)
     }
@@ -669,9 +724,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
       Dengage.setCartAmount(amount)
       replySuccess(result, true)
-    }
-    catch (ex:java.lang.Exception)
-    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+    } catch (ex: java.lang.Exception) {
+      Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
 
       replyError(result, "error", ex.localizedMessage, ex)
     }
@@ -690,15 +744,15 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
       Dengage.setState(state)
       replySuccess(result, true)
-    }
-    catch (ex:java.lang.Exception)
-    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+    } catch (ex: java.lang.Exception) {
+      Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
 
       replyError(result, "error", ex.localizedMessage, ex)
     }
 
 
   }
+
   /**
    * Set city for using in real time in app comparisons
    */
@@ -710,9 +764,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
       Dengage.setCity(city)
       replySuccess(result, true)
-    }
-    catch (ex:java.lang.Exception)
-    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+    } catch (ex: java.lang.Exception) {
+      Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
 
       replyError(result, "error", ex.localizedMessage, ex)
     }
@@ -721,7 +774,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
 
   private fun showRealTimeInApp(
-    @NonNull call: MethodCall, @NonNull result: Result
+    @NonNull call: MethodCall, @NonNull result: Result,
   ) {
     try {
       val data: Map<String, Any>? = call.argument("data")
@@ -729,13 +782,13 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
       Dengage.showRealTimeInApp(appActivity, screenName, data as HashMap<String, String>?)
       replySuccess(result, true)
-    }
-    catch (ex:java.lang.Exception)
-    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+    } catch (ex: java.lang.Exception) {
+      Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
 
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
+
   /**
    * Set category path for using in real time in app comparisons
    */
@@ -746,9 +799,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val adid: String = call.argument("adid")!!
       Dengage.setPartnerDeviceId(adid)
       replySuccess(result, true)
-    }
-    catch (ex:java.lang.Exception)
-    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+    } catch (ex: java.lang.Exception) {
+      Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
 
       replyError(result, "error", ex.localizedMessage, ex)
     }
@@ -767,20 +819,41 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val adid: String = call.argument("path")!!
       Dengage.setCategoryPath(adid)
       replySuccess(result, true)
-    }
-    catch (ex:java.lang.Exception)
-    {   Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
+    } catch (ex: java.lang.Exception) {
+      Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
 
       replyError(result, "error", ex.localizedMessage, ex)
     }
 
 
   }
-  private fun getLastPushPayload (@NonNull call: MethodCall, @NonNull result: Result) {
+
+  /**
+   * Method to get the user's token
+   */
+  private fun getLastPushPayload(@NonNull call: MethodCall, @NonNull result: Result) {
     try {
       val pushPayload = Dengage.getLastPushPayload()
-      replySuccess(result, pushPayload)
-      return
+      if (pushPayload !== null) {
+        replySuccess(result, pushPayload)
+        return
+      }
+    } catch (ex: Exception) {
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+  /**
+   * Method to set the user's token.
+   */
+  private fun setInAppLinkConfiguration(@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      val deeplink: String? = call.argument("deepLink")
+      if (!deeplink.isNullOrEmpty()) {
+        Dengage.inAppLinkConfiguration(deeplink)
+      } else {
+        throw Exception("required argument 'deepLink' is missing.")
+      }
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }

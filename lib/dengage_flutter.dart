@@ -70,7 +70,7 @@ class DengageFlutter {
 
   static Future<bool?> setLogStatus(bool isVisible) async {
     return await _channel
-        .invokeMethod("dEngage#setLogStatus", {'logStatus': isVisible});
+        .invokeMethod("dEngage#setLogStatus", {'isVisible': isVisible});
   }
 
   // android Only
@@ -226,4 +226,7 @@ class DengageFlutter {
     return _channel.invokeMethod("dEngage#getLastPushPayload");
   }
 
+  static Future<void> setInAppLinkConfiguration(String deepLink) {
+    return _channel.invokeMethod("dEngage#setInAppLinkConfiguration", {'deepLink': deepLink});
+  }
 }
