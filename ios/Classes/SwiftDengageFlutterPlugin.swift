@@ -32,8 +32,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
       self.eventSink = eventSink
       self.listenForNotification()
-        Dengage.setDevelopmentStatus(isDebug: true)
-        self.registerInAppListener()
+      self.registerInAppListener()
       return nil
     }
 
