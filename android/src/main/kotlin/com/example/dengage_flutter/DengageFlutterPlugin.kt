@@ -104,7 +104,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         }
 
         override fun onCancel(arguments: Any?) {
-          appContext.unregisterReceiver(notifReceiver)
+          appContext.unregisterReceiver(inappReceiver)
           notifReceiver = null
         }
       }
@@ -212,6 +212,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       }
       else if (call.method == "dEngage#setPartnerDeviceId") {
         this.setPartnerDeviceId(call, result)
+      } else if (call.method == "dEngage#setInAppLinkConfiguration") {
+        this.setInAppLinkConfiguration(call, result)
       }
       if (call.method == "dEngage#getLastPushPayload") {
         this.getLastPushPayload(call, result)
