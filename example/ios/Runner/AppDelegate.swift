@@ -2,9 +2,6 @@ import UIKit
 import Flutter
 import dengage_flutter
 import UserNotifications
-import AppTrackingTransparency
-import AdSupport
-import Dengage
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -40,7 +37,6 @@ import Dengage
         completionHandler([.alert, .sound, .badge])
         
     }
-    
-   
+
     
 }

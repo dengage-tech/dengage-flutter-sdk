@@ -151,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                   await DengageFlutter.setInAppLinkConfiguration("kjkjkj");
+                   await DengageFlutter.setLogStatus(false);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text("msg".toString()),
