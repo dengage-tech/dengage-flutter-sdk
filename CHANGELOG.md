@@ -1,3 +1,60 @@
+## 0.7.8
+Features included
+-This release includes:
+* Inbox parsing issue resolved
+* pod version 5.42.2
+* gradle android dependency updated from 6.0.35.4 to 6.0.40.4
+* this version is with geofence without huawei
+
+
+## 0.7.7
+Features included
+-This release includes:
+* Inbox parsing issue resolved
+* pod version 5.42.2
+* gradle android dependency updated from 6.0.35.3 to 6.0.40.3
+* this version is with geofence with huawei
+
+
+## 0.7.6
+Features included
+-This release includes:
+* Inbox parsing issue resolved
+* pod version 5.42.1
+* gradle android dependency updated from 6.0.35.2 to 6.0.40.2
+* this version is without geofence without huawei
+
+
+
+## 0.7.5
+Features included
+-This release includes:
+* Inbox parsing issue resolved
+* pod version 5.42.1
+* gradle android dependency updated from 6.0.35.1 to 6.0.40.1
+* this version is without geofence with huawei
+
+
+
+## 0.7.4
+Features included
+-
+This release includes:
+* Inbox parsing issue resolved
+* pod version 5.33.3
+* gradle android dependency updated from 6.0.30.2 to 6.0.35.2
+* this version is without geofence without huawei
+
+
+## 0.7.3
+Features included
+-
+This release includes:
+* Inbox parsing issue resolved
+* pod version 5.33.3
+* gradle android dependency updated from 6.0.35.2 to 6.0.35.2
+* this version is without geofence without huawei
+
 ## 0.7.2
 Features included
 -

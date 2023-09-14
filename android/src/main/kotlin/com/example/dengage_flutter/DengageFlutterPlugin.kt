@@ -39,40 +39,75 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
   private val ON_NOTIFICATION_CLICKED = "com.dengage.flutter/onNotificationClicked"
 
+  private val INAPP_LINK_RETRIEVAL = "com.dengage.flutter/inAppLinkRetrieval"
+
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dengage_flutter")
     channel.setMethodCallHandler(this)
 
     var notifReceiver: NotificationReceiver? = null
-    EventChannel(flutterPluginBinding.flutterEngine.dartExecutor, ON_NOTIFICATION_CLICKED).setStreamHandler(
-            object : StreamHandler {
-              override fun onListen(arguments: Any?, events: EventSink?) {
-                Log.d("den/flutter", "RegisteringNotificationListeners.")
+    var inappReceiver: InAppBroadcastReceiver? = null
+    EventChannel(flutterPluginBinding.flutterEngine.dartExecutor,
+      ON_NOTIFICATION_CLICKED).setStreamHandler(
+      object : StreamHandler {
+        override fun onListen(arguments: Any?, events: EventSink?) {
+          Log.d("den/flutter", "RegisteringNotificationListeners.")
 
-                val filter = IntentFilter()
-                filter.addAction("com.dengage.push.intent.RECEIVE")
-                filter.addAction("com.dengage.push.intent.OPEN")
-                notifReceiver = createNotifReciever(events)
+          val filter = IntentFilter()
+          filter.addAction("com.dengage.push.intent.RECEIVE")
+          filter.addAction("com.dengage.push.intent.OPEN")
+          notifReceiver = createNotifReciever(events)
 
-                appContext.registerReceiver(notifReceiver, filter)
+          appContext.registerReceiver(notifReceiver, filter)
+//                try {
+//
+//                  var pushPayload =Dengage.getLastPushPayload()
+//                  if (!pushPayload.isNullOrEmpty()) {
+//
+//                    Log.d("den/flutter", "RegisteringNotificationListeners.fsdf $pushPayload")
+//                    events?.success(pushPayload)
+//                  }
+//                }
+//                catch (e:Exception){}
+        }
 
-         /*       try {
+        override fun onCancel(arguments: Any?) {
+          appContext.unregisterReceiver(notifReceiver)
+          notifReceiver = null
+        }
+      }
+    )
 
-                  val pushPayload =Dengage.getLastPushPayload()
-                  if (!pushPayload.isNullOrEmpty()) {
+    EventChannel(flutterPluginBinding.flutterEngine.dartExecutor,
+      INAPP_LINK_RETRIEVAL).setStreamHandler(
+      object : StreamHandler {
+        override fun onListen(arguments: Any?, events: EventSink?) {
+          Dengage.setDevelopmentStatus(true)
+          Dengage.inAppLinkConfiguration("ddd")
+          Log.d("den/flutter", "RegisteringNotificationListeners.")
 
-                    Log.d("den/flutter", "RegisteringNotificationListeners $pushPayload")
-                    events?.success(pushPayload)
-                  }
-                }
-                catch (e:Exception){}*/
-              }
+          val filter = IntentFilter()
+          filter.addAction("com.dengage.inapp.LINK_RETRIEVAL")
+          inappReceiver = createInAppLinkReciever(events)
+          appContext.registerReceiver(inappReceiver, filter)
+//                try {
+//
+//                  var pushPayload =Dengage.getLastPushPayload()
+//                  if (!pushPayload.isNullOrEmpty()) {
+//
+//                    Log.d("den/flutter", "RegisteringNotificationListeners.fsdf $pushPayload")
+//                    events?.success(pushPayload)
+//                  }
+//                }
+//                catch (e:Exception){}
+        }
 
-              override fun onCancel(arguments: Any?) {
-                appContext.unregisterReceiver(notifReceiver)
-                notifReceiver = null
-              }
-            }
+        override fun onCancel(arguments: Any?) {
+          appContext.unregisterReceiver(inappReceiver)
+          notifReceiver = null
+        }
+      }
     )
 
     appContext = flutterPluginBinding.applicationContext
@@ -175,6 +210,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       }
       else if (call.method == "dEngage#setPartnerDeviceId") {
         this.setPartnerDeviceId(call, result)
+      } else if (call.method == "dEngage#setInAppLinkConfiguration") {
+        this.setInAppLinkConfiguration(call, result)
       }
       if (call.method == "dEngage#getLastPushPayload") {
         this.getLastPushPayload(call, result)
@@ -228,7 +265,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
    */
   private fun setIntegerationKey (@NonNull call: MethodCall, @NonNull result: Result) {
     try {
-      throw Exception("This method is not available in android. please use 'setFirebaseIntegrationKey' instead.")
+      throw Exception("This method is not available in android. please use 'setHuaweiIntegrationKey' OR 'setFirebaseIntegrationKey' instead.")
     } catch (ex: Exception) {
       replyError(result, "Error:Method not available", ex.localizedMessage, ex)
     }
@@ -833,6 +870,36 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       val pushPayload = Dengage.getLastPushPayload()
       replySuccess(result, pushPayload)
       return
+    } catch (ex: Exception) {
+      replyError(result, "error", ex.localizedMessage, ex)
+    }
+  }
+
+  private fun createInAppLinkReciever(events: EventSink?): InAppBroadcastReceiver? {
+    return object : InAppBroadcastReceiver() {
+      override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d("den/Flutter", "inInAppRetrieval.")
+
+        val jsonObject = JSONObject()
+        jsonObject.put("targetUrl", intent?.extras?.getString("targetUrl"))
+
+        if (events != null) {
+          events.success(Gson().toJson(jsonObject.toString()))
+        } else {
+          Log.d("den/flutter", "events is null while clicked push")
+        }
+      }
+    }
+  }
+
+  private fun setInAppLinkConfiguration(@NonNull call: MethodCall, @NonNull result: Result) {
+    try {
+      val deeplink: String? = call.argument("deepLink")
+      if (!deeplink.isNullOrEmpty()) {
+        Dengage.inAppLinkConfiguration(deeplink)
+      } else {
+        throw Exception("required argument 'deepLink' is missing.")
+      }
     } catch (ex: Exception) {
       replyError(result, "error", ex.localizedMessage, ex)
     }

@@ -4,6 +4,7 @@ import Dengage
 
 enum EventChannelName {
   static let onNotificationClicked = "com.dengage.flutter/onNotificationClicked"
+    static let inAppLinkRetrieval = "com.dengage.flutter/inAppLinkRetrieval"
 }
 
 public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
@@ -16,7 +17,12 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
     let notificationEventChannel = FlutterEventChannel(name: EventChannelName.onNotificationClicked,
                                                        binaryMessenger: registrar.messenger())
+    let inappLinkEventChannel = FlutterEventChannel(name: EventChannelName.inAppLinkRetrieval,
+                                                         binaryMessenger: registrar.messenger())
+
     notificationEventChannel.setStreamHandler(instance.self)
+
+    inappLinkEventChannel.setStreamHandler(instance.self)
 
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
@@ -25,12 +31,14 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
       self.eventSink = eventSink
       self.listenForNotification()
+      self.registerInAppListener()
       return nil
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         return nil
     }
+
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
@@ -137,35 +145,36 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                 self.startGeofence(call: call, result: result)
                  break;
     case "dEngage#showRealTimeInApp":
-                self.showRealTimeInApp(call: call, reply: result)
-                break;
-            case "dEngage#setCity":
-                self.setCity(call: call, result: result)
-                break;
-            case "dEngage#setState":
-                self.setState(call: call, result: result)
-                break;
-            case "dEngage#setCartAmount":
-                self.setCartAmount(call: call, result: result)
-                break;
-            case "dEngage#setCartItemCount":
-                self.setCartItemCount(call: call, result: result)
-                break;
-            case "dEngage#setCategoryPath":
-                self.setCategoryPath(call: call, result: result)
-                break;
-            case "dEngage#setPartnerDeviceId":
-                self.setPartnerDeviceId(call: call, result: result)
-                break;
-        
+            self.showRealTimeInApp(call: call, reply: result)
+            break;
+        case "dEngage#setCity":
+            self.setCity(call: call, result: result)
+            break;
+        case "dEngage#setState":
+            self.setState(call: call, result: result)
+            break;
+        case "dEngage#setCartAmount":
+            self.setCartAmount(call: call, result: result)
+            break;
+        case "dEngage#setCartItemCount":
+            self.setCartItemCount(call: call, result: result)
+            break;
+        case "dEngage#setCategoryPath":
+            self.setCategoryPath(call: call, result: result)
+            break;
+        case "dEngage#setPartnerDeviceId":
+            self.setPartnerDeviceId(call: call, result: result)
+            break;
+         case "dEngage#setInAppLinkConfiguration":
+        self.setInAppLinkConfiguration(call: call, result: result)
+        break;
     case "dEngage#getLastPushPayload":
-              self.getLastPushPayload(call: call, result: result)
-              break;
-
+                self.getLastPushPayload(call: call, result: result)
+                break;
         default:
             //result("not implemented.")
         self.getSubscription(call: call, result: result)
-                       break;
+                        break;
     }
   }
 
@@ -482,7 +491,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                             {
                                 for carousel in items
                                 {
-                                    arrCarousel.append(["id": carousel.id ?? "", "title":carousel.title ?? "" , "descriptionText":carousel.descriptionText ?? "" , "mediaUrl": carousel.mediaUrl ?? "" ,  "targetUrl":carousel.targetUrl ?? ""])
+                                    arrCarousel.append(["id": carousel.id , "title":carousel.title ?? "" , "descriptionText":carousel.descriptionText ?? "" , "mediaUrl": carousel.mediaUrl ?? "" ,  "targetUrl":carousel.targetUrl ?? ""])
 
 
                                 }
@@ -511,7 +520,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                     break;
                 case .failure(let error): // Handle the error
                 reply("[\n\n]")
-                break;
+                    break;
             }
         }
     }
@@ -717,69 +726,93 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                                     result(nil)
                                 }
     
-/**
-             * Method to sendDeviceEvent
-             */
-            func showRealTimeInApp (call: FlutterMethodCall, reply: @escaping FlutterResult)  {
-                let arguments = call.arguments as! [String:Any]
-                let data = arguments["data"] as! Dictionary<String, String>?
-                let screenName = arguments["screenName"] as! String
-                Dengage.showRealTimeInApp(screenName: screenName, params: data)
-                reply(nil)
-            }
+    /**
+     * Method to sendDeviceEvent
+     */
+    func showRealTimeInApp (call: FlutterMethodCall, reply: @escaping FlutterResult)  {
+        let arguments = call.arguments as! [String:Any]
+        let data = arguments["data"] as! Dictionary<String, String>?
+        let screenName = arguments["screenName"] as! String
+        Dengage.showRealTimeInApp(screenName: screenName, params: data)
+        reply(nil)
+    }
 
-            private func setCity (call: FlutterMethodCall, result: @escaping FlutterResult) {
-                let arguments = call.arguments as! NSDictionary
-                let city = arguments["city"] as! String
+    private func setCity (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let city = arguments["city"] as! String
 
-                Dengage.setCity(name: city)
-                result(nil)
-            }
+        Dengage.setCity(name: city)
+        result(nil)
+    }
 
-            private func setState (call: FlutterMethodCall, result: @escaping FlutterResult) {
-                let arguments = call.arguments as! NSDictionary
-                let state = arguments["state"] as! String
+    private func setState (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let state = arguments["state"] as! String
 
-                Dengage.setState(name: state)
-                result(nil)
-            }
+        Dengage.setState(name: state)
+        result(nil)
+    }
 
-            private func setCartAmount (call: FlutterMethodCall, result: @escaping FlutterResult) {
-                let arguments = call.arguments as! NSDictionary
-                let amount = arguments["amount"] as! String
+    private func setCartAmount (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let amount = arguments["amount"] as! String
 
-                Dengage.setCart(amount: amount)
-                result(nil)
-            }
+        Dengage.setCart(amount: amount)
+        result(nil)
+    }
 
-            private func setCartItemCount (call: FlutterMethodCall, result: @escaping FlutterResult) {
-                let arguments = call.arguments as! NSDictionary
-                let count = arguments["count"] as! String
+    private func setCartItemCount (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let count = arguments["count"] as! String
 
-                Dengage.setCart(itemCount: count)
-                result(nil)
-            }
+        Dengage.setCart(itemCount: count)
+        result(nil)
+    }
 
-              private func setCategoryPath (call: FlutterMethodCall, result: @escaping FlutterResult) {
-                  let arguments = call.arguments as! NSDictionary
-                  let path = arguments["path"] as! String
+    private func setCategoryPath (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let path = arguments["path"] as! String
 
-                  Dengage.setCategory(path: path)
-                  result(nil)
-              }
+        Dengage.setCategory(path: path)
+        result(nil)
+    }
 
-              private func setPartnerDeviceId (call: FlutterMethodCall, result: @escaping FlutterResult) {
-                  let arguments = call.arguments as! NSDictionary
-                  let adid = arguments["adid"] as! String
+    private func setPartnerDeviceId (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let adid = arguments["adid"] as! String
 
-                  Dengage.setPartnerDeviceId(adid: adid)
-                  result(nil)
-              }
-    
+        Dengage.setPartnerDeviceId(adid: adid)
+        result(nil)
+    }
+
     private func getLastPushPayload (call: FlutterMethodCall, result: @escaping FlutterResult) {
-              let pushPayLoad = Dengage.getLastPushPayload()
-              result(pushPayLoad)
-          }
-    
-    
+        let pushPayLoad = Dengage.getLastPushPayload()
+        result(pushPayLoad)
+    }
+
+    func registerInAppListener ()
+    {Dengage.handleInAppDeeplink{ url in
+                var response = [String:Any?]();
+                response["targetUrl"] = url
+                print(url)
+        guard let eventSink = self.eventSink else {
+          return
+        }
+        eventSink([response])
+
+        }
+    }
+
+    private func setInAppLinkConfiguration (call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let deeplink = arguments["deepLink"] as! String
+        if (deeplink.isEmpty) {
+            result(FlutterError.init(code: "error", message: "Required argument 'deeplink' is missing.", details: nil))
+            return
+        }
+        Dengage.inAppLinkConfiguration(deeplink: deeplink)
+        result(nil)
+    }
+
+
 }
