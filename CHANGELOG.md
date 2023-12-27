@@ -1,3 +1,47 @@
+## 0.8.2
+Features included
+-This release includes:
+* Firebase libraries updated
+* pod version 5.51.2
+* gradle android dependency updated from 6.0.40.3 to 6.0.50.3
+* this version is with geofence with huawei
+
+
+## 0.8.1
+Features included
+-This release includes:
+* Firebase libraries updated
+* pod version 5.51.1
+* gradle android dependency updated from 6.0.40.2 to 6.0.50.2
+* this version is without geofence without huawei
+
+
+## 0.8.1
+Features included
+-This release includes:
+* Firebase libraries updated
+* pod version 5.51.1
+* gradle android dependency updated from 6.0.40.1 to 6.0.50.1
+* this version is without geofence with huawei
+
+## 0.7.9
+Features included
+-This release includes:
+* Inbox parsing issue resolved
+* pod version 5.42.2
+* gradle android dependency updated from 6.0.35.4 to 6.0.40.4
+* this version is with geofence without huawei
+
+
+## 0.7.8
+Features included
+-This release includes:
+* Inbox parsing issue resolved
+* pod version 5.42.2
+* gradle android dependency updated from 6.0.35.4 to 6.0.40.4
+* this version is with geofence without huawei
+
+
 ## 0.7.7
 Features included
 -This release includes:
