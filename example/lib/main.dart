@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:dengage_flutter/dengage_flutter.dart';
+import 'package:dengage_flutter/web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String lastPush = '';
   var contactKeyController = TextEditingController();
   var lastPushController = TextEditingController();
+  HashMap<String, String> hashMap = new HashMap();
 
   static const EventChannel eventChannel = EventChannel("com.dengage.flutter/onNotificationClicked");
   static const EventChannel eventChannel2 = EventChannel("com.dengage.flutter/inAppLinkRetrieval");
@@ -69,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     eventChannel2.receiveBroadcastStream().listen(_onEvent, onError: _onError);
-
+    hashMap["priya"]="priya";
     super.initState();
   }
 
@@ -151,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                   await DengageFlutter.setLogStatus(false);
+                  await DengageFlutter.setLogStatus(false);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text("msg".toString()),
@@ -198,25 +200,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('Send Device Event'),
               ),
             ),
-            Container(
-              padding: EdgeInsets.only(top: 10.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  // String subscription = await DengageFlutter.getLastPushPayload();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("subscription"),
-                      action: SnackBarAction(
-                        label: 'copy',
-                        onPressed: () {
+            SizedBox(
+              height: 100,
+              child: Container(
+                padding: EdgeInsets.only(top: 10.0),
+                child: WebView(
+                  propertyId: "2233",
+                  screenName: "test",
+                  hideIfNotFound: false,
+                  customParams: hashMap,
 
-                        },
-                      ),
-                    ),
-                  );
-                },
-                child: Text('Get & Show subscription'),
-              ),
+                ),),
             ),
             Container(
               padding: EdgeInsets.only(top: 10.0),
@@ -266,7 +260,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
 class SecondRoute extends StatelessWidget {
   SecondRoute () {
     print("setting screen name as SecondScreen");

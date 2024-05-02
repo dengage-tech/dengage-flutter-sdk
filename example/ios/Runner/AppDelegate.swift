@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import dengage_flutter
 import UserNotifications
+import Dengage
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {

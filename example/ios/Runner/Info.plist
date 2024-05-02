@@ -23,13 +23,13 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>DengageApiUrl</key>
-	<string>https://us-push.dengage.com</string>
+	<string>https://push.dengage.com</string>
 	<key>DengageDeviceIdApiUrl</key>
-	<string>https://us-push.dengage.com</string>
+	<string>https://push.dengage.com</string>
 	<key>DengageEventApiUrl</key>
-	<string>https://us-event.dengage.com</string>
+	<string>https://event.dengage.com</string>
 	<key>DengageGeofenceApiUrl</key>
-	<string>https://dev-push.dengage.com/geoapi</string>
+	<string>https://push.dengage.com/geoapi</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

@@ -80,7 +80,14 @@
             android:name="den_push_api_url"
             android:value="https://push.dengage.com" />
 
+        <!-- Real time inapp api url of Dengage -->
+        <meta-data
+            android:name="den_in_app_api_url"
+            android:value="https://push.dengage.com" />
 
+        <meta-data
+            android:name="fetch_real_time_in_app_api_url"
+            android:value="https://push.dengage.com/api/realtime-inapp/" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
