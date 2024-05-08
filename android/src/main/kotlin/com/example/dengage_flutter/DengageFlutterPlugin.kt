@@ -13,6 +13,7 @@ import com.dengage.sdk.callback.DengageError
 import com.dengage.sdk.domain.inboxmessage.model.InboxMessage
 import com.dengage.sdk.domain.push.model.Message
 import com.dengage.sdk.domain.tag.model.TagItem
+import com.dengage.sdk.inapp.InAppBroadcastReceiver
 import com.dengage.sdk.push.NotificationReceiver
 import com.google.gson.Gson
 import io.flutter.embedding.engine.plugins.FlutterPlugin
