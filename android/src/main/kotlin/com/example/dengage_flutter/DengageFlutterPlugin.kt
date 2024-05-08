@@ -36,6 +36,7 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
   /// when the Flutter Engine is detached from the Activity
   private lateinit var appContext: Context
   private lateinit var appActivity: Activity
+  private lateinit var flutterPluginBindingGlobal: FlutterPlugin.FlutterPluginBinding
 
   private val ON_NOTIFICATION_CLICKED = "com.dengage.flutter/onNotificationClicked"
 
@@ -43,6 +44,8 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    flutterPluginBindingGlobal=flutterPluginBinding
+
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dengage_flutter")
     channel.setMethodCallHandler(this)
 
@@ -115,10 +118,18 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
     appActivity = binding.activity
+
+    flutterPluginBindingGlobal.platformViewRegistry.registerViewFactory(
+      "plugins.dengage/inappinline",InAppInlineFactory(appActivity))
+
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     appActivity = binding.activity
+
+    flutterPluginBindingGlobal.platformViewRegistry.registerViewFactory(
+      "plugins.dengage/inappinline",InAppInlineFactory(appActivity))
+
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
