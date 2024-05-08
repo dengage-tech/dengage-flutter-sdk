@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:dengage_flutter/dengage_flutter.dart';
-import 'package:dengage_flutter/web_view.dart';
+import 'package:dengage_flutter/InAppInline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -204,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 100,
               child: Container(
                 padding: EdgeInsets.only(top: 10.0),
-                child: WebView(
+                child: InAppInline(
                   propertyId: "2233",
                   screenName: "test",
                   hideIfNotFound: false,

@@ -2,7 +2,7 @@ import Foundation
 import Flutter
 import UIKit
 
-class WebViewFactory: NSObject, FlutterPlatformViewFactory {
+class InAppinlineFactory: NSObject, FlutterPlatformViewFactory {
     private var messenger: FlutterBinaryMessenger
 
     init(messenger: FlutterBinaryMessenger) {
@@ -15,7 +15,7 @@ class WebViewFactory: NSObject, FlutterPlatformViewFactory {
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> FlutterPlatformView {
-        return FlutterWebView(
+        return InAppinline(
             frame: frame,
             viewIdentifier: viewId,
             arguments: args)

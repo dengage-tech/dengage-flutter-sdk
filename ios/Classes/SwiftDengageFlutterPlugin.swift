@@ -12,7 +12,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
   private var eventSink: FlutterEventSink?
 
   public static func register(with registrar: FlutterPluginRegistrar) {
-      registrar.register(WebViewFactory(messenger: registrar.messenger()), withId: "plugins.codingwithtashi/flutter_web_view")
+      registrar.register(InAppinlineFactory(messenger: registrar.messenger()), withId: "plugins.dengage/inappinline")
      
       let channel = FlutterMethodChannel(name: "dengage_flutter", binaryMessenger: registrar.messenger())
     let instance = SwiftDengageFlutterPlugin()

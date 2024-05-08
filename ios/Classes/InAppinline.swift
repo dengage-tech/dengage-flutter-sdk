@@ -2,7 +2,7 @@ import Foundation
 import Flutter
 import UIKit
 import Dengage
-class FlutterWebView: NSObject, FlutterPlatformView {
+class InAppinline: NSObject, FlutterPlatformView {
     private var _nativeWebView: InAppInlineElementView
     
     func view() -> UIView {

@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.util.Log
 import androidx.annotation.NonNull
 import com.dengage.sdk.Dengage
-import com.dengage.sdk.DengageManager
 import com.dengage.sdk.callback.DengageCallback
 import com.dengage.sdk.callback.DengageError
 import com.dengage.sdk.domain.inboxmessage.model.InboxMessage
@@ -119,12 +118,12 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         appActivity = binding.activity
         flutterPluginBindingGlobal.platformViewRegistry.registerViewFactory(
-            "plugins.codingwithtashi/flutter_web_view",WebViewFactory(appActivity))
+            "plugins.dengage/inappinline",InAppInlineFactory(appActivity))
     }
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         appActivity = binding.activity
         flutterPluginBindingGlobal.platformViewRegistry.registerViewFactory(
-            "plugins.codingwithtashi/flutter_web_view",WebViewFactory(appActivity))
+            "plugins.dengage/inappinline",InAppInlineFactory(appActivity))
     }
 
 

@@ -3,16 +3,13 @@ package com.example.dengage_flutter
 import android.app.Activity
 import android.content.Context
 import android.view.View
-import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.dengage.sdk.Dengage
 import com.dengage.sdk.ui.inappmessage.InAppInlineElement
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 
 
-class FlutterWebView internal constructor(
+class InAppInline internal constructor(
     context: Context,
     creationParams:HashMap<String, Any>,
     activity: Activity

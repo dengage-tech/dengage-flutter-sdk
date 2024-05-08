@@ -4,18 +4,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class WebView extends StatelessWidget {
+class InAppInline extends StatelessWidget {
   final String propertyId;
   final String? screenName;
   final HashMap<String,String>? customParams;
   final bool? hideIfNotFound;
-  const WebView({Key? key, required this.propertyId,this.screenName,this.customParams,this.hideIfNotFound}) : super(key: key);
+  const InAppInline({Key? key, required this.propertyId,this.screenName,this.customParams,this.hideIfNotFound}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return AndroidView(
-          viewType: 'plugins.codingwithtashi/flutter_web_view',
+          viewType: 'plugins.dengage/inappinline',
           creationParams: {
             "propertyId":
             propertyId,
@@ -30,7 +30,7 @@ class WebView extends StatelessWidget {
         );
       case TargetPlatform.iOS:
         return UiKitView(
-          viewType: 'plugins.codingwithtashi/flutter_web_view',
+          viewType: 'plugins.dengage/inappinline',
           creationParams: {
             "propertyId":
             propertyId,

@@ -7,10 +7,10 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 
 
-class WebViewFactory(private val activity: Activity) :
+class InAppInlineFactory(private val activity: Activity) :
     PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, id: Int, args: Any?): PlatformView {
         val creationParams = args as HashMap<String, Any>
-        return FlutterWebView(context,creationParams,activity)
+        return InAppInline(context,creationParams,activity)
     }
 }
