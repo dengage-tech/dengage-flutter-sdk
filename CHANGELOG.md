@@ -1,3 +1,42 @@
+## 0.9.5
+Features included
+-This release includes:
+* Native libraries updated
+* pod version 5.68.2
+* gradle android dependency updated from 6.0.60.4 to 6.0.64.4
+* this version is with geofence without huawei
+
+
+
+## 0.9.4
+Features included
+-This release includes:
+* Native libraries updated
+* pod version 5.68.2
+* gradle android dependency updated from 6.0.60.3 to 6.0.64.3
+* this version is with geofence with huawei
+
+
+
+## 0.9.3
+Features included
+-This release includes:
+* Native libraries updated
+* pod version 5.68.1
+* gradle android dependency updated from 6.0.60.2 to 6.0.64.2
+* this version is without geofence without huawei
+
+
+## 0.9.2
+Features included
+-This release includes:
+* Native libraries updated
+* pod version 5.68.1
+* gradle android dependency updated from 6.0.60.1 to 6.0.64.1
+* this version is without geofence with huawei
+
+
+
 ## 0.9.1
 Features included
 -This release includes:
