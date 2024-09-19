@@ -1,12 +1,15 @@
-## 0.9.2
+## 0.9.6
 Features included
 -This release includes:
+* Android RECEIVER_EXPORTED issue solved
+
+## 0.9.2
+Features included
+-This release includes:dart pub publish
 * Native libraries updated
 * pod version 5.68.1
 * gradle android dependency updated from 6.0.60.1 to 6.0.64.1
 * this version is without geofence with huawei
-
-
 
 ## 0.9.1
 Features included
