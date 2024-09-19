@@ -1,9 +1,12 @@
 package com.example.dengage_flutter
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.util.Log
 import androidx.annotation.NonNull
 import com.dengage.sdk.Dengage
@@ -63,7 +66,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
           filter.addAction("com.dengage.push.intent.OPEN")
           notifReceiver = createNotifReciever(events)
 
-          appContext.registerReceiver(notifReceiver, filter)
+          @SuppressLint("UnspecifiedRegisterReceiverFlag")
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            appContext.registerReceiver(notifReceiver, filter, RECEIVER_EXPORTED)
+          } else {
+            appContext.registerReceiver(notifReceiver, filter)
+          }
 //                try {
 //
 //                  var pushPayload =Dengage.getLastPushPayload()
@@ -94,7 +102,12 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
           val filter = IntentFilter()
           filter.addAction("com.dengage.inapp.LINK_RETRIEVAL")
           inappReceiver = createInAppLinkReciever(events)
-          appContext.registerReceiver(inappReceiver, filter)
+          @SuppressLint("UnspecifiedRegisterReceiverFlag")
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            appContext.registerReceiver(inappReceiver, filter, RECEIVER_EXPORTED)
+          } else {
+            appContext.registerReceiver(inappReceiver, filter)
+          }
 //                try {
 //
 //                  var pushPayload =Dengage.getLastPushPayload()

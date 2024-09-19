@@ -1,3 +1,26 @@
+## 0.9.8
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is with geofence with huawei
+
+## 0.9.7
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is without geofence without huawei
+
+
+## 0.9.6
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is without geofence with huawei
+
+
 ## 0.9.4
 Features included
 -This release includes:
