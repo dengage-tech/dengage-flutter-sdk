@@ -2,6 +2,7 @@
 Features included
 -This release includes:
 * Android RECEIVER_EXPORTED issue solved
+* this version is without geofence with huawei
 
 ## 0.9.2
 Features included
