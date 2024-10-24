@@ -592,22 +592,6 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     }
 
     /**
-     * Method to setupDengage
-     */
-    func setupDengage(call: FlutterMethodCall, reply: @escaping FlutterResult) {
-        let arguments = call.arguments as! NSDictionary
-
-        let integrationKey = arguments["integrationKey"] as! NSString
-        let application = arguments["application"] as? UIApplication
-
-
-        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, launchOptions: nil, application: application)
-
-        reply(nil)
-    }
-
-
-    /**
      * Method to listen for notification click.
      */
 

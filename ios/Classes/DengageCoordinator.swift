@@ -17,17 +17,22 @@ public class DengageCoordinator: NSObject {
     @objc var integerationKey: String?
     @objc var launchOptions: [UIApplication.LaunchOptionsKey: Any]?
 
-    @objc(setupDengage:launchOptions:application:)
-    public func setupDengage(key:NSString, launchOptions:NSDictionary?,application:UIApplication?) {
+    @objc(setupDengage:launchOptions:application:askNotificaionPermission:disableOpenURL:badgeCountReset:)
+    public func setupDengage(key:NSString, launchOptions:NSDictionary?,application:UIApplication?,askNotificaionPermission:DarwinBoolean,disableOpenURL:DarwinBoolean,badgeCountReset:DarwinBoolean) {
         Dengage.setIntegrationKey(key: key as String)
         
-        
         if (launchOptions != nil) {
-            Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared, withLaunchOptions: launchOptions as! [UIApplication.LaunchOptionsKey : Any])
             
+            let options = DengageOptions.init(disableOpenURL: disableOpenURL.boolValue, badgeCountReset: badgeCountReset.boolValue, disableRegisterForRemoteNotifications: false)
+            
+            Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared, withLaunchOptions: launchOptions as! [UIApplication.LaunchOptionsKey : Any], dengageOptions: options)
            
         } else {
-            Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared , withLaunchOptions: [:])
+                        
+            let options = DengageOptions.init(disableOpenURL: disableOpenURL.boolValue, badgeCountReset: badgeCountReset.boolValue, disableRegisterForRemoteNotifications: false)
+
+            Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared, withLaunchOptions: [:], dengageOptions: options)
+            
         }
         
         
