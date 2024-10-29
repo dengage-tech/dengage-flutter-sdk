@@ -11,6 +11,7 @@ class DengageCoordinator private constructor() {
         logStatus: Boolean,
         firebaseKey: String?,
         restartApplication :Boolean?,
+        disableWebOpenUrl :Boolean?,
         context: Context
     ) {
         if (firebaseKey == null ) {
@@ -19,6 +20,7 @@ class DengageCoordinator private constructor() {
         dengageManager = DengageManager.getInstance(context)
                     .setLogStatus(logStatus)
                     .setFirebaseIntegrationKey(firebaseKey)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
         try {
             if (restartApplication != null) {

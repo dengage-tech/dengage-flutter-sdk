@@ -1,3 +1,32 @@
+## 1.0.1
+
+Features included
+-This release includes:
+* OpenWebOpenUrl property exposed
+* this version is without geofence without huawei
+
+
+## 1.0.0
+
+Features included
+-This release includes:
+* OpenWebOpenUrl property exposed
+* this version is without geofence with huawei
+
+## 0.9.9
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is with geofence without huawei
+
+## 0.9.8
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is with geofence with huawei
+
 ## 0.9.7
 
 Features included
