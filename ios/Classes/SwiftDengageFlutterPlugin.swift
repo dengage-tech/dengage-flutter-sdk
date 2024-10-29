@@ -12,7 +12,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
   private var eventSink: FlutterEventSink?
 
   public static func register(with registrar: FlutterPluginRegistrar) {
-    registrar.register(InAppinlineFactory(messenger: registrar.messenger()), withId: "plugins.dengage/inappinline")
+      registrar.register(InAppinlineFactory(messenger: registrar.messenger()), withId: "plugins.dengage/inappinline")
 
     let channel = FlutterMethodChannel(name: "dengage_flutter", binaryMessenger: registrar.messenger())
     let instance = SwiftDengageFlutterPlugin()
@@ -600,22 +600,6 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             tags.append(tagItem)
         }
         Dengage.setTags(tags)
-        reply(nil)
-    }
-
-    /**
-     * Method to setupDengage
-     */
-    func setupDengage(call: FlutterMethodCall, reply: @escaping FlutterResult) {
-        let arguments = call.arguments as! NSDictionary
-
-        let integrationKey = arguments["integrationKey"] as! NSString
-        let enableGeofence = arguments["enableGeofence"] as! DarwinBoolean
-        let application = arguments["application"] as? UIApplication
-
-
-        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, enableGeoFence: ObjCBool.init(enableGeofence.boolValue), launchOptions: nil, application: application)
-
         reply(nil)
     }
 

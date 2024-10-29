@@ -1,3 +1,33 @@
+## 1.0.3
+
+Features included
+-This release includes:
+* OpenWebOpenUrl property exposed
+* this version is with geofence without huawei
+
+
+## 1.0.2
+
+Features included
+-This release includes:
+* OpenWebOpenUrl property exposed
+* this version is with geofence with huawei
+
+## 1.0.1
+
+Features included
+-This release includes:
+* OpenWebOpenUrl property exposed
+* this version is without geofence without huawei
+
+
+## 1.0.0
+
+Features included
+-This release includes:
+* OpenWebOpenUrl property exposed
+* this version is without geofence with huawei
+
 ## 0.9.9
 
 Features included

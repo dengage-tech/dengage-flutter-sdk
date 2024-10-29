@@ -12,6 +12,7 @@ class DengageCoordinator private constructor() {
         firebaseKey: String?,
         enableGeoFence: Boolean,
         restartApplication :Boolean?,
+        disableWebOpenUrl :Boolean?,
         context: Context
     ) {
         if (firebaseKey == null ) {
@@ -24,6 +25,7 @@ class DengageCoordinator private constructor() {
                     .setLogStatus(logStatus)
                     .setFirebaseIntegrationKey(firebaseKey)
                     .setGeofenceStatus(enableGeoFence)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
 
         try {
