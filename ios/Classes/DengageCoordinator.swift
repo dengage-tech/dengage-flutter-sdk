@@ -40,7 +40,10 @@ public class DengageCoordinator: NSObject {
             Dengage.requestLocationPermissions()
         }
         
-        Dengage.promptForPushNotifications()
+        if (askNotificationPermission.boolValue == true)
+               {
+            Dengage.promptForPushNotifications()
+               }
         Dengage.setHybridAppEnvironment()
 
         
