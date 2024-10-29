@@ -14,7 +14,7 @@ import UserNotifications
    // coordinator.setupDengage(key: "K8sbLq1mShD52Hu2ZoHyb3tvDE_s_l_h99xFTF60WiNPdHhJtvmOqekutthtzRIPiMTbAa3y_p_l_PZqpon8nanH8YnJ8yYKocDb4GCAp7kOsi5qv7mDR_p_l_qOFLLp9_p_l_lloC6ds97X", launchOptions: launchOptions as NSDictionary?);
      // requestPermission()
 
-      coordinator.setupDengage(key: "hVt7KpAkwbJXRO_s_l_p6To_p_l_9lIaG3HyOp2pYtPwnpzML4D5AGhv88nXj4tdG1MJOsDk0rE072ewsGRGyxdt7V7UAEO_s_l_mN01MRl6iQDiCbx_s_l_ndwua1_s_l_5KL8MXzpLiGbjvFol",launchOptions: launchOptions as NSDictionary?, application: application,askNotificaionPermission:true,disableOpenURL:false,badgeCountReset: false);
+      coordinator.setupDengage(key: "hVt7KpAkwbJXRO_s_l_p6To_p_l_9lIaG3HyOp2pYtPwnpzML4D5AGhv88nXj4tdG1MJOsDk0rE072ewsGRGyxdt7V7UAEO_s_l_mN01MRl6iQDiCbx_s_l_ndwua1_s_l_5KL8MXzpLiGbjvFol",launchOptions: launchOptions as NSDictionary?, application: application,askNotificationPermission:true,disableOpenURL:false,badgeCountReset: false);
 
       UNUserNotificationCenter.current().delegate = self
 
