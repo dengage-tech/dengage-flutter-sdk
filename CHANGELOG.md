@@ -1,16 +1,78 @@
+## 1.0.0
+
+Features included
+-This release includes:
+* OpenWebOpenUrl property exposed
+* this version is without geofence with huawei
+
+## 0.9.9
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is with geofence without huawei
+
+## 0.9.8
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is with geofence with huawei
+
+## 0.9.7
+
+Features included
+-This release includes:
+* Android RECEIVER_EXPORTED issue solved
+* this version is without geofence without huawei
+
+
 ## 0.9.6
+
 Features included
 -This release includes:
 * Android RECEIVER_EXPORTED issue solved
 * this version is without geofence with huawei
 
+
+## 0.9.5
+Features included
+-This release includes:
+* Native libraries updated
+* pod version 5.68.2
+* gradle android dependency updated from 6.0.60.4 to 6.0.64.4
+* this version is with geofence without huawei
+
+
+
+## 0.9.4
+Features included
+-This release includes:
+* Native libraries updated
+* pod version 5.68.2
+* gradle android dependency updated from 6.0.60.3 to 6.0.64.3
+* this version is with geofence with huawei
+
+
+
+## 0.9.3
+Features included
+-This release includes:
+* Native libraries updated
+* pod version 5.68.1
+* gradle android dependency updated from 6.0.60.2 to 6.0.64.2
+* this version is without geofence without huawei
+
+
 ## 0.9.2
 Features included
--This release includes:dart pub publish
+-This release includes:
 * Native libraries updated
 * pod version 5.68.1
 * gradle android dependency updated from 6.0.60.1 to 6.0.64.1
 * this version is without geofence with huawei
+
+
 
 ## 0.9.1
 Features included
@@ -43,7 +105,7 @@ Features included
 Features included
 -This release includes:
 * Native libraries updated
-* pod version 5.60.1
+* pod version 5.61.1
 * gradle android dependency updated from 6.0.54.1 to 6.0.60.1
 * this version is without geofence with huawei
 
@@ -72,7 +134,7 @@ Features included
 -This release includes:
 * Native libraries updated
 * pod version 5.53.1
-* gradle android dependency updated from 6.0.50.2 to 6.0.54.2
+* gradle android dependency updated from 6.0.50.1 to 6.0.54.2
 * this version is without geofence without huawei
 
 
@@ -82,7 +144,7 @@ Features included
 * Native libraries updated
 * pod version 5.53.1
 * gradle android dependency updated from 6.0.50.1 to 6.0.54.1
-* this version is without geofence with huawei
+* this version is without geofence without huawei
 
 
 

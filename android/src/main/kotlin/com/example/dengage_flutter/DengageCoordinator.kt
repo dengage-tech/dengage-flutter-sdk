@@ -12,6 +12,7 @@ class DengageCoordinator private constructor() {
         firebaseKey: String?,
         huaweiKey: String?,
         restartApplication :Boolean?,
+        disableWebOpenUrl :Boolean?,
         context: Context
     ) {
         if (firebaseKey == null && huaweiKey == null) {
@@ -23,12 +24,14 @@ class DengageCoordinator private constructor() {
                 dengageManager = DengageManager.getInstance(context)
                     .setLogStatus(logStatus)
                     .setFirebaseIntegrationKey(firebaseKey)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
             }
             firebaseKey == null -> {
                 dengageManager = DengageManager.getInstance(context)
                     .setLogStatus(logStatus)
                     .setHuaweiIntegrationKey(huaweiKey)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
             }
             else -> {
@@ -36,6 +39,7 @@ class DengageCoordinator private constructor() {
                     .setLogStatus(logStatus)
                     .setHuaweiIntegrationKey(huaweiKey)
                     .setFirebaseIntegrationKey(firebaseKey)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
             }
         }
