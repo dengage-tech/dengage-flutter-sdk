@@ -13,6 +13,7 @@ class DengageCoordinator private constructor() {
         huaweiKey: String?,
         enableGeoFence: Boolean,
         restartApplication :Boolean?,
+        disableWebOpenUrl :Boolean?,
         context: Context
     ) {
         if (firebaseKey == null && huaweiKey == null) {
@@ -25,6 +26,7 @@ class DengageCoordinator private constructor() {
                     .setLogStatus(logStatus)
                     .setFirebaseIntegrationKey(firebaseKey)
                     .setGeofenceStatus(enableGeoFence)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
             }
             firebaseKey == null -> {
@@ -32,6 +34,7 @@ class DengageCoordinator private constructor() {
                     .setLogStatus(logStatus)
                     .setHuaweiIntegrationKey(huaweiKey)
                     .setGeofenceStatus(enableGeoFence)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
             }
             else -> {
@@ -40,6 +43,7 @@ class DengageCoordinator private constructor() {
                     .setHuaweiIntegrationKey(huaweiKey)
                     .setFirebaseIntegrationKey(firebaseKey)
                     .setGeofenceStatus(enableGeoFence)
+                    .setDisableWebUrl(disableWebOpenUrl)
                     .init()
             }
         }

@@ -603,22 +603,6 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         reply(nil)
     }
 
-    /**
-     * Method to setupDengage
-     */
-    func setupDengage(call: FlutterMethodCall, reply: @escaping FlutterResult) {
-        let arguments = call.arguments as! NSDictionary
-
-        let integrationKey = arguments["integrationKey"] as! NSString
-        let enableGeofence = arguments["enableGeofence"] as! DarwinBoolean
-        let application = arguments["application"] as? UIApplication
-
-
-        DengageCoordinator.staticInstance.setupDengage(key: integrationKey, enableGeoFence: ObjCBool.init(enableGeofence.boolValue), launchOptions: nil, application: application)
-
-        reply(nil)
-    }
-
 
     /**
      * Method to listen for notification click.
