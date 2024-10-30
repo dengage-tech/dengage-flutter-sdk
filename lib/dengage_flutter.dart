@@ -165,20 +165,6 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#setTags", {'tags': tags});
   }
 
-  static Future<void> setupDengageAndroid(
-      bool logStatus, String firebaseKey, bool enableGeofence) async {
-    return await _channel.invokeMethod("dEngage#setupDengage", {
-      'logStatus': logStatus,
-      'firebaseKey': firebaseKey,
-      'enableGeofence' : enableGeofence
-    });
-  }
-
-  static Future<void> setupDengageIos(String integrationKey) async {
-    return await _channel.invokeMethod(
-        "dEngage#setupDengage", {'integrationKey': integrationKey});
-  }
-
   static Future<void> requestLocationPermissions() async {
     return await _channel.invokeMethod("dEngage#requestLocationPermissions");
   }
