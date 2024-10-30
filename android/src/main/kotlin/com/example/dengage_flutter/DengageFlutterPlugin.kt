@@ -10,7 +10,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.NonNull
 import com.dengage.sdk.Dengage
-import com.dengage.sdk.DengageManager
 import com.dengage.sdk.callback.DengageCallback
 import com.dengage.sdk.callback.DengageError
 import com.dengage.sdk.domain.inboxmessage.model.InboxMessage
@@ -29,6 +28,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -205,8 +205,6 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
         this.setNavigationWithName(call, result)
       } else if (call.method == "dEngage#setTags") {
         this.setTags(call, result)
-      } else if (call.method == "dEngage#setupDengage") {
-        this.setupDengage(call, result)
       }else if (call.method == "dEngage#enableGeoFence") {
         this.enableGeoFence(call, result)
       }else if (call.method == "dEngage#requestLocationPermissions") {
@@ -700,24 +698,6 @@ class DengageFlutterPlugin: FlutterPlugin, MethodCallHandler, DengageResponder()
       replySuccess(result, true)
     } catch (ex: Exception) {
       Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
-      replyError(result, "error", ex.localizedMessage, ex)
-    }
-  }
-
-  /**
-   * Method to setupDengage.
-   */
-  private fun setupDengage (@NonNull call: MethodCall, @NonNull result: Result) {
-    try {
-      val logStatus: Boolean = call.argument("logStatus")!!
-      val firebaseKey: String? = call.argument("firebaseKey")
-      val huaweiKey: String? = call.argument("huaweiKey")
-      val enableGeofence: Boolean = call.argument("enableGeofence")!!
-
-      DengageCoordinator.sharedInstance.setupDengage(logStatus, firebaseKey, huaweiKey, enableGeofence,false,appContext);
-      replySuccess(result, true)
-    } catch (ex: Exception) {
-      Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
       replyError(result, "error", ex.localizedMessage, ex)
     }
   }
