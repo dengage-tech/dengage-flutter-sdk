@@ -198,8 +198,6 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 this.setNavigationWithName(call, result)
             } else if (call.method == "dEngage#setTags") {
                 this.setTags(call, result)
-            } else if (call.method == "dEngage#setupDengage") {
-                this.setupDengage(call, result)
             } else if (call.method == "dEngage#showRealTimeInApp") {
                 this.showRealTimeInApp(call, result)
             } else if (call.method == "dEngage#setCity") {
@@ -699,27 +697,6 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
             replySuccess(result, true)
         } catch (ex: Exception) {
             Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)
-            replyError(result, "error", ex.localizedMessage, ex)
-        }
-    }
-
-    /**
-     * Method to setupDengage.
-     */
-    private fun setupDengage(@NonNull call: MethodCall, @NonNull result: Result) {
-        try {
-            val logStatus: Boolean = call.argument("logStatus")!!
-            val firebaseKey: String? = call.argument("firebaseKey")
-            val huaweiKey: String? = call.argument("huaweiKey")
-
-            DengageCoordinator.sharedInstance.setupDengage(logStatus,
-                firebaseKey,
-                huaweiKey,
-                false,
-                appContext);
-            replySuccess(result, true)
-        } catch (ex: Exception) {
-            Log.e("Den/RN/:setupDengageErr", ex.localizedMessage)
             replyError(result, "error", ex.localizedMessage, ex)
         }
     }
