@@ -17,35 +17,35 @@ public class DengageCoordinator: NSObject {
     @objc var integerationKey: String?
     @objc var launchOptions: [UIApplication.LaunchOptionsKey: Any]?
 
-    @objc(setupDengage:launchOptions:application:askNotificaionPermission:disableOpenURL:badgeCountReset:)
-    public func setupDengage(key:NSString, launchOptions:NSDictionary?,application:UIApplication?,askNotificaionPermission:DarwinBoolean,disableOpenURL:DarwinBoolean,badgeCountReset:DarwinBoolean) {
+    @objc(setupDengage:launchOptions:application:askNotificationPermission:disableOpenURL:badgeCountReset:)
+    public func setupDengage(key:NSString, launchOptions:NSDictionary?,application:UIApplication?,askNotificationPermission:DarwinBoolean,disableOpenURL:DarwinBoolean,badgeCountReset:DarwinBoolean) {
         Dengage.setIntegrationKey(key: key as String)
-        
+
         if (launchOptions != nil) {
-            
+
             let options = DengageOptions.init(disableOpenURL: disableOpenURL.boolValue, badgeCountReset: badgeCountReset.boolValue, disableRegisterForRemoteNotifications: false)
-            
+
             Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared, withLaunchOptions: launchOptions as! [UIApplication.LaunchOptionsKey : Any], dengageOptions: options)
-           
+
         } else {
-                        
+
             let options = DengageOptions.init(disableOpenURL: disableOpenURL.boolValue, badgeCountReset: badgeCountReset.boolValue, disableRegisterForRemoteNotifications: false)
 
             Dengage.initWithLaunchOptions(application: application ?? UIApplication.shared, withLaunchOptions: [:], dengageOptions: options)
-            
+
         }
-        
-        
+
+
         if (askNotificationPermission.boolValue == true)
         {
             Dengage.promptForPushNotifications()
 
         }
         Dengage.setHybridAppEnvironment()
-        
-        
+
+
     }
-    
+
     @objc(registerForPushToken:)
     public func registerForPushToken(deviceToken: Data) {
         var token = "";

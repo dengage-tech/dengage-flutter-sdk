@@ -1,3 +1,13 @@
+## 1.0.5
+
+Features included
+-This release includes:
+* DengageFlutterPlugin issue resolved
+* this version is without geofence with huawei
+
+
+
+
 ## 1.0.4
 
 Features included
