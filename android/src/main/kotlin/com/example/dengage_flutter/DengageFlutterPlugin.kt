@@ -297,7 +297,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun setContactKey(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val contactKey: String? = call.argument("contactKey")
-            DengageCoordinator.sharedInstance.dengageManager?.setContactKey(contactKey)
+   Dengage.setContactKey(contactKey)
             replySuccess(result, true)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -311,7 +311,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         try {
             val key: String? = call.argument("key")
             if (key != null) {
-                DengageCoordinator.sharedInstance.dengageManager?.setHuaweiIntegrationKey(key)
+                Dengage.setHuaweiIntegrationKey(key)
             } else {
                 throw Exception("required arugment 'key' is missing.")
             }
@@ -327,7 +327,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         try {
             val key: String? = call.argument("key")
             if (key != null) {
-                DengageCoordinator.sharedInstance.dengageManager?.setFirebaseIntegrationKey(key)
+                Dengage.setFirebaseIntegrationKey(key)
             } else {
                 throw Exception("required arugment 'key' is missing.")
             }
@@ -342,7 +342,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun setLogStatus(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val logStatus: Boolean? = call.argument("isVisible") ?: false
-            DengageCoordinator.sharedInstance.dengageManager?.setLogStatus(logStatus)
+            Dengage.setLogStatus(logStatus == true)
             replySuccess(result, true)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -355,7 +355,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun setUserPermission(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val hasPermission: Boolean? = call.argument("hasPermission") ?: false
-            DengageCoordinator.sharedInstance.dengageManager?.setPermission(hasPermission)
+            Dengage.setUserPermission(hasPermission==true)
             replySuccess(result, null)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -369,7 +369,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         try {
             val token: String? = call.argument("token")
             if (token != null) {
-                DengageCoordinator.sharedInstance.dengageManager?.subscription?.token = token
+               Dengage.getSubscription()?.token = token
             } else {
                 throw Exception("required argument 'token' is missing.")
             }
@@ -383,7 +383,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
      */
     private fun getToken(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
-            val token = DengageCoordinator.sharedInstance.dengageManager?.subscription?.token
+            val token = Dengage.getSubscription()?.token
             if (token !== null) {
                 replySuccess(result, token)
                 return
@@ -400,7 +400,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun getContactKey(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val contactKey =
-                DengageCoordinator.sharedInstance.dengageManager?.subscription?.contactKey
+                Dengage.getSubscription()?.contactKey
             replySuccess(result, contactKey)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -413,7 +413,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun getUserPermission(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val userPermission =
-                DengageCoordinator.sharedInstance.dengageManager?.subscription?.permission
+                Dengage.getUserPermission()
             replySuccess(result, userPermission)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -425,7 +425,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
      */
     private fun getSubscription(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
-            val subscription = DengageCoordinator.sharedInstance.dengageManager?.subscription
+            val subscription =Dengage.getSubscription()
             replySuccess(result, Gson().toJson(subscription))
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -583,13 +583,13 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         try {
             val offset: Int = call.argument("offset")!!
             val limit: Int = call.argument("limit") ?: 15
-            val callback = object : DengageCallback<List<InboxMessage>> {
+            val callback = object : DengageCallback<MutableList<InboxMessage>> {
                 override fun onError(error: DengageError) {
                     val list = mutableListOf<Map<String, Any?>>()
                     replySuccess(result, list)
                 }
 
-                override fun onResult(response: List<InboxMessage>) {
+                override fun onResult(response: MutableList<InboxMessage>) {
                     val list = mutableListOf<Map<String, Any?>>()
                     for (message in response) {
                         val json = Gson().toJson(message)
@@ -602,7 +602,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                     replySuccess(result, list)
                 }
             }
-            DengageCoordinator.sharedInstance.dengageManager?.getInboxMessages(limit,
+            Dengage.getInboxMessages(limit,
                 offset,
                 callback)
         } catch (ex: Exception) {
@@ -617,7 +617,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun deleteInboxMessage(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val id: String = call.argument("id")!!
-            DengageCoordinator.sharedInstance.dengageManager!!.deleteInboxMessage(id)
+            Dengage.deleteInboxMessage(id)
             replySuccess(result, true)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -630,7 +630,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun setInboxMessageAsClicked(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val id: String = call.argument("id")!!
-            DengageCoordinator.sharedInstance.dengageManager!!.setInboxMessageAsClicked(id)
+            Dengage.setInboxMessageAsClicked(id)
             replySuccess(result, true)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -643,7 +643,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun setNavigation(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             // todo: appActivity has to be AppCompatActivity but flutter activity isn't yet appcompat.
-            DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity)
+            Dengage.setNavigation(appActivity)
             replySuccess(result, true)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
@@ -656,7 +656,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     private fun setNavigationWithName(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             val screenName: String = call.argument("screenName")!!
-            DengageCoordinator.sharedInstance.dengageManager!!.setNavigation(appActivity,
+            Dengage.setNavigation(appActivity,
                 screenName)
             replySuccess(result, true)
         } catch (ex: Exception) {
@@ -693,7 +693,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 }
             }
 
-            DengageCoordinator.sharedInstance.dengageManager?.setTags(finalTags)
+            Dengage.setTags(finalTags)
             replySuccess(result, true)
         } catch (ex: Exception) {
             Log.e("V/Den/RN/:setTagsErr", ex.localizedMessage)

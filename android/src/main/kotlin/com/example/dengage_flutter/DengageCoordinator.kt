@@ -1,11 +1,12 @@
 package com.example.dengage_flutter
 
 import android.content.Context
+import com.dengage.hms.DengageHmsManager
 import com.dengage.sdk.Dengage
 import com.dengage.sdk.DengageManager
 
+
 class DengageCoordinator private constructor() {
-    var dengageManager: DengageManager? = null
 
     fun setupDengage(
         logStatus: Boolean,
@@ -19,33 +20,17 @@ class DengageCoordinator private constructor() {
             throw Error("Both firebase key and huawei key can't be null at the same time.");
         }
 
-        when {
-            huaweiKey == null -> {
-                dengageManager = DengageManager.getInstance(context)
-                    .setLogStatus(logStatus)
-                    .setFirebaseIntegrationKey(firebaseKey)
-                    .setDisableWebUrl(disableWebOpenUrl)
-                    .init()
-            }
-            firebaseKey == null -> {
-                dengageManager = DengageManager.getInstance(context)
-                    .setLogStatus(logStatus)
-                    .setHuaweiIntegrationKey(huaweiKey)
-                    .setDisableWebUrl(disableWebOpenUrl)
-                    .init()
-            }
-            else -> {
-                dengageManager = DengageManager.getInstance(context)
-                    .setLogStatus(logStatus)
-                    .setHuaweiIntegrationKey(huaweiKey)
-                    .setFirebaseIntegrationKey(firebaseKey)
-                    .setDisableWebUrl(disableWebOpenUrl)
-                    .init()
-            }
-        }
+        val dengageHmsManager = DengageHmsManager()
+        Dengage.init(context = context,
+           firebaseIntegrationKey = firebaseKey,
+            huaweiIntegrationKey = huaweiKey,
+            dengageHmsManager = dengageHmsManager,
+            disableOpenWebUrl = disableWebOpenUrl,
+        )
         if (restartApplication != null) {
             Dengage.restartApplicationAfterPushClick(restartApplication)
         }
+        Dengage.setLogStatus(logStatus)
     }
 
     companion object {

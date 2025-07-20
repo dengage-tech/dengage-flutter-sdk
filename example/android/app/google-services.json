@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "969018429368",
     "project_id": "flutter-sdk-6435c",
-    "storage_bucket": "flutter-sdk-6435c.appspot.com"
+    "storage_bucket": "flutter-sdk-6435c.firebasestorage.app"
   },
   "client": [
     {
@@ -12,12 +12,7 @@
           "package_name": "com.example.dengage_flutter_example"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "969018429368-fm94rrgv6v3nqhlhcpro766ur5smm4vc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyB-KR_62MLwuwbtKep6cSKJp7_8egLGgbo"
@@ -25,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "969018429368-fm94rrgv6v3nqhlhcpro766ur5smm4vc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

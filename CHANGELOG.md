@@ -2,6 +2,16 @@
 
 Features included
 -This release includes:
+* SDK updated to latest versions of android and ios sdk 
+* this version is without geofence with huawei
+
+
+
+
+## 1.0.8
+
+Features included
+-This release includes:
 * DengageFlutterPlugin issue resolved
 * this version is without geofence with huawei
 

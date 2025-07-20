@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print("dengageContactKey: $value");
       //contactKeyChanged(value);
     });
+    DengageFlutter.setNavigation();
     //DengageFlutter.startGeofence();
     // print("setting screen name.");
     // DengageFlutter.setNavigationWithName('MainScreen');

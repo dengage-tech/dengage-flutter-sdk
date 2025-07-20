@@ -28,7 +28,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 34
-
+    namespace 'com.example.dengage_flutter'
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -36,10 +36,15 @@ android {
         minSdkVersion 16
         targetSdkVersion 34
     }
+    kotlinOptions {
+        jvmTarget = "1.8" // Or "11" if appropriate and supported by your setup
+    }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.code.gson:gson:+'
-    implementation 'com.github.dengage-tech:dengage-android-sdk:6.0.64.1'
+    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.79'
+    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk:6.0.79'
+    implementation 'com.google.errorprone:error_prone_annotations:2.11.0'
 }
