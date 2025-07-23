@@ -215,6 +215,14 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
             } else if (call.method == "dEngage#setInAppLinkConfiguration") {
                 this.setInAppLinkConfiguration(call, result)
             }
+            else if (call.method == "dEngage#requestLocationPermissions") {
+                this.requestLocationPermissions(call, result)
+            } else if (call.method == "dEngage#stopGeofence") {
+                this.stopGeofence(call, result)
+            }
+            else if (call.method == "dEngage#startGeofence") {
+                this.startGeofence(call, result)
+            }
             if (call.method == "dEngage#getLastPushPayload") {
                 this.getLastPushPayload(call, result)
             } else {
@@ -866,6 +874,82 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
             }
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+
+
+    private fun requestLocationPermissions(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            val clazz = getDengageGeofenceClass()
+            if (clazz == null) {
+                replySuccess(result, false)
+                return
+            }
+
+            val instance = clazz.getDeclaredField("INSTANCE").get(null)
+            val method = clazz.getMethod("requestLocationPermissions", Activity::class.java)
+            method.invoke(instance, appActivity)
+
+            replySuccess(result, true)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+
+    private fun stopGeofence(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            val clazz = getDengageGeofenceClass()
+            if (clazz == null) {
+                replySuccess(result, false)
+                return
+            }
+
+            val instance = clazz.getDeclaredField("INSTANCE").get(null)
+            val method = clazz.getMethod("stopGeofence")
+            method.invoke(instance)
+
+            replySuccess(result, true)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+
+    private fun startGeofence(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            val clazz = getDengageGeofenceClass()
+            if (clazz == null) {
+                replySuccess(result, false)
+                return
+            }
+
+            val method = clazz.getMethod("startGeofence")
+            val instance = clazz.getDeclaredField("INSTANCE").get(null)
+            method.invoke(instance)
+            replySuccess(result, true)
+
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+
+    private fun createGeofenceOrNull(context: Context): Any? {
+        return try {
+            val clazz = Class.forName("com.dengage.geofence.DengageGeofence")
+            clazz.getConstructor(Context::class.java).newInstance(context)
+        } catch (e: ClassNotFoundException) {
+            null
+        }
+    }
+
+    private fun getDengageGeofenceClass(): Class<*>? {
+        return try {
+            Class.forName("com.dengage.geofence.DengageGeofence")
+        } catch (e: ClassNotFoundException) {
+            null
         }
     }
 }

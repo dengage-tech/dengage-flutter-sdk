@@ -61,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //contactKeyChanged(value);
     });
     DengageFlutter.setNavigation();
+
     //DengageFlutter.startGeofence();
     // print("setting screen name.");
     // DengageFlutter.setNavigationWithName('MainScreen');
@@ -217,13 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  DengageFlutter.setTags([{
-                    "tagName": "kamranTesting",
-                    "tagValue": "My Test Tag Value",
-                    // let changeTime: String?
-                    // let removeTime: String?
-                    // let changeValue: String?
-                  }]);
+                  DengageFlutter.stopGeofence();
                 },
                 child: Text('set Tags'),
               ),

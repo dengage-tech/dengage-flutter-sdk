@@ -40,11 +40,20 @@ android {
         jvmTarget = "1.8" // Or "11" if appropriate and supported by your setup
     }
 }
+def dengageVersion = rootProject.hasProperty('dengageSdkVersion') ? rootProject.getProperty('dengageSdkVersion') : '6.0.79'
+def useHms = rootProject.hasProperty('useHmsSdk') && rootProject.getProperty('useHmsSdk') == 'true'
+def useGeofence = rootProject.hasProperty('useGeofenceSdk') && rootProject.getProperty('useGeofenceSdk') == 'true'
+
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.code.gson:gson:+'
-    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.79'
-    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk:6.0.79'
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:$dengageVersion"
+    if (useGeofence) {
+        implementation "com.github.dengage-tech.dengage-android-sdk:sdk-geofence:$dengageVersion"
+    }
+    if (useHms) {
+        implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:$dengageVersion"
+    }
     implementation 'com.google.errorprone:error_prone_annotations:2.11.0'
 }

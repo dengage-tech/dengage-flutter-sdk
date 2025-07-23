@@ -216,4 +216,17 @@ static Future<void> setPartnerDeviceId(String adid) async {
   static Future<void> setInAppLinkConfiguration(String deepLink) {
     return _channel.invokeMethod("dEngage#setInAppLinkConfiguration", {'deepLink': deepLink});
   }
+
+  static Future<void> requestLocationPermissions() async {
+    return await _channel.invokeMethod("dEngage#requestLocationPermissions");
+  }
+
+  static Future<void> stopGeofence() async {
+    return await _channel.invokeMethod("dEngage#stopGeofence");
+  }
+
+
+  static Future<void> startGeofence() async {
+    return await _channel.invokeMethod("dEngage#startGeofence");
+  }
 }
