@@ -3,174 +3,186 @@ import UIKit
 import Dengage
 
 enum EventChannelName {
-  static let onNotificationClicked = "com.dengage.flutter/onNotificationClicked"
+    static let onNotificationClicked = "com.dengage.flutter/onNotificationClicked"
     static let inAppLinkRetrieval = "com.dengage.flutter/inAppLinkRetrieval"
 }
 
 public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
-  private var eventSink: FlutterEventSink?
+    private var eventSink: FlutterEventSink?
 
-  public static func register(with registrar: FlutterPluginRegistrar) {
-      registrar.register(InAppinlineFactory(messenger: registrar.messenger()), withId: "plugins.dengage/inappinline")
-     
-      let channel = FlutterMethodChannel(name: "dengage_flutter", binaryMessenger: registrar.messenger())
-    let instance = SwiftDengageFlutterPlugin()
+    public static func register(with registrar: FlutterPluginRegistrar) {
+        registrar.register(InAppinlineFactory(messenger: registrar.messenger()), withId: "plugins.dengage/inappinline")
 
-    let notificationEventChannel = FlutterEventChannel(name: EventChannelName.onNotificationClicked,
-                                                       binaryMessenger: registrar.messenger())
-    let inappLinkEventChannel = FlutterEventChannel(name: EventChannelName.inAppLinkRetrieval,
-                                                         binaryMessenger: registrar.messenger())
-     
-    notificationEventChannel.setStreamHandler(instance.self)
-      
-    inappLinkEventChannel.setStreamHandler(instance.self)
+        let channel = FlutterMethodChannel(name: "dengage_flutter", binaryMessenger: registrar.messenger())
+        let instance = SwiftDengageFlutterPlugin()
+
+        let notificationEventChannel = FlutterEventChannel(name: EventChannelName.onNotificationClicked,
+                                                           binaryMessenger: registrar.messenger())
+        let inappLinkEventChannel = FlutterEventChannel(name: EventChannelName.inAppLinkRetrieval,
+                                                        binaryMessenger: registrar.messenger())
+
+        notificationEventChannel.setStreamHandler(instance.self)
+
+        inappLinkEventChannel.setStreamHandler(instance.self)
 
 
-    registrar.addMethodCallDelegate(instance, channel: channel)
-  }
+        registrar.addMethodCallDelegate(instance, channel: channel)
+    }
 
     public func onListen(withArguments arguments: Any?,
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
-      self.eventSink = eventSink
-      self.listenForNotification()
-      self.registerInAppListener()
-      return nil
+        self.eventSink = eventSink
+        self.listenForNotification()
+        self.registerInAppListener()
+        return nil
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         return nil
     }
-   
-    
-  public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    switch call.method {
+
+
+    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch call.method {
         case "dEngage#getPlatformVersion":
             result("iOS " + UIDevice.current.systemVersion)
             break;
-    case "dEngage#setIntegerationKey":
-        self.setIntegrationKey(call: call, result: result)
-        break;
-    case "dEngage#promptForPushNotifications":
-        self.promptForPushNotifications(call: call, result: result)
-        break;
-    case "dEngage#promptForPushNotificationsWithPromise":
-        self.promptForPushNotificationsWithPromise(call: call, result: result)
-        break;
-    case "dEngage#setUserPermission":
-        self.setUserPermission(call: call, result: result)
-        break;
-    case "dEngage#registerForRemoteNotifications":
-        self.registerForRemoteNotifications(call: call, result: result)
-        break;
-    case "dEngage#getToken":
-        self.getToken(call: call, result: result)
-        break;
-    case "dEngage#getContactKey":
-        self.getContactKey(call: call, result: result)
-        break;
-    case "dEngage#setToken":
-        self.setToken(call: call, result: result)
-        break;
-    case "dEngage#setLogStatus":
-        self.setLogStatus(call: call, result: result)
-        break;
-    case "dEngage#setContactKey":
-        self.setContactKey(call: call, result: result)
-        break;
-    case "dEngage#handleNotificationActionBlock":
-        self.handleNotificationActionBlock(call: call, result: result)
-        break;
-    case "dEngage#pageView":
-        self.pageView(call: call, result: result)
-        break;
-    case "dEngage#addToCart":
-        self.addToCart(call: call, result: result)
-        break;
-    case "dEngage#removeFromCart":
-        self.removeFromCart(call: call, result: result)
-        break;
-    case "dEngage#viewCart":
-        self.viewCart(call: call, result: result)
-        break;
-    case "dEngage#beginCheckout":
-        self.beginCheckout(call: call, result: result)
-        break;
-    case "dEngage#placeOrder":
-        self.placeOrder(call: call, result: result)
-        break;
-    case "dEngage#cancelOrder":
-        self.cancelOrder(call: call, result: result)
-        break;
-    case "dEngage#addToWithList":
-        self.addToWithList(call: call, result: result)
-        break;
-    case "dEngage#removeFromWishList":
-        self.removeFromWishList(call: call, result: result)
-        break;
-    case "dEngage#search":
-        self.search(call: call, result: result)
-        break;
-    case "dEngage#sendDeviceEvent":
-        self.sendDeviceEvent(call: call, reply: result)
-        break;
-    case "dEngage#getSubscription":
-        self.getSubscription(call: call, result: result)
-        break;
-    case "dEngage#getInboxMessages":
-        self.getInboxMessages(call: call, reply: result)
-        break;
-    case "dEngage#deleteInboxMessage":
-        self.deleteInboxMessage(call: call, reply: result)
-        break;
-    case "dEngage#setInboxMessageAsClicked":
-        self.setInboxMessageAsClicked(call: call, reply: result)
-        break;
-    case "dEngage#setNavigation":
-        self.setNavigation(call: call, reply: result)
-        break;
-    case "dEngage#setNavigationWithName":
-        self.setNavigationWithName(call: call, reply: result)
-        break;
-    case "dEngage#setTags":
-        self.setTags(call: call, reply: result)
-        break;
-    case "dEngage#showRealTimeInApp":
-        self.showRealTimeInApp(call: call, reply: result)
-        break;
-    case "dEngage#setCity":
-        self.setCity(call: call, result: result)
-        break;
-    case "dEngage#setState":
-        self.setState(call: call, result: result)
-        break;
-    case "dEngage#setCartAmount":
-        self.setCartAmount(call: call, result: result)
-        break;
-    case "dEngage#setCartItemCount":
-        self.setCartItemCount(call: call, result: result)
-        break;
-    case "dEngage#setCategoryPath":
-        self.setCategoryPath(call: call, result: result)
-        break;
-    case "dEngage#setPartnerDeviceId":
-        self.setPartnerDeviceId(call: call, result: result)
-        break;
-    case "dEngage#setInAppLinkConfiguration":
-        self.setInAppLinkConfiguration(call: call, result: result)
-        break;
-    case "dEngage#getLastPushPayload":
-        self.getLastPushPayload(call: call, result: result)
-        break;
+        case "dEngage#setIntegerationKey":
+            self.setIntegrationKey(call: call, result: result)
+            break;
+        case "dEngage#promptForPushNotifications":
+            self.promptForPushNotifications(call: call, result: result)
+            break;
+        case "dEngage#promptForPushNotificationsWithPromise":
+            self.promptForPushNotificationsWithPromise(call: call, result: result)
+            break;
+        case "dEngage#setUserPermission":
+            self.setUserPermission(call: call, result: result)
+            break;
+        case "dEngage#registerForRemoteNotifications":
+            self.registerForRemoteNotifications(call: call, result: result)
+            break;
+        case "dEngage#getToken":
+            self.getToken(call: call, result: result)
+            break;
+        case "dEngage#getContactKey":
+            self.getContactKey(call: call, result: result)
+            break;
+        case "dEngage#setToken":
+            self.setToken(call: call, result: result)
+            break;
+        case "dEngage#setLogStatus":
+            self.setLogStatus(call: call, result: result)
+            break;
+        case "dEngage#setContactKey":
+            self.setContactKey(call: call, result: result)
+            break;
+        case "dEngage#handleNotificationActionBlock":
+            self.handleNotificationActionBlock(call: call, result: result)
+            break;
+        case "dEngage#pageView":
+            self.pageView(call: call, result: result)
+            break;
+        case "dEngage#addToCart":
+            self.addToCart(call: call, result: result)
+            break;
+        case "dEngage#removeFromCart":
+            self.removeFromCart(call: call, result: result)
+            break;
+        case "dEngage#viewCart":
+            self.viewCart(call: call, result: result)
+            break;
+        case "dEngage#beginCheckout":
+            self.beginCheckout(call: call, result: result)
+            break;
+        case "dEngage#placeOrder":
+            self.placeOrder(call: call, result: result)
+            break;
+        case "dEngage#cancelOrder":
+            self.cancelOrder(call: call, result: result)
+            break;
+        case "dEngage#addToWithList":
+            self.addToWithList(call: call, result: result)
+            break;
+        case "dEngage#removeFromWishList":
+            self.removeFromWishList(call: call, result: result)
+            break;
+        case "dEngage#search":
+            self.search(call: call, result: result)
+            break;
+        case "dEngage#sendDeviceEvent":
+            self.sendDeviceEvent(call: call, reply: result)
+            break;
+        case "dEngage#getSubscription":
+            self.getSubscription(call: call, result: result)
+            break;
+        case "dEngage#getInboxMessages":
+            self.getInboxMessages(call: call, reply: result)
+            break;
+        case "dEngage#deleteInboxMessage":
+            self.deleteInboxMessage(call: call, reply: result)
+            break;
+        case "dEngage#setInboxMessageAsClicked":
+            self.setInboxMessageAsClicked(call: call, reply: result)
+            break;
+        case "dEngage#setNavigation":
+            self.setNavigation(call: call, reply: result)
+            break;
+        case "dEngage#setNavigationWithName":
+            self.setNavigationWithName(call: call, reply: result)
+            break;
+        case "dEngage#setTags":
+            self.setTags(call: call, reply: result)
+            break;
+        case "dEngage#requestLocationPermissions":
+            self.requestLocationPermissions(result: result)
+            break;
+        case "dEngage#stopGeofence":
+            self.stopGeofence(result: result)
+            break;
+        case "dEngage#enableGeoFence":
+            self.startGeofence(result: result)
+            break;
+        case "dEngage#startGeofence":
+            self.startGeofence(result: result)
+            break;
+        case "dEngage#showRealTimeInApp":
+            self.showRealTimeInApp(call: call, reply: result)
+            break;
+        case "dEngage#setCity":
+            self.setCity(call: call, result: result)
+            break;
+        case "dEngage#setState":
+            self.setState(call: call, result: result)
+            break;
+        case "dEngage#setCartAmount":
+            self.setCartAmount(call: call, result: result)
+            break;
+        case "dEngage#setCartItemCount":
+            self.setCartItemCount(call: call, result: result)
+            break;
+        case "dEngage#setCategoryPath":
+            self.setCategoryPath(call: call, result: result)
+            break;
+        case "dEngage#setPartnerDeviceId":
+            self.setPartnerDeviceId(call: call, result: result)
+            break;
+        case "dEngage#setInAppLinkConfiguration":
+            self.setInAppLinkConfiguration(call: call, result: result)
+            break;
+        case "dEngage#getLastPushPayload":
+            self.getLastPushPayload(call: call, result: result)
+            break;
         default:
-        self.getSubscription(call: call, result: result)
-        break;
+            self.getSubscription(call: call, result: result)
+            break;
+        }
     }
-  }
 
     /**
      Function to set Integeration key
-        to the value from argument.
+     to the value from argument.
      */
     private func setIntegrationKey (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
@@ -195,7 +207,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     }
 
     /** Function to prompt for push notification and
-        acknowledge back .
+     acknowledge back .
      */
     private func promptForPushNotificationsWithPromise(call: FlutterMethodCall, result: @escaping FlutterResult) {
         Dengage.promptForPushNotifications() { hasPermission in
@@ -227,10 +239,10 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             result(FlutterError.init(code: "error", message: "Required argument 'enabled' is missing.", details: nil))
             return
         }
-       // Dengage.registerForRemoteNotifications(enable: enabled)
-        
+        // Dengage.registerForRemoteNotifications(enable: enabled)
+
         Dengage.promptForPushNotifications()
-        
+
         result(nil)
     }
 
@@ -377,7 +389,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let arguments = call.arguments as! [String : Any]
         let data = arguments["data"] as! [String : Any]
         Dengage.viewCart(parameters: data)
-        
+
     }
 
     /**
@@ -464,53 +476,53 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
         Dengage.getInboxMessages(offset: offset, limit: limit) { (result) in
             switch result {
-                case .success(let resultType): // do something with the result
-                    do {
+            case .success(let resultType): // do something with the result
+                do {
 
-                        var arrDict = [[String:Any]]()
-                        var arrCarousel = [[String:String]]()
+                    var arrDict = [[String:Any]]()
+                    var arrCarousel = [[String:String]]()
 
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-                        formatter.timeZone = TimeZone(abbreviation: "UTC")
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                    formatter.timeZone = TimeZone(abbreviation: "UTC")
 
 
-                        for dict in resultType
+                    for dict in resultType
+                    {
+                        if let items = dict.carouselItems
                         {
-                            if let items = dict.carouselItems
+                            for carousel in items
                             {
-                                for carousel in items
-                                {
-                                    arrCarousel.append(["id": carousel.id , "title":carousel.title ?? "" , "descriptionText":carousel.descriptionText ?? "" , "mediaUrl": carousel.mediaUrl ?? "" ,  "targetUrl":carousel.targetUrl ?? ""])
+                                arrCarousel.append(["id": carousel.id , "title":carousel.title ?? "" , "descriptionText":carousel.descriptionText ?? "" , "mediaUrl": carousel.mediaUrl ?? "" ,  "targetUrl":carousel.targetUrl ?? ""])
 
 
-                                }
-
-                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetUrl ?? "" , "iosCarouselContent": arrCarousel, "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetUrl ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
-                            }
-                            else
-                            {
-                                arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetUrl ?? "" , "iosCarouselContent": [], "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetUrl ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
                             }
 
-
-
+                            arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetUrl ?? "" , "iosCarouselContent": arrCarousel, "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetUrl ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
+                        }
+                        else
+                        {
+                            arrDict.append(["message_json" : ["iosMediaUrl": dict.mediaURL ?? "", "iosTargetUrl":dict.targetUrl ?? "" , "iosCarouselContent": [], "mediaUrl":dict.mediaURL ?? "" , "message": dict.message ?? "" , "receiveDate": formatter.string(from: dict.receiveDate ?? Date()) ?? "", "targetUrl":dict.targetUrl ?? "" , "title": dict.title ?? "" ], "is_clicked": dict.isClicked, "smsg_id": dict.id])
                         }
 
-                        let encodedData = try JSONSerialization.data(withJSONObject: arrDict, options: .prettyPrinted)
 
-                        let jsonString = String(data: encodedData,
-                                                encoding: .utf8)
-                        print("JSON String of inbox API \(jsonString)")
-                        reply(jsonString)
 
-                    } catch {
-                        reply("[\n\n]")
                     }
-                    break;
-                case .failure(let error): // Handle the error
+
+                    let encodedData = try JSONSerialization.data(withJSONObject: arrDict, options: .prettyPrinted)
+
+                    let jsonString = String(data: encodedData,
+                                            encoding: .utf8)
+                    print("JSON String of inbox API \(jsonString)")
+                    reply(jsonString)
+
+                } catch {
+                    reply("[\n\n]")
+                }
+                break;
+            case .failure(let error): // Handle the error
                 reply("[\n\n]")
-                    break;
+                break;
             }
         }
     }
@@ -523,12 +535,12 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let id = arguments["id"] as! String
         Dengage.deleteInboxMessage(with: id) { (result) in
             switch result {
-                case .success:
-                    reply(["success": true, "id": id])
-                    break;
-                case .failure (let error):
-                    reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
-                    break;
+            case .success:
+                reply(["success": true, "id": id])
+                break;
+            case .failure (let error):
+                reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
+                break;
             }
         }
     }
@@ -541,12 +553,12 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let id = arguments["id"] as! String
         Dengage.setInboxMessageAsClicked (with: id) { (result) in
             switch result {
-                case .success:
-                    reply(["success": true, "id": id])
-                    break;
-                case .failure (let error):
-                    reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
-                    break;
+            case .success:
+                reply(["success": true, "id": id])
+                break;
+            case .failure (let error):
+                reply(FlutterError.init(code: "error", message: error.localizedDescription , details: error))
+                break;
             }
         }
     }
@@ -625,25 +637,25 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             reqContent["body"] = notificationResponse.notification.request.content.body
             reqContent["categoryIdentifier"] = notificationResponse.notification.request.content.categoryIdentifier
             reqContent["launchImageName"] = notificationResponse.notification.request.content.launchImageName
-//
-//            // @NSCopying open var sound: UNNotificationSound? { get }
-//            //reqContent["sound"] = notificationResponse.notification.request.content.sound // this yet ignored, will include later.
-//
+            //
+            //            // @NSCopying open var sound: UNNotificationSound? { get }
+            //            //reqContent["sound"] = notificationResponse.notification.request.content.sound // this yet ignored, will include later.
+            //
             reqContent["subtitle"] = notificationResponse.notification.request.content.subtitle
             reqContent["threadIdentifier"] = notificationResponse.notification.request.content.threadIdentifier
             reqContent["title"] = notificationResponse.notification.request.content.title
             reqContent["userInfo"] = notificationResponse.notification.request.content.userInfo
             // todo: make sure it is RCTCovertible & doesn't break the code
 
-           // todo: will include this only if required.
-           if #available(iOS 12.0, *) {
-               reqContent["summaryArgument"] = notificationResponse.notification.request.content.summaryArgument
-               reqContent["summaryArgumentCount"] = notificationResponse.notification.request.content.summaryArgumentCount
-           }
+            // todo: will include this only if required.
+            if #available(iOS 12.0, *) {
+                reqContent["summaryArgument"] = notificationResponse.notification.request.content.summaryArgument
+                reqContent["summaryArgumentCount"] = notificationResponse.notification.request.content.summaryArgumentCount
+            }
 
-           if #available(iOS 13.0, *) {
-               reqContent["targetContentIdentifier"] = notificationResponse.notification.request.content.targetContentIdentifier
-           }
+            if #available(iOS 13.0, *) {
+                reqContent["targetContentIdentifier"] = notificationResponse.notification.request.content.targetContentIdentifier
+            }
 
 
             reqContent["attachments"] = contentAttachments
@@ -652,13 +664,61 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             response["notification"] = notification
 
             guard let eventSink = self.eventSink else {
-              return
+                return
             }
             eventSink([response])
         }
     }
+    /**
+     * Method to GeoFence
+     */
+
+    private func getDengageGeofenceClass() -> AnyClass? {
+        return NSClassFromString("DengageGeofence")
+    }
 
 
+    private func invokeStaticMethod(_ className: String, methodName: String) -> Bool {
+           // Try fully qualified and unqualified names
+           let possibleNames = ["Dengage.\(className)", className]
+           var targetClass: AnyClass? = nil
+           for name in possibleNames {
+               if let clazz = NSClassFromString(name) {
+                   targetClass = clazz
+                   break
+               }
+           }
+           guard let clazz = targetClass else {
+               print("[DengageGeofence] Class not found (tried: \(possibleNames))")
+               return false
+           }
+           guard let method = class_getClassMethod(clazz, Selector((methodName))) else {
+               print("[DengageGeofence] Method not found: \(methodName) in \(clazz)")
+               return false
+           }
+           typealias Func = @convention(c) (AnyObject, Selector) -> Void
+           let impl = unsafeBitCast(method_getImplementation(method), to: Func.self)
+           impl(clazz, Selector((methodName)))
+           return true
+       }
+
+
+    private func requestLocationPermissions(result: @escaping FlutterResult) {
+        let success = invokeStaticMethod("DengageGeofence", methodName: "requestLocationPermissions")
+        result(success)
+    }
+
+    private func startGeofence(result: @escaping FlutterResult) {
+        let success = invokeStaticMethod("DengageGeofence", methodName: "startGeofence")
+        result(success)
+
+
+    }
+
+    private func stopGeofence(result: @escaping FlutterResult) {
+        let success = invokeStaticMethod("DengageGeofence", methodName: "stopGeofence")
+        result(success)
+    }
     /**
      * Method to sendDeviceEvent
      */
@@ -669,71 +729,71 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         Dengage.showRealTimeInApp(screenName: screenName, params: data)
         reply(nil)
     }
-    
+
     private func setCity (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let city = arguments["city"] as! String
-      
+
         Dengage.setCity(name: city)
         result(nil)
     }
-    
+
     private func setState (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let state = arguments["state"] as! String
-      
+
         Dengage.setState(name: state)
         result(nil)
     }
-    
+
     private func setCartAmount (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let amount = arguments["amount"] as! String
-      
+
         Dengage.setCart(amount: amount)
         result(nil)
     }
-    
+
     private func setCartItemCount (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let count = arguments["count"] as! String
-      
+
         Dengage.setCart(itemCount: count)
         result(nil)
     }
-    
+
     private func setCategoryPath (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let path = arguments["path"] as! String
-      
+
         Dengage.setCategory(path: path)
         result(nil)
     }
-    
+
     private func setPartnerDeviceId (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let arguments = call.arguments as! NSDictionary
         let adid = arguments["adid"] as! String
-      
+
         Dengage.setPartnerDeviceId(adid: adid)
         result(nil)
     }
-    
+
     private func getLastPushPayload (call: FlutterMethodCall, result: @escaping FlutterResult) {
         let pushPayLoad = Dengage.getLastPushPayload()
         result(pushPayLoad)
     }
-    
+
     func registerInAppListener ()
     {Dengage.handleInAppDeeplink{ url in
-                var response = [String:Any?]();
-                response["targetUrl"] = url
-                print(url)
+        var response = [String:Any?]();
+        response["targetUrl"] = url
+        print(url)
         guard let eventSink = self.eventSink else {
-          return
+            return
         }
         eventSink([response])
-               
-        }
+
+    }
     }
     
     private func setInAppLinkConfiguration (call: FlutterMethodCall, result: @escaping FlutterResult) {
