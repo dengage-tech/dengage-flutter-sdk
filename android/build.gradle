@@ -40,7 +40,7 @@ android {
         jvmTarget = "1.8" // Or "11" if appropriate and supported by your setup
     }
 }
-def dengageVersion = rootProject.hasProperty('dengageSdkVersion') ? rootProject.getProperty('dengageSdkVersion') : '6.0.79'
+def dengageVersion = rootProject.hasProperty('dengageSdkVersion') ? rootProject.getProperty('dengageSdkVersion') : '6.0.80'
 def useHms = rootProject.hasProperty('useHmsSdk') && rootProject.getProperty('useHmsSdk') == 'true'
 def useGeofence = rootProject.hasProperty('useGeofenceSdk') && rootProject.getProperty('useGeofenceSdk') == 'true'
 

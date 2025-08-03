@@ -32,13 +32,13 @@ target 'Runner' do
   use_modular_headers!
 
   
-  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.78'
+  pod 'Dengage'
    pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.78'
 
   target 'DengageNotificationServiceExtension' do
     use_frameworks!
     inherit! :search_paths
-    
+
 
   end
 
@@ -47,7 +47,7 @@ end
 
 
 
-post_install do |installer
+post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end

@@ -80,6 +80,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:21.1.1'  // Add this line
     implementation 'com.google.firebase:firebase-messaging:23.3.1'  // Add this line
     implementation 'com.google.firebase:firebase-analytics:21.1.1' // Add this line
-    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.79'
-    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk:6.0.79'
+    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.80'
+    implementation 'com.github.dengage-tech.dengage-android-sdk:sdk:6.0.80'
 }
