@@ -1,3 +1,13 @@
+## 1.1.1
+
+Features included
+-This release includes:
+* SDK updated to latest versions of android and ios sdk
+
+
+
+
+
 ## 1.1.0
 
 Features included
