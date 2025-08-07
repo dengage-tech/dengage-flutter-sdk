@@ -70,7 +70,7 @@ class DengageFlutter {
 
   static Future<bool?> setLogStatus(bool isVisible) async {
     return await _channel
-        .invokeMethod("dEngage#setLogStatus", {'logStatus': isVisible});
+        .invokeMethod("dEngage#setLogStatus", {'isVisible': isVisible});
   }
 
   // android Only
@@ -169,19 +169,52 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#setTags", {'tags': tags});
   }
 
-  static Future<void> setupDengageAndroid(
-      bool logStatus, String firebaseKey, String huaweiKey,bool enableGeofence) async {
-    return await _channel.invokeMethod("dEngage#setupDengage", {
-      'logStatus': logStatus,
-      'firebaseKey': firebaseKey,
-      'huaweiKey': huaweiKey,
-      'enableGeofence' : enableGeofence
-    });
+static Future<void> showRealTimeInApp(String screenName,Object data) async {
+     return await _channel.invokeMethod(
+         "dEngage#showRealTimeInApp", {'screenName': screenName, "data": data});
+   }
+
+
+   static Future<void> setCity(String city) async {
+     return await _channel.invokeMethod(
+         "dEngage#setCity", {'city': city});
+   }
+
+
+   static Future<void> setState(String state) async {
+     return await _channel.invokeMethod(
+         "dEngage#setState", {'state': state});
+   }
+
+
+   static Future<void> setCartAmount(String amount) async {
+     return await _channel.invokeMethod(
+         "dEngage#setCartAmount", {'amount': amount});
+   }
+
+
+   static Future<void> setCartItemCount(String count) async {
+     return await _channel.invokeMethod(
+         "dEngage#setCartItemCount", {'count': count});
+   }
+
+
+   static Future<void> setCategoryPath(String path) async {
+     return await _channel.invokeMethod(
+         "dEngage#setCategoryPath", {'path': path});
+   }
+
+static Future<void> setPartnerDeviceId(String adid) async {
+     return await _channel.invokeMethod(
+         "dEngage#setPartnerDeviceId", {'adid': adid});
+   }
+
+  static Future<String?> getLastPushPayload() {
+    return _channel.invokeMethod("dEngage#getLastPushPayload");
   }
 
-  static Future<void> setupDengageIos(String integrationKey) async {
-    return await _channel.invokeMethod(
-        "dEngage#setupDengage", {'integrationKey': integrationKey});
+  static Future<void> setInAppLinkConfiguration(String deepLink) {
+    return _channel.invokeMethod("dEngage#setInAppLinkConfiguration", {'deepLink': deepLink});
   }
 
   static Future<void> requestLocationPermissions() async {
@@ -192,9 +225,6 @@ class DengageFlutter {
     return await _channel.invokeMethod("dEngage#stopGeofence");
   }
 
-  static Future<void> enableGeoFence(bool isEnabled) async {
-    return await _channel.invokeMethod("dEngage#enableGeoFence", {'isEnabled': isEnabled});
-  }
 
   static Future<void> startGeofence() async {
     return await _channel.invokeMethod("dEngage#startGeofence");

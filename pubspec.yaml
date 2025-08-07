@@ -1,11 +1,11 @@
 name: dengage_flutter
 description: Flutter SDK for Dengage SDKs. D·engage Customer Driven Marketing Platform (CDMP) serves as a customer data platform (CDP) with built-in omnichannel marketing features. It replaces your marketing automation and cross-channel campaign management.
   For further details about D·engage please [visit here](https://dev.dengage.com).
-version: 0.2.3
+version: 1.1.0
 homepage: https://github.com/dengage-tech/dengage-flutter-sdk
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
   flutter: ">=1.20.0"
 
 dependencies:

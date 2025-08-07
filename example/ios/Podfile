@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '9.0'
+ platform :ios, '12.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -32,13 +32,13 @@ target 'Runner' do
   use_modular_headers!
 
   
-  pod 'Dengage.Framework'
-  pod 'Dengage.Framework.Extensions','1.0.10'
-  
+  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.81'
+   pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.81'
+
   target 'DengageNotificationServiceExtension' do
     use_frameworks!
     inherit! :search_paths
-    
+
 
   end
 

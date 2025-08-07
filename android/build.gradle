@@ -6,6 +6,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
@@ -18,6 +19,7 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -25,18 +27,33 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
-
+    compileSdkVersion 34
+    namespace 'com.example.dengage_flutter'
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
     defaultConfig {
         minSdkVersion 16
+        targetSdkVersion 34
+    }
+    kotlinOptions {
+        jvmTarget = "1.8" // Or "11" if appropriate and supported by your setup
     }
 }
+def dengageVersion = rootProject.hasProperty('dengageSdkVersion') ? rootProject.getProperty('dengageSdkVersion') : '6.0.80'
+def useHms = rootProject.hasProperty('useHmsSdk') && rootProject.getProperty('useHmsSdk') == 'true'
+def useGeofence = rootProject.hasProperty('useGeofenceSdk') && rootProject.getProperty('useGeofenceSdk') == 'true'
+
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.code.gson:gson:+'
-    implementation 'com.github.whitehorse-technology:dengage.android.sdk:4.3.9'
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:$dengageVersion"
+    if (useGeofence) {
+        implementation "com.github.dengage-tech.dengage-android-sdk:sdk-geofence:$dengageVersion"
+    }
+    if (useHms) {
+        implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:$dengageVersion"
+    }
+    implementation 'com.google.errorprone:error_prone_annotations:2.11.0'
 }
