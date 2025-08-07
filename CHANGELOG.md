@@ -1,36 +1,8 @@
 ## 1.1.1
-
-### 🚀 Major Android Compatibility Update
-
-This release includes a comprehensive Android compatibility update to resolve JVM target compatibility issues and modernize the build configuration.
-
-#### ✅ What's Fixed
-- **JVM Target Compatibility**: Resolved "Inconsistent JVM-target compatibility detected" error
-- **Java 17 Support**: Full compatibility with Java 17 and modern Android development standards
-- **Build Tool Updates**: Updated to Android Gradle Plugin 8.5.0 and Kotlin 1.9.22
-- **Performance Improvements**: Optimized memory settings and build configurations
-
-#### 📋 Technical Changes
-- Kotlin version: 1.6.0 → 1.9.22
-- Android Gradle Plugin: 4.1.0 → 8.5.0
-- JVM Target: 1.8 → 17
-- Minimum SDK: 16 → 21
-- Updated all dependencies to latest stable versions
-
-#### 🔧 System Requirements
-- **Java**: JDK 17 or higher (JDK 21 recommended)
-- **Android Studio**: Arctic Fox (2020.3.1) or higher
-- **Gradle**: 8.0 or higher
-- **Android Gradle Plugin**: 8.0 or higher
-
-#### 📚 Documentation
-- Added comprehensive migration guide in `ANDROID_COMPATIBILITY_UPDATE.md`
-- Updated README with compatibility information
-- Enhanced troubleshooting documentation
-
-For detailed migration instructions, see [ANDROID_COMPATIBILITY_UPDATE.md](ANDROID_COMPATIBILITY_UPDATE.md).
-
----
+Features included
+-This release includes:
+* SDK updated to latest versions of android and ios sdk
+* Latest gradle support
 
 ## 1.1.0
 
