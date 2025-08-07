@@ -47,9 +47,15 @@ android {
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
-        kotlinOptions {
-            jvmTarget = "1.8" // Or "11" if appropriate and supported by your setup
-        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
 //    splits {
@@ -60,8 +66,6 @@ android {
 //            universalApk true
 //        }
 //    }
-
-
 
     buildTypes {
 
@@ -74,12 +78,12 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10"
-    implementation 'com.google.errorprone:error_prone_annotations:2.11.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.firebase:firebase-core:21.1.1'  // Add this line
-    implementation 'com.google.firebase:firebase-messaging:23.3.1'  // Add this line
-    implementation 'com.google.firebase:firebase-analytics:21.1.1' // Add this line
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+    implementation 'com.google.errorprone:error_prone_annotations:2.23.0'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-messaging:23.4.0'
+    implementation 'com.google.firebase:firebase-analytics:21.5.0'
     implementation 'com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.80'
     implementation 'com.github.dengage-tech.dengage-android-sdk:sdk:6.0.80'
 }
