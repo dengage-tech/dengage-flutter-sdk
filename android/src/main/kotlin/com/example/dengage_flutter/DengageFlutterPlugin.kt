@@ -94,8 +94,6 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
             INAPP_LINK_RETRIEVAL).setStreamHandler(
             object : StreamHandler {
                 override fun onListen(arguments: Any?, events: EventSink?) {
-                    Dengage.setDevelopmentStatus(true)
-                    Dengage.inAppLinkConfiguration("ddd")
                     Log.d("den/flutter", "RegisteringNotificationListeners.")
 
                     val filter = IntentFilter()
