@@ -152,6 +152,10 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 this.setLogStatus(call, result)
             } else if (call.method == "dEngage#setPermission") {
                 this.setUserPermission(call, result)
+            } else if (call.method == "dEngage#promptForPushNotifications") {
+                this.promptForPushNotifications(call, result)
+            } else if (call.method == "dEngage#promptForPushNotificationsWithPromise") {
+                this.promptForPushNotificationsWithPromise(call, result)
             } else if (call.method == "dEngage#setToken") {
                 this.setToken(call, result)
             } else if (call.method == "dEngage#getToken") {
@@ -363,6 +367,32 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
             val hasPermission: Boolean? = call.argument("hasPermission") ?: false
             Dengage.setUserPermission(hasPermission==true)
             replySuccess(result, null)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+    /**
+     * Method to prompt for push notification permission (Android).
+     * Same as React SDK: calls Dengage.requestNotificationPermission(activity).
+     */
+    private fun promptForPushNotifications(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            Dengage.requestNotificationPermission(appActivity)
+            replySuccess(result, null)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+    /**
+     * Method to prompt for push notification permission with result (Android).
+     * Request is sent; actual permission can be read later via getUserPermission().
+     */
+    private fun promptForPushNotificationsWithPromise(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            Dengage.requestNotificationPermission(appActivity)
+            replySuccess(result, true)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
         }
