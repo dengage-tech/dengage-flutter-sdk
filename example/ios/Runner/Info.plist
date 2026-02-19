@@ -30,6 +30,8 @@
 	<string>https://event.dengage.com</string>
 	<key>DengageGeofenceApiUrl</key>
 	<string>https://push.dengage.com/geoapi</string>
+	<key>fetchRealTimeINAPPURL</key>
+	<string>https://tr-inapp.lib.dengage.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

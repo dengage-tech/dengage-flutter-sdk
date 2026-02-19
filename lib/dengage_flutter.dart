@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+export 'AppStoryView.dart';
+export 'InAppInline.dart';
+
 class DengageFlutter {
   static const MethodChannel _channel = const MethodChannel('dengage_flutter');
 

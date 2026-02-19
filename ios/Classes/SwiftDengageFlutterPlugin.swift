@@ -13,6 +13,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         registrar.register(InAppinlineFactory(messenger: registrar.messenger()), withId: "plugins.dengage/inappinline")
+        registrar.register(AppStoryViewFactory(messenger: registrar.messenger()), withId: "plugins.dengage/appstory")
 
         let channel = FlutterMethodChannel(name: "dengage_flutter", binaryMessenger: registrar.messenger())
         let instance = SwiftDengageFlutterPlugin()
