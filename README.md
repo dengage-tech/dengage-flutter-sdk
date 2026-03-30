@@ -38,7 +38,7 @@ In your app’s `pubspec.yaml`:
 dependencies:
   flutter:
     sdk: flutter
-  dengage_flutter: ^1.1.3   # use latest from pub.dev or git
+  dengage_flutter: ^1.1.4   # use latest from pub.dev or git
 ```
 
 Then run:
