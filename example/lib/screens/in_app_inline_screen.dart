@@ -91,7 +91,7 @@ class _InAppInlineScreenState extends State<InAppInlineScreen> {
                           propertyId: _propertyId,
                           screenName: _screenName,
                           customParams: HashMap<String, String>(),
-                          hideIfNotFound: true,
+                          hideIfNotFound: widget.hideIfNotFound,
                           onVisibilityChanged: widget.hideIfNotFound
                               ? (hidden) {
                                   if (mounted) setState(() => _nativeReportsHidden = hidden);

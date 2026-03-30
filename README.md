@@ -11,9 +11,12 @@
 5. [iOS integration](#5-ios-integration)
 6. [Rich and carousel push (Android & iOS)](#6-rich-and-carousel-push-android--ios)
 7. [Flutter API reference](#7-flutter-api-reference)
-8. [In-app inline and App Story](#8-in-app-inline-and-app-story)
+8. [In-app inline and App Story](#8-in-app-inline-and-app-story)  
+   - [8.1 In-app inline](#81-in-app-inline)  
+   - [8.2 App Story](#82-app-story)
 9. [Inbox, deep links, and utilities](#9-inbox-deep-links-and-utilities)
 10. [Example app and troubleshooting](#10-example-app-and-troubleshooting)
+11. [Resources](#resources)
 
 ---
 
@@ -663,13 +666,9 @@ The widget uses an internal **key** derived from `propertyId`, `screenName`, `cu
 
 Native code polls visibility and sends **`onVisibilityChanged(isHidden)`** to Dart over a per-view method channel. **`isHidden == true`** means the native slot is not visible (e.g. after `hideIfNotFound: true` and no campaign). There is a short **debounce (~0.6s)** before “hidden” is reported so brief transitions do not flicker.
 
-The callback **does not** change your layout by itself. Use it if you want a **zero-height slot** in Flutter when native hides the inline (typical pattern in a `StatefulWidget`): keep a `bool nativeHidden`, pass `onVisibilityChanged: (h) => setState(() => nativeHidden = h)` only when `hideIfNotFound` is true, and build `SizedBox.shrink()` instead of `SizedBox(height: 244, child: InAppInline(...))` when `hideIfNotFound && nativeHidden`. In a `ListView`, return `SizedBox.shrink()` for that row in the same case so it takes no vertical space.
+The callback **does not** change your layout by itself. Use it if you want a **zero-height slot** in Flutter when native hides the inline (typical pattern in a `StatefulWidget`): keep a `bool nativeHidden`, pass `onVisibilityChanged: (h) => setState(() => nativeHidden = h)` only when `hideIfNotFound` is true, and build `SizedBox.shrink()` instead of `SizedBox(height: 244, child: InAppInline(...))` when `hideIfNotFound && nativeHidden`. In a `ListView`, return `SizedBox.shrink()` for that row in the same case so it takes no vertical space. A runnable sample (red debug border, collapse when native reports hidden) is in **[in_app_inline_screen.dart](https://github.com/dengage-tech/dengage-flutter-sdk/blob/stable_combined/example/lib/screens/in_app_inline_screen.dart)** on the `stable_combined` branch.
 
 > **Note:** If `hideIfNotFound` is `false`, the native view usually stays visible; `onVisibilityChanged` may rarely report `true`. You can omit `onVisibilityChanged` when you always reserve a fixed height.
-
-#### Example app
-
-See `example/lib/screens/in_app_inline_screen.dart` for a sample screen (red debug border, optional collapse when `hideIfNotFound` is true).
 
 ### 8.2 App Story
 
@@ -720,7 +719,7 @@ Replace integration keys in:
 |-------|------|
 | Push not received (Android) | `google-services.json` in `android/app/`, FCM service in manifest, Firebase key in Dengage dashboard and in `setupDengage`. |
 | Push not received (iOS) | Capabilities: Push Notifications + Remote notifications; APNs key/cert in Dengage; `registerForPushToken` in AppDelegate; correct integration key. |
-| In-app not showing | `setNavigationWithName(screenName)` called; screen name matches campaign targeting; endpoint meta-data/Info.plist correct. |
+| In-app not showing | Screen / campaign targeting matches dashboard rules; in-app fetch and endpoint meta-data / `Info.plist` correct. |
 | Inline slot flashes then disappears | With `hideIfNotFound: true`, no matching campaign (or wrong `propertyId` vs dashboard **inline / androidSelector**) causes native to hide the view; use `hideIfNotFound: false` to keep the placeholder visible for debugging, or fix targeting. Collapse logic + `onVisibilityChanged` also removes the Flutter slot when native reports hidden. |
 | Inline huge empty gap in `ListView` | Wrap `InAppInline` in a **fixed height** `SizedBox` (or similar); vertical list children get unbounded height without it. |
 | Carousel not showing (Android) | Receiver registered with `CAROUSEL_ITEM_CLICK`; `onCarouselRender` implemented; layouts and notification channel created. |
