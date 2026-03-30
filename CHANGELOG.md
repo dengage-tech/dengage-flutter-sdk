@@ -1,3 +1,8 @@
+## 1.1.5
+Features included
+-This release includes:
+* Inapp inline visibility issue resolved
+
 ## 1.1.4
 Features included
 -This release includes:

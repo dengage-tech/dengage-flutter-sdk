@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         '/event_history': (context) => const EventHistoryScreen(),
         '/cart': (context) => const CartScreen(),
         '/geofence': (context) => const GeofenceScreen(),
-        '/in_app_inline': (context) => const InAppInlineScreen(),
+        '/in_app_inline': (context) => const InAppInlineScreen(hideIfNotFound: true),
         '/app_story': (context) => const AppStoryScreen(),
       },
     );

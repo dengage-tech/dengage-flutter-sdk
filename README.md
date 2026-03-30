@@ -623,21 +623,53 @@ Call these after the app (and native SDK) are ready. Prefer calling from a `Stat
 
 ### 8.1 In-app inline
 
-Use the **InAppInline** widget where you want a native inline in-app block (e.g. banner or slot). It embeds the native view via platform view.
+Use the **InAppInline** widget where you want a native inline in-app block (HTML/content from the Dengage dashboard). It embeds a **platform view** (Android `WebView` / iOS `WKWebView` under the hood).
+
+#### Basic usage
 
 ```dart
 import 'package:dengage_flutter/dengage_flutter.dart';
+import 'dart:collection';
 
-InAppInline(
-  propertyId: '1',
-  screenName: 'home-inline',
-  customParams: HashMap<String, String>(),
-  hideIfNotFound: false,
+
+
+SizedBox(
+  height: 244, // required: platform views need a bounded height
+  child: InAppInline(
+    propertyId: 'your-inline-property-id',
+    screenName: 'home-inline',
+    customParams: HashMap<String, String>(),
+    hideIfNotFound: false,
+  ),
 )
 ```
 
-- Call `setNavigationWithName(screenName)` before showing the widget so targeting matches.
-- Give the widget a bounded height (e.g. `SizedBox(height: 244, child: InAppInline(...))`).
+- **`propertyId`**: Must match the **inline placement ID** configured in the Dengage dashboard (on Android this must match the campaign’s **inline / `androidSelector`** for that slot). If it does not match, the SDK will not render content in that slot.
+- **`screenName`**: screen-based targeting works.
+- **`customParams`**: Optional key/value map passed to native for targeting (same idea as other SDKs).
+- **`hideIfNotFound`**:  
+  - `true` — native SDK may **hide** the view when no matching inline campaign is found (Android: `View.GONE`; iOS: `isHidden` / zero frame).  
+  - `false` — the placeholder view typically **stays** in the layout even when nothing matches (useful for debugging).
+
+#### ListView / scrollables
+
+Inside a vertical `ListView` (or any parent with **unbounded height** in the scroll direction), **always** wrap `InAppInline` in a **fixed height** (or strict `AspectRatio`), e.g. `SizedBox(height: 244, child: InAppInline(...))`. If you omit this, the platform view can expand incorrectly (e.g. huge empty gap).
+
+#### Refreshing when inputs change
+
+The widget uses an internal **key** derived from `propertyId`, `screenName`, `customParams`, and `hideIfNotFound`. When any of these change, Flutter **recreates** the platform view so native runs the show-inline flow again. You do not need to manually “remount” the widget beyond updating those arguments (and calling `setState` / rebuild).
+
+#### `onVisibilityChanged` (optional)
+
+Native code polls visibility and sends **`onVisibilityChanged(isHidden)`** to Dart over a per-view method channel. **`isHidden == true`** means the native slot is not visible (e.g. after `hideIfNotFound: true` and no campaign). There is a short **debounce (~0.6s)** before “hidden” is reported so brief transitions do not flicker.
+
+The callback **does not** change your layout by itself. Use it if you want a **zero-height slot** in Flutter when native hides the inline (typical pattern in a `StatefulWidget`): keep a `bool nativeHidden`, pass `onVisibilityChanged: (h) => setState(() => nativeHidden = h)` only when `hideIfNotFound` is true, and build `SizedBox.shrink()` instead of `SizedBox(height: 244, child: InAppInline(...))` when `hideIfNotFound && nativeHidden`. In a `ListView`, return `SizedBox.shrink()` for that row in the same case so it takes no vertical space.
+
+> **Note:** If `hideIfNotFound` is `false`, the native view usually stays visible; `onVisibilityChanged` may rarely report `true`. You can omit `onVisibilityChanged` when you always reserve a fixed height.
+
+#### Example app
+
+See `example/lib/screens/in_app_inline_screen.dart` for a sample screen (red debug border, optional collapse when `hideIfNotFound` is true).
 
 ### 8.2 App Story
 
@@ -689,6 +721,8 @@ Replace integration keys in:
 | Push not received (Android) | `google-services.json` in `android/app/`, FCM service in manifest, Firebase key in Dengage dashboard and in `setupDengage`. |
 | Push not received (iOS) | Capabilities: Push Notifications + Remote notifications; APNs key/cert in Dengage; `registerForPushToken` in AppDelegate; correct integration key. |
 | In-app not showing | `setNavigationWithName(screenName)` called; screen name matches campaign targeting; endpoint meta-data/Info.plist correct. |
+| Inline slot flashes then disappears | With `hideIfNotFound: true`, no matching campaign (or wrong `propertyId` vs dashboard **inline / androidSelector**) causes native to hide the view; use `hideIfNotFound: false` to keep the placeholder visible for debugging, or fix targeting. Collapse logic + `onVisibilityChanged` also removes the Flutter slot when native reports hidden. |
+| Inline huge empty gap in `ListView` | Wrap `InAppInline` in a **fixed height** `SizedBox` (or similar); vertical list children get unbounded height without it. |
 | Carousel not showing (Android) | Receiver registered with `CAROUSEL_ITEM_CLICK`; `onCarouselRender` implemented; layouts and notification channel created. |
 | Rich/carousel not showing (iOS) | Service Extension calls `Dengage.didReceiveNotificationRequest`; Content Extension category matches payload; storyboard and view controller wired. |
 | Build errors (iOS) | `pod install`; minimum iOS version in Podfile; Dengage pod version matches what the plugin expects. |

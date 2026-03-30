@@ -4,7 +4,13 @@ import 'package:dengage_flutter/InAppInline.dart';
 import 'package:flutter/material.dart';
 
 class InAppInlineScreen extends StatefulWidget {
-  const InAppInlineScreen({Key? key}) : super(key: key);
+  const InAppInlineScreen({
+    Key? key,
+    this.hideIfNotFound = true,
+  }) : super(key: key);
+
+  /// Pass through to [InAppInline]; configure from route/parent, not from UI here.
+  final bool hideIfNotFound;
 
   @override
   State<InAppInlineScreen> createState() => _InAppInlineScreenState();
@@ -14,6 +20,7 @@ class _InAppInlineScreenState extends State<InAppInlineScreen> {
   final _propertyIdController = TextEditingController(text: '1');
   final _screenNameController = TextEditingController(text: 'inline');
   bool _showInline = false;
+  bool _nativeReportsHidden = false;
 
   @override
   void dispose() {
@@ -21,6 +28,14 @@ class _InAppInlineScreenState extends State<InAppInlineScreen> {
     _screenNameController.dispose();
     super.dispose();
   }
+
+  String get _propertyId =>
+      _propertyIdController.text.trim().isEmpty ? '1' : _propertyIdController.text.trim();
+
+  String get _screenName =>
+      _screenNameController.text.trim().isEmpty ? 'inline' : _screenNameController.text.trim();
+
+  bool get _collapseSlot => widget.hideIfNotFound && _nativeReportsHidden;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +69,10 @@ class _InAppInlineScreenState extends State<InAppInlineScreen> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => setState(() => _showInline = true),
+              onPressed: () => setState(() {
+                _showInline = true;
+                _nativeReportsHidden = false;
+              }),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF007AFF),
               ),
@@ -62,20 +80,30 @@ class _InAppInlineScreenState extends State<InAppInlineScreen> {
             ),
             if (_showInline) ...[
               const SizedBox(height: 16),
-              SizedBox(
-                height: 244,
-                child: InAppInline(
-                  propertyId: _propertyIdController.text.trim().isEmpty
-                      ? '1'
-                      : _propertyIdController.text.trim(),
-                  screenName: _screenNameController.text.trim().isEmpty
-                      ? 'inline'
-                      : _screenNameController.text.trim(),
-                  customParams: HashMap<String, String>(),
-                  hideIfNotFound: false,
-                ),
+              Container(
+                width: double.infinity,
+                color: Colors.red,
+                child: _collapseSlot
+                    ? const SizedBox.shrink()
+                    : SizedBox(
+                        height: 244,
+                        child: InAppInline(
+                          propertyId: _propertyId,
+                          screenName: _screenName,
+                          customParams: HashMap<String, String>(),
+                          hideIfNotFound: true,
+                          onVisibilityChanged: widget.hideIfNotFound
+                              ? (hidden) {
+                                  if (mounted) setState(() => _nativeReportsHidden = hidden);
+                                }
+                              : null,
+                        ),
+                      ),
               ),
+              const SizedBox(height: 16),
+
             ],
+            Text("In line Description",style: TextStyle(color: Colors.red))
           ],
         ),
       ),

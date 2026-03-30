@@ -18,7 +18,8 @@ class InAppinlineFactory: NSObject, FlutterPlatformViewFactory {
         return InAppinline(
             frame: frame,
             viewIdentifier: viewId,
-            arguments: args)
+            arguments: args,
+            messenger: messenger)
     }
     
     public func createArgsCodec() -> any FlutterMessageCodec & NSObjectProtocol {
