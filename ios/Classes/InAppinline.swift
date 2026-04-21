@@ -8,7 +8,7 @@ class InAppinline: NSObject, FlutterPlatformView {
     private var lastReportedHidden: Bool?
     private var hiddenSinceUptime: TimeInterval?
     private var pollTimer: Timer?
-    private let hiddenDebounceSec: TimeInterval = 0.6
+    private let hiddenDebounceSec: TimeInterval = 0 // 600
 
     func view() -> UIView { nativeWebView }
 
@@ -43,8 +43,8 @@ class InAppinline: NSObject, FlutterPlatformView {
     }
 
     private func startVisibilityPolling() {
-        pollTimer?.invalidate()
-        pollTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
+        pollTimer?.invalidate() // withTimeInterval: 0.25
+        pollTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
             guard let self else { return }
 
             let rawHidden = self.nativeWebView.isHidden

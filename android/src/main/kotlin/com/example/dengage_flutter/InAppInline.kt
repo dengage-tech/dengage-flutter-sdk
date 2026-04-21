@@ -79,7 +79,7 @@ class InAppInline internal constructor(
     }
 
     private companion object {
-        const val POLL_MS = 250L
-        const val HIDDEN_DEBOUNCE_MS = 600L
+        const val POLL_MS = 50L
+        const val HIDDEN_DEBOUNCE_MS = 0L
     }
 }
