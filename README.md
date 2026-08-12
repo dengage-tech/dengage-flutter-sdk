@@ -41,7 +41,7 @@ In your app’s `pubspec.yaml`:
 dependencies:
   flutter:
     sdk: flutter
-  dengage_flutter: ^1.1.4   # use latest from pub.dev or git
+  dengage_flutter: ^1.1.7   # use latest from pub.dev or git
 ```
 
 Then run:
@@ -143,7 +143,7 @@ plugins {
 
 ```gradle
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35   // required by the Dengage Android SDK 6.0.99 (androidx.core 1.16.0)
     // ...
     defaultConfig {
         applicationId "com.yourcompany.yourapp"
@@ -160,8 +160,8 @@ dependencies {
     implementation "com.google.firebase:firebase-core:21.1.1"
     implementation "com.google.firebase:firebase-messaging:23.4.0"
     implementation "com.google.firebase:firebase-analytics:21.5.0"
-    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:6.0.89"
-    implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.89"   // optional, for Huawei
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:6.0.99"
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.99"   // optional, for Huawei
 }
 ```
 
@@ -169,7 +169,7 @@ dependencies {
 
 ```gradle
 plugins {
-    id "com.android.application" version '8.5.0' apply false
+    id "com.android.application" version '8.7.0' apply false   // 8.6.0+ required by androidx.core 1.16.0
     id "org.jetbrains.kotlin.android" version "1.9.22" apply false
     id "com.google.gms.google-services" version "4.4.0" apply false
 }
@@ -303,8 +303,8 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :tag => '5.90'
-  pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :tag => '5.90'   # optional
+  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :tag => '5.102'
+  pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :tag => '5.102'   # optional
 
   target 'DengageNotificationServiceExtension' do
     use_frameworks!

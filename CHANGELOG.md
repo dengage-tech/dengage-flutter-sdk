@@ -1,3 +1,9 @@
+## 1.1.7
+Features included
+-This release includes:
+* Android SDK dependency updated to 6.0.99
+* iOS SDK dependency updated to 5.102
+
 ## 1.1.6
 Features included
 -This release includes:

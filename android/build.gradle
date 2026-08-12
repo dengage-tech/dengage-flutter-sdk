@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.0'
+        classpath 'com.android.tools.build:gradle:8.7.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -27,7 +27,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     namespace 'com.example.dengage_flutter'
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -45,7 +45,7 @@ android {
     }
 }
 
-def dengageVersion = rootProject.hasProperty('dengageSdkVersion') ? rootProject.getProperty('dengageSdkVersion') : '6.0.89'
+def dengageVersion = rootProject.hasProperty('dengageSdkVersion') ? rootProject.getProperty('dengageSdkVersion') : '6.0.99'
 def useHms = rootProject.hasProperty('useHmsSdk') && rootProject.getProperty('useHmsSdk') == 'true'
 def useGeofence = rootProject.hasProperty('useGeofenceSdk') && rootProject.getProperty('useGeofenceSdk') == 'true'
 
