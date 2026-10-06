@@ -48,8 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
   static const List<Map<String, String>> _menuItems = [
     {'title': 'ASK NOTIFICATIONS', 'route': _askNotificationsRoute},
     {'title': 'DEVICE INFO', 'route': '/device_info'},
+    {'title': 'SHOW SUBSCRIPTION', 'route': '/subscription'},
     {'title': 'CHANGE CONTACT KEY', 'route': '/contact_key'},
+    {'title': 'CHANGE TRACKING PERMISSION', 'route': '/tracking_permission'},
+    {'title': 'CHANGE LOCATION PERMISSION', 'route': '/location_permission'},
     {'title': 'INBOX MESSAGES', 'route': '/inbox_messages'},
+    {'title': 'INBOX CHANNEL', 'route': '/inbox_channel'},
     {'title': 'IN APP MESSAGE', 'route': '/in_app_message'},
     {'title': 'REAL TIME IN APP MESSAGE', 'route': '/rt_in_app_messages'},
     {'title': 'REAL TIME IN APP FILTERS', 'route': '/real_time_in_app_filters'},

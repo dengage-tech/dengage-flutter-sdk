@@ -61,6 +61,15 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         case "dEngage#setUserPermission":
             self.setUserPermission(call: call, result: result)
             break;
+        case "dEngage#getUserPermission":
+            self.getUserPermission(call: call, result: result)
+            break;
+        case "dEngage#setTrackingPermission":
+            self.setTrackingPermission(call: call, result: result)
+            break;
+        case "dEngage#getTrackingPermission":
+            self.getTrackingPermission(call: call, result: result)
+            break;
         case "dEngage#registerForRemoteNotifications":
             self.registerForRemoteNotifications(call: call, result: result)
             break;
@@ -127,6 +136,19 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         case "dEngage#setInboxMessageAsClicked":
             self.setInboxMessageAsClicked(call: call, reply: result)
             break;
+        case "dEngage#getInboxChannelMessages":
+            self.getInboxChannelMessages(call: call, reply: result)
+            break;
+        case "dEngage#sendInboxChannelEvents":
+            self.sendInboxChannelEvents(call: call, reply: result)
+            break;
+        case "dEngage#setLocationPermission":
+            self.setLocationPermission(call: call, result: result)
+            break;
+        case "dEngage#removeInAppMessageDisplay":
+            Dengage.removeInAppMessageDisplay()
+            result(nil)
+            break;
         case "dEngage#setNavigation":
             self.setNavigation(call: call, reply: result)
             break;
@@ -176,7 +198,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             self.getLastPushPayload(call: call, result: result)
             break;
         default:
-            self.getSubscription(call: call, result: result)
+            result(FlutterMethodNotImplemented)
             break;
         }
     }
@@ -228,6 +250,22 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         }
         Dengage.setUserPermission(permission: permission)
         result(nil)
+    }
+
+    private func getUserPermission(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        result(Dengage.getPermission())
+    }
+
+    private func setTrackingPermission(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as! NSDictionary
+        let permission = arguments["permission"] as! Bool
+        Dengage.setTrackingPermission(trackingPermission: permission)
+        result(nil)
+    }
+
+    private func getTrackingPermission(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let permission = DengageLocalStorage.shared.value(for: .trackingPermission) as? Bool ?? true
+        result(permission)
     }
 
     /**
@@ -461,9 +499,47 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     /**
      * Method to getSubscription
      */
-    func getSubscription(call: FlutterMethodCall, result: @escaping FlutterResult){
-        // this method is yet not available in iOS
-        result(FlutterError.init(code: "NO_NATIVE_METHOD_YET", message: "this method is yet not available in iOS", details: nil))
+    func getSubscription(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let trackingPermission = DengageLocalStorage.shared.value(for: .trackingPermission) as? Bool ?? true
+        let country = DengageLocalStorage.shared.value(for: .countrySubscription) as? String
+        let language = DengageLocalStorage.shared.value(for: .languageSubscription) as? String
+            ?? Locale.current.languageCode ?? ""
+        let timezone = DengageLocalStorage.shared.value(for: .timezoneSubscription) as? String
+            ?? TimeZone.current.identifier
+        let partnerDeviceId = DengageLocalStorage.shared.value(for: .partner_device_idSubscription) as? String ?? ""
+        let carrierId = DengageLocalStorage.shared.value(for: .carrierIdSubscription) as? String ?? ""
+        let locationPermission = DengageLocalStorage.shared.value(for: .locationPermissionSubscription) as? String ?? ""
+        let advertisingId = DengageLocalStorage.shared.value(for: .advertisingIdSubscription) as? String ?? ""
+
+        let subscription: [String: Any] = [
+            "integrationKey": Dengage.getIntegrationKey(),
+            "token": Dengage.getDeviceToken() ?? "",
+            "appVersion": appVersion,
+            "sdkVersion": Dengage.getSdkVersion() ?? "",
+            "udid": Dengage.getDeviceId() ?? "",
+            "advertisingId": advertisingId,
+            "carrierId": carrierId,
+            "contactKey": Dengage.getContactKey() ?? "",
+            "permission": Dengage.getPermission(),
+            "trackingPermission": trackingPermission,
+            "tokenType": "I",
+            "webSubscription": "",
+            "testGroup": "",
+            "country": country ?? Locale.current.regionCode ?? "",
+            "language": language,
+            "timezone": timezone,
+            "partner_device_id": partnerDeviceId,
+            "locationPermission": locationPermission
+        ]
+
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: subscription, options: [])
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            result(jsonString)
+        } catch {
+            result(FlutterError(code: "error", message: error.localizedDescription, details: nil))
+        }
     }
 
     /**
@@ -562,6 +638,104 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
                 break;
             }
         }
+    }
+
+    /**
+     * Method to getInboxChannelMessages
+     */
+    func getInboxChannelMessages(call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        let arguments = call.arguments as? NSDictionary
+        let limit = arguments?["limit"] as? Int ?? 20
+
+        Dengage.getInboxChannelMessages(limit: limit) { (result) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let messages):
+                    let list: [[String: Any]] = messages.map { message in
+                        let ctaButtons: [[String: Any]] = (message.data.ctaButtons ?? []).map { cta in
+                            [
+                                "buttonId": cta.buttonId as Any,
+                                "label": cta.label as Any,
+                                "iosDeeplink": cta.iosDeeplink as Any,
+                                "androidDeeplink": cta.androidDeeplink as Any,
+                                "webUrl": cta.webUrl as Any
+                            ]
+                        }
+                        let data: [String: Any] = [
+                            "title": message.data.title as Any,
+                            "message": message.data.message as Any,
+                            "imageUrl": message.data.imageUrl as Any,
+                            "ctaButtons": ctaButtons,
+                            "isPinned": message.data.isPinned,
+                            "receiveDate": message.data.receiveDate as Any,
+                            "messageDetails": message.data.messageDetails as Any
+                        ]
+                        return [
+                            "id": message.id,
+                            "isRead": message.isRead,
+                            "priority": message.priority,
+                            "isDeleted": message.isDeleted,
+                            "data": data
+                        ]
+                    }
+                    reply(list)
+                case .failure(let error):
+                    reply(FlutterError(code: "error", message: error.localizedDescription, details: nil))
+                }
+            }
+        }
+    }
+
+    /**
+     * Method to sendInboxChannelEvents
+     */
+    func sendInboxChannelEvents(call: FlutterMethodCall, reply: @escaping FlutterResult) {
+        let arguments = call.arguments as? NSDictionary
+        let rawEvents = arguments?["events"] as? [[String: Any]] ?? []
+
+        var events = [DengageInboxChannelEvent]()
+        for dict in rawEvents {
+            guard let code = dict["eventType"] as? String,
+                  let type = DengageInboxChannelEventType(rawValue: code),
+                  let messageId = dict["messageId"] as? String else {
+                reply(FlutterError(code: "error",
+                                   message: "Invalid inbox channel event. eventType (IM, OP, CL, DT) and messageId are required",
+                                   details: nil))
+                return
+            }
+            events.append(DengageInboxChannelEvent(eventType: type,
+                                                   messageId: messageId,
+                                                   messageDetails: dict["messageDetails"] as? String))
+        }
+
+        if events.isEmpty {
+            reply(true)
+            return
+        }
+
+        Dengage.sendInboxChannelEvents(events) { (result) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    reply(true)
+                case .failure(let error):
+                    reply(FlutterError(code: "error", message: error.localizedDescription, details: nil))
+                }
+            }
+        }
+    }
+
+    /**
+     * Method to setLocationPermission
+     */
+    private func setLocationPermission(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? NSDictionary,
+              let status = arguments["status"] as? String else {
+            result(FlutterError(code: "error", message: "required argument 'status' is missing.", details: nil))
+            return
+        }
+        Dengage.setLocationPermission(status: status)
+        result(nil)
     }
 
     /**

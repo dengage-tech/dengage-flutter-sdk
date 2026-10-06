@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'screens/notification_screen.dart';
 import 'screens/device_info_screen.dart';
 import 'screens/contact_key_screen.dart';
+import 'screens/inbox_channel_screen.dart';
 import 'screens/inbox_messages_screen.dart';
+import 'screens/location_permission_screen.dart';
 import 'screens/in_app_message_screen.dart';
 import 'screens/rt_in_app_messages_screen.dart';
 import 'screens/real_time_in_app_filters_screen.dart';
@@ -12,6 +14,8 @@ import 'screens/cart_screen.dart';
 import 'screens/geofence_screen.dart';
 import 'screens/in_app_inline_screen.dart';
 import 'screens/app_story_screen.dart';
+import 'screens/subscription_screen.dart';
+import 'screens/tracking_permission_screen.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -37,8 +41,12 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/notification': (context) => const NotificationScreen(),
         '/device_info': (context) => const DeviceInfoScreen(),
+        '/subscription': (context) => const SubscriptionScreen(),
         '/contact_key': (context) => const ContactKeyScreen(),
+        '/tracking_permission': (context) => const TrackingPermissionScreen(),
         '/inbox_messages': (context) => const InboxMessagesScreen(),
+        '/inbox_channel': (context) => const InboxChannelScreen(),
+        '/location_permission': (context) => const LocationPermissionScreen(),
         '/in_app_message': (context) => const InAppMessageScreen(),
         '/rt_in_app_messages': (context) => const RTInAppMessagesScreen(),
         '/real_time_in_app_filters': (context) =>

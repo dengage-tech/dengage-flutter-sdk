@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import 'InboxChannel.dart';
+
 export 'AppStoryView.dart';
 export 'InAppInline.dart';
+export 'InboxChannel.dart';
 
 class DengageFlutter {
   static const MethodChannel _channel = const MethodChannel('dengage_flutter');
@@ -39,6 +42,15 @@ class DengageFlutter {
   static Future<void> setUserPermission(bool hasPermission) async {
     return await _channel.invokeMethod(
         "dEngage#setUserPermission", {'hasPermission': hasPermission});
+  }
+
+  static Future<void> setTrackingPermission(bool permission) async {
+    return await _channel.invokeMethod(
+        "dEngage#setTrackingPermission", {'permission': permission});
+  }
+
+  static Future<bool?> getTrackingPermission() async {
+    return await _channel.invokeMethod("dEngage#getTrackingPermission");
   }
 
   // iOS only
@@ -76,12 +88,13 @@ class DengageFlutter {
         .invokeMethod("dEngage#setLogStatus", {'isVisible': isVisible});
   }
 
-  // android Only
+  /// Current subscription `permission` field.
+  /// Native Android: `Dengage.getUserPermission()`; native iOS: `Dengage.getPermission()`.
   static Future<bool?> getUserPermission() async {
     return _channel.invokeMethod("dEngage#getUserPermission");
   }
 
-  // android only
+  // Returns the subscription as a JSON string on both Android and iOS.
   static Future<Object?> getSubscription() async {
     return _channel.invokeMethod("dEngage#getSubscription");
   }
@@ -159,6 +172,32 @@ class DengageFlutter {
         .invokeMethod("dEngage#setInboxMessageAsClicked", {'id': id});
   }
 
+  /// Fetches Inbox Channel messages. [limit] is clamped by native to 1-100.
+  static Future<List<InboxChannelMessage>> getInboxChannelMessages(
+      [int limit = 20]) async {
+    final result = await _channel
+        .invokeMethod<List<dynamic>>("dEngage#getInboxChannelMessages", {'limit': limit});
+    return (result ?? const [])
+        .whereType<Map>()
+        .map((e) => InboxChannelMessage.fromMap(e))
+        .toList();
+  }
+
+  /// Reports impression / open / click / delete interactions in bulk.
+  static Future<bool> sendInboxChannelEvents(
+      List<InboxChannelEvent> events) async {
+    final result = await _channel.invokeMethod<bool>(
+        "dEngage#sendInboxChannelEvents",
+        {'events': events.map((e) => e.toMap()).toList()});
+    return result ?? false;
+  }
+
+  /// Cancels an in-app message that is waiting for its display delay
+  /// (e.g. when leaving a screen).
+  static Future<void> removeInAppMessageDisplay() async {
+    return await _channel.invokeMethod("dEngage#removeInAppMessageDisplay");
+  }
+
   static Future<void> setNavigation() async {
     return await _channel.invokeMethod("dEngage#setNavigation");
   }
@@ -218,6 +257,13 @@ static Future<void> setPartnerDeviceId(String adid) async {
 
   static Future<void> setInAppLinkConfiguration(String deepLink) {
     return _channel.invokeMethod("dEngage#setInAppLinkConfiguration", {'deepLink': deepLink});
+  }
+
+  /// Tells the SDK the current location permission.
+  /// [status] is one of 'always', 'appinuse' or 'none'.
+  static Future<void> setLocationPermission(String status) async {
+    return await _channel
+        .invokeMethod("dEngage#setLocationPermission", {'status': status});
   }
 
   static Future<void> requestLocationPermissions() async {

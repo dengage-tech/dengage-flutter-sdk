@@ -7,11 +7,16 @@ import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.annotation.NonNull
 import com.dengage.sdk.Dengage
 import com.dengage.sdk.callback.DengageCallback
 import com.dengage.sdk.callback.DengageError
+import com.dengage.sdk.domain.inboxchannel.model.InboxChannelEvent
+import com.dengage.sdk.domain.inboxchannel.model.InboxChannelEventType
+import com.dengage.sdk.domain.inboxchannel.model.InboxChannelMessage
 import com.dengage.sdk.domain.inboxmessage.model.InboxMessage
 import com.dengage.sdk.domain.push.model.Message
 import com.dengage.sdk.domain.tag.model.TagItem
@@ -154,7 +159,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 this.setFirebaseIntegrationKey(call, result)
             } else if (call.method == "dEngage#setLogStatus") {
                 this.setLogStatus(call, result)
-            } else if (call.method == "dEngage#setPermission") {
+            } else if (call.method == "dEngage#setPermission" || call.method == "dEngage#setUserPermission") {
                 this.setUserPermission(call, result)
             } else if (call.method == "dEngage#promptForPushNotifications") {
                 this.promptForPushNotifications(call, result)
@@ -168,6 +173,10 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 this.getContactKey(call, result)
             } else if (call.method == "dEngage#getUserPermission") {
                 this.getUserPermission(call, result)
+            } else if (call.method == "dEngage#setTrackingPermission") {
+                this.setTrackingPermission(call, result)
+            } else if (call.method == "dEngage#getTrackingPermission") {
+                this.getTrackingPermission(call, result)
             } else if (call.method == "dEngage#getSubscription") {
                 this.getSubscription(call, result)
             } else if (call.method == "dEngage#pageView") {
@@ -198,6 +207,12 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 this.deleteInboxMessage(call, result)
             } else if (call.method == "dEngage#setInboxMessageAsClicked") {
                 this.setInboxMessageAsClicked(call, result)
+            } else if (call.method == "dEngage#getInboxChannelMessages") {
+                this.getInboxChannelMessages(call, result)
+            } else if (call.method == "dEngage#sendInboxChannelEvents") {
+                this.sendInboxChannelEvents(call, result)
+            } else if (call.method == "dEngage#removeInAppMessageDisplay") {
+                this.removeInAppMessageDisplay(call, result)
             } else if (call.method == "dEngage#setNavigation") {
                 this.setNavigation(call, result)
             } else if (call.method == "dEngage#setNavigationWithName") {
@@ -220,6 +235,9 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 this.setPartnerDeviceId(call, result)
             } else if (call.method == "dEngage#setInAppLinkConfiguration") {
                 this.setInAppLinkConfiguration(call, result)
+            }
+            else if (call.method == "dEngage#setLocationPermission") {
+                this.setLocationPermission(call, result)
             }
             else if (call.method == "dEngage#requestLocationPermissions") {
                 this.requestLocationPermissions(call, result)
@@ -460,6 +478,24 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         }
     }
 
+    private fun setTrackingPermission(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            val permission: Boolean = call.argument("permission") ?: true
+            Dengage.setTrackingPermission(permission)
+            replySuccess(result, null)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+    private fun getTrackingPermission(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            replySuccess(result, Dengage.getTrackingPermission())
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
     /**
      * Method to get current subscription
      */
@@ -672,6 +708,100 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
             val id: String = call.argument("id")!!
             Dengage.setInboxMessageAsClicked(id)
             replySuccess(result, true)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+    /**
+     * Method to getInboxChannelMessages
+     */
+    private fun getInboxChannelMessages(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            val limit: Int = call.argument("limit") ?: 20
+            Dengage.getInboxChannelMessages(
+                limit,
+                object : DengageCallback<MutableList<InboxChannelMessage>> {
+                    override fun onResult(response: MutableList<InboxChannelMessage>) {
+                        try {
+                            val list = response.map { inboxChannelMessageToMap(it) }
+                            runOnMain { replySuccess(result, list) }
+                        } catch (ex: Exception) {
+                            runOnMain { replyError(result, "error", ex.localizedMessage, ex) }
+                        }
+                    }
+
+                    override fun onError(error: DengageError) {
+                        runOnMain { replyError(result, "error", error.errorMessage, null) }
+                    }
+                })
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+    /**
+     * Method to sendInboxChannelEvents
+     */
+    private fun sendInboxChannelEvents(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            val events: List<Map<String, Any?>> = call.argument("events") ?: emptyList()
+            val list = events.map { map ->
+                val code = map["eventType"] as? String
+                val type = InboxChannelEventType.values().firstOrNull { it.code == code }
+                    ?: throw Exception("Invalid eventType '$code'. Expected one of IM, OP, CL, DT")
+                val messageId = map["messageId"] as? String
+                    ?: throw Exception("messageId is required")
+                InboxChannelEvent(type, messageId, map["messageDetails"] as? String)
+            }
+            if (list.isNotEmpty()) {
+                Dengage.sendInboxChannelEvents(list)
+            }
+            replySuccess(result, true)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
+
+    private fun inboxChannelMessageToMap(message: InboxChannelMessage): Map<String, Any?> {
+        val data = message.data
+        return hashMapOf(
+            "id" to message.id,
+            "isRead" to message.isRead,
+            "priority" to message.priority,
+            "isDeleted" to message.isDeleted,
+            "data" to hashMapOf(
+                "title" to data.title,
+                "message" to data.message,
+                "imageUrl" to data.imageUrl,
+                "isPinned" to data.isPinned,
+                "receiveDate" to data.receiveDate,
+                "messageDetails" to data.messageDetails,
+                "ctaButtons" to (data.ctaButtons ?: emptyList()).map { cta ->
+                    hashMapOf(
+                        "buttonId" to cta.buttonId,
+                        "label" to cta.label,
+                        "iosDeeplink" to cta.iosDeeplink,
+                        "androidDeeplink" to cta.androidDeeplink,
+                        "webUrl" to cta.webUrl
+                    )
+                }
+            )
+        )
+    }
+
+    private fun runOnMain(block: () -> Unit) {
+        if (Looper.myLooper() == Looper.getMainLooper()) block()
+        else Handler(Looper.getMainLooper()).post { block() }
+    }
+
+    /**
+     * Method to removeInAppMessageDisplay
+     */
+    private fun removeInAppMessageDisplay(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            Dengage.removeInAppMessageDisplay()
+            replySuccess(result, null)
         } catch (ex: Exception) {
             replyError(result, "error", ex.localizedMessage, ex)
         }
@@ -910,6 +1040,17 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     }
 
 
+
+    private fun setLocationPermission(@NonNull call: MethodCall, @NonNull result: Result) {
+        try {
+            val status: String = call.argument("status")
+                ?: throw Exception("required argument 'status' is missing.")
+            Dengage.setLocationPermission(status)
+            replySuccess(result, null)
+        } catch (ex: Exception) {
+            replyError(result, "error", ex.localizedMessage, ex)
+        }
+    }
 
     private fun requestLocationPermissions(@NonNull call: MethodCall, @NonNull result: Result) {
         try {

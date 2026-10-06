@@ -1,3 +1,10 @@
+## 1.1.8
+Features included
+* Inbox Channel: `getInboxChannelMessages` and `sendInboxChannelEvents` (Android & iOS)
+* `setLocationPermission(status)` (Android & iOS)
+* `removeInAppMessageDisplay()` (Android & iOS)
+* Android SDK dependency updated to 6.0.104 (iOS: branch version/5.105)
+
 ## 1.1.7
 Features included
 -This release includes:

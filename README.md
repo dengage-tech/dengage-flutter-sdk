@@ -41,7 +41,7 @@ In your app’s `pubspec.yaml`:
 dependencies:
   flutter:
     sdk: flutter
-  dengage_flutter: ^1.1.7   # use latest from pub.dev or git
+  dengage_flutter: ^1.1.8   # use latest from pub.dev or git
 ```
 
 Then run:
@@ -143,7 +143,7 @@ plugins {
 
 ```gradle
 android {
-    compileSdkVersion 35   // required by the Dengage Android SDK 6.0.99 (androidx.core 1.16.0)
+    compileSdkVersion 35   // required by the Dengage Android SDK 6.0.104 (androidx.core 1.16.0)
     // ...
     defaultConfig {
         applicationId "com.yourcompany.yourapp"
@@ -160,8 +160,8 @@ dependencies {
     implementation "com.google.firebase:firebase-core:21.1.1"
     implementation "com.google.firebase:firebase-messaging:23.4.0"
     implementation "com.google.firebase:firebase-analytics:21.5.0"
-    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:6.0.99"
-    implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.99"   // optional, for Huawei
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:6.0.104"
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.104"   // optional, for Huawei
 }
 ```
 
@@ -303,8 +303,8 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :tag => '5.102'
-  pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :tag => '5.102'   # optional
+  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.105'
+  pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.105'   # optional
 
   target 'DengageNotificationServiceExtension' do
     use_frameworks!
@@ -563,6 +563,8 @@ Call these after the app (and native SDK) are ready. Prefer calling from a `Stat
 | `DengageFlutter.promptForPushNotifications()` | iOS: show system permission dialog. |
 | `DengageFlutter.promptForPushNotificationsWithPromise()` | Returns `bool?` (granted/denied on iOS). |
 | `DengageFlutter.setUserPermission(bool hasPermission)` | Set opt-in state. |
+| `DengageFlutter.setTrackingPermission(bool permission)` | Enable or disable event tracking (analytics events sent by the SDK). Default `true`. |
+| `DengageFlutter.getTrackingPermission()` | `Future<bool?>` — current event-tracking opt-in state. |
 | `DengageFlutter.getUserPermission()` | Android: get current permission. |
 | `DengageFlutter.registerForRemoteNotifications(bool enabled)` | iOS only. |
 | `DengageFlutter.getLastPushPayload()` | Last received push payload. |
@@ -590,6 +592,23 @@ Call these after the app (and native SDK) are ready. Prefer calling from a `Stat
 |--------|-------------|
 | `DengageFlutter.setNavigation()` | Notify current screen (default). |
 | `DengageFlutter.setNavigationWithName(String screenName)` | Set screen for targeting. |
+| `DengageFlutter.removeInAppMessageDisplay()` | Cancel an in-app message that is still waiting for its display delay (call when leaving a screen). A message already on screen is not closed. |
+
+**Usage — `removeInAppMessageDisplay`** (added in 1.1.8). An in-app message can have a display delay. If the user leaves the screen during that delay the message would still appear on the next screen. Call it when the screen is closed:
+
+```dart
+@override
+void initState() {
+  super.initState();
+  DengageFlutter.setNavigationWithName('Checkout');
+}
+
+@override
+void dispose() {
+  DengageFlutter.removeInAppMessageDisplay(); // user left the screen
+  super.dispose();
+}
+```
 | `DengageFlutter.setCity(String city)` | Set city context. |
 | `DengageFlutter.setState(String state)` | Set state context. |
 | `DengageFlutter.setCartAmount(String amount)` | Cart total for RTS. |
@@ -605,20 +624,67 @@ Call these after the app (and native SDK) are ready. Prefer calling from a `Stat
 | `DengageFlutter.deleteInboxMessage(String id)` | Delete one message. |
 | `DengageFlutter.setInboxMessageAsClicked(String id)` | Mark as clicked/read. |
 
+#### Inbox Channel
+
+Requires Android SDK 6.0.102+ and iOS SDK 5.103+.
+
+| Method | Description |
+|--------|-------------|
+| `DengageFlutter.getInboxChannelMessages([int limit = 20])` | `Future<List<InboxChannelMessage>>` — fetch messages (limit 1–100). |
+| `DengageFlutter.sendInboxChannelEvents(List<InboxChannelEvent> events)` | `Future<bool>` — report impression / open / click / delete in one bulk request. |
+
+`InboxChannelMessage` has `id`, `isRead`, `priority`, `isDeleted` and `data` (`title`, `message`, `imageUrl`, `ctaButtons`, `isPinned`, `receiveDate`, `messageDetails`). Build events with `message.toEvent(InboxChannelEventType.impression | open | click | delete)`; the SDK echoes `messageDetails` for you.
+
+**Usage — Inbox Channel** (added in 1.1.8). Fetch the messages, report an impression for what is shown, then report the user's actions. Build events with `message.toEvent(...)` so the right `id` and `messageDetails` are sent.
+
+```dart
+// 1. fetch (limit 1-100)
+final messages = await DengageFlutter.getInboxChannelMessages(20);
+
+// 2. impression (IM) for every message shown, in one bulk request
+await DengageFlutter.sendInboxChannelEvents(
+  messages.map((m) => m.toEvent(InboxChannelEventType.impression)).toList(),
+);
+
+// 3. user actions: open (OP), click (CL), delete (DT)
+final m = messages.first;
+await DengageFlutter.sendInboxChannelEvents([m.toEvent(InboxChannelEventType.open)]);
+await DengageFlutter.sendInboxChannelEvents([m.toEvent(InboxChannelEventType.click)]);
+await DengageFlutter.sendInboxChannelEvents([m.toEvent(InboxChannelEventType.delete)]);
+
+// CTA deeplink for the current platform
+final cta = m.data.ctaButtons.isNotEmpty ? m.data.ctaButtons.first : null;
+final link = (Platform.isIOS ? cta?.iosDeeplink : cta?.androidDeeplink) ?? cta?.webUrl;
+```
+
+There is no direct "mark as read" or "delete" call: reading and deleting are reported through events, and the SDK keeps `isRead` / `isDeleted` in a local cache for 7 days. A runnable screen is in `example/lib/screens/inbox_channel_screen.dart`.
+
 ### 7.6 Configuration and geofence
 
 | Method | Description |
 |--------|-------------|
 | `DengageFlutter.setInAppLinkConfiguration(String deepLink)` | Override in-app link handling. |
 | `DengageFlutter.requestLocationPermissions()` | Request location (e.g. for geofence). |
+| `DengageFlutter.setLocationPermission(String status)` | Tell the SDK the current location permission: `'always'`, `'appinuse'` or `'none'`. Reflected in `getSubscription()` as `locationPermission`. |
 | `DengageFlutter.startGeofence()` | Start geofence. |
 | `DengageFlutter.stopGeofence()` | Stop geofence. |
 
-### 7.7 Subscription (Android)
+**Usage — `setLocationPermission`** (added in 1.1.8). Tell the SDK what location access the user granted so it is stored on the subscription (`locationPermission`). Values: `'always'`, `'appinuse'`, `'none'`.
+
+```dart
+await DengageFlutter.setLocationPermission('appinuse');
+
+final sub = jsonDecode(await DengageFlutter.getSubscription() as String);
+print(sub['locationPermission']); // appinuse
+```
+
+A runnable screen is in `example/lib/screens/location_permission_screen.dart`.
+
+### 7.7 Subscription (Android & iOS)
 
 | Method | Description |
 |--------|-------------|
-| `DengageFlutter.getSubscription()` | Raw subscription metadata (integration key, tokens, device IDs). |
+| `DengageFlutter.getSubscription()` | Raw subscription metadata as a JSON string (integration key, tokens, device IDs, `trackingPermission`, `locationPermission`). |
 
 ---
 
