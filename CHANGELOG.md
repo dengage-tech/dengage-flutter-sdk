@@ -1,8 +1,8 @@
 ## 1.1.8
 Features included
-* Inbox Channel: `getInboxChannelMessages` and `sendInboxChannelEvents` (Android & iOS)
+* Inbox Channel: fetch messages with `getInboxChannelMessages` and report impression/open/click/delete with `sendInboxChannelEvents` (Android & iOS)
+* `removeInAppMessageDisplay()`: call it when the user leaves a screen so an in-app message that is still waiting for its delay does not show on the next screen (Android & iOS)
 * `setLocationPermission(status)` (Android & iOS)
-* `removeInAppMessageDisplay()` (Android & iOS)
 * Android SDK dependency updated to 6.0.104 (iOS: branch version/5.105)
 
 ## 1.1.7
