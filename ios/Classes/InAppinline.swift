@@ -39,6 +39,17 @@ class InAppinline: NSObject, FlutterPlatformView {
             )
         }
 
+        // Dart binds its handler after this view is created and may have missed the
+        // first report, so it asks for the current state again via requestVisibility.
+        channel.setMethodCallHandler { [weak self] call, result in
+            if call.method == "requestVisibility" {
+                self?.lastReportedHidden = nil
+                result(nil)
+            } else {
+                result(FlutterMethodNotImplemented)
+            }
+        }
+
         startVisibilityPolling()
     }
 
@@ -67,5 +78,6 @@ class InAppinline: NSObject, FlutterPlatformView {
 
     deinit {
         pollTimer?.invalidate()
+        channel.setMethodCallHandler(nil)
     }
 }

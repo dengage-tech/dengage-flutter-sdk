@@ -43,6 +43,16 @@ class InAppInline internal constructor(
             hideIfNotFound = hideIfNotFound,
             screenName = screenName,
         )
+        // Dart binds its handler after this view is created and may have missed the
+        // first report, so it asks for the current state again via requestVisibility.
+        channel.setMethodCallHandler { call, result ->
+            if (call.method == "requestVisibility") {
+                lastReportedHidden = null
+                result.success(null)
+            } else {
+                result.notImplemented()
+            }
+        }
         startVisibilityPolling()
     }
 
@@ -75,6 +85,8 @@ class InAppInline internal constructor(
 
     override fun dispose() {
         disposed = true
+        handler.removeCallbacksAndMessages(null)
+        channel.setMethodCallHandler(null)
         inAppInlineElement.destroy()
     }
 

@@ -1,3 +1,14 @@
+## 1.1.9
+Features included
+-This release includes:
+* iOS: the push-click channel (`com.dengage.flutter/onNotificationClicked`) and the in-app link channel (`com.dengage.flutter/inAppLinkRetrieval`) now have their own handler. Before, both shared one, so a link tapped in an in-app / inline message arrived on the notification channel when the app only listened to that one. Behaviour change on iOS: to receive in-app link taps, listen on `inAppLinkRetrieval` (same as on Android).
+* Android: fixed cancelling the event streams. Cancelling the in-app link stream reset the wrong receiver, so cancelling the notification stream afterwards failed with `Receiver not registered: null` and left its receiver registered. Receivers are now unregistered safely, also when the plugin detaches.
+* `InAppInline` `onVisibilityChanged`: the callback now receives `isHidden` (`true` = placement hidden because no message was found with `hideIfNotFound: true`, `false` = a message is shown). It is typed as the new `InAppInlineVisibilityCallback` (`void Function(bool isHidden)`); the signature is unchanged, so existing code keeps compiling.
+* `InAppInline`: the callback from the latest rebuild is now the one that runs. Before, the callback passed when the view was first created kept being used, a callback added later was never called, and events were still delivered after the widget was disposed.
+* `InAppInline`: native now re-sends the current visibility as soon as Dart starts listening, so the first value cannot be missed. An unchanged value is not repeated. Handlers and polling are released when the view is disposed (Android & iOS).
+* README: removed the wrong "~0.6s debounce" statement for `onVisibilityChanged`. A visibility change is reported immediately.
+* README: documented the two event channels, their payloads, when the in-app link event is sent, and a sample listener.
+
 ## 1.1.8
 Features included
 * Inbox Channel: fetch messages with `getInboxChannelMessages` and report impression/open/click/delete with `sendInboxChannelEvents` (Android & iOS)

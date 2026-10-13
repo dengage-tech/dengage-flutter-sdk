@@ -41,7 +41,7 @@ In your app’s `pubspec.yaml`:
 dependencies:
   flutter:
     sdk: flutter
-  dengage_flutter: ^1.1.8   # use latest from pub.dev or git
+  dengage_flutter: ^1.1.9   # use latest from pub.dev or git
 ```
 
 Then run:
@@ -730,7 +730,7 @@ The widget uses an internal **key** derived from `propertyId`, `screenName`, `cu
 
 #### `onVisibilityChanged` (optional)
 
-Native code polls visibility and sends **`onVisibilityChanged(isHidden)`** to Dart over a per-view method channel. **`isHidden == true`** means the native slot is not visible (e.g. after `hideIfNotFound: true` and no campaign). There is a short **debounce (~0.6s)** before “hidden” is reported so brief transitions do not flicker.
+Native code polls visibility (every 50 ms) and sends **`onVisibilityChanged(isHidden)`** to Dart over a per-view method channel. The callback type is `InAppInlineVisibilityCallback = void Function(bool isHidden)`. **`isHidden == true`** means the native slot is not visible (e.g. after `hideIfNotFound: true` and no campaign); **`isHidden == false`** means a message is shown. A change is reported **immediately** (there is no debounce). The current state is sent once as soon as the Dart side starts listening, so the first value is never missed, and an unchanged value is not repeated. The callback from the latest rebuild is always the one that runs (since 1.1.9).
 
 The callback **does not** change your layout by itself. Use it if you want a **zero-height slot** in Flutter when native hides the inline (typical pattern in a `StatefulWidget`): keep a `bool nativeHidden`, pass `onVisibilityChanged: (h) => setState(() => nativeHidden = h)` only when `hideIfNotFound` is true, and build `SizedBox.shrink()` instead of `SizedBox(height: 244, child: InAppInline(...))` when `hideIfNotFound && nativeHidden`. In a `ListView`, return `SizedBox.shrink()` for that row in the same case so it takes no vertical space. A runnable sample (red debug border, collapse when native reports hidden) is in **[in_app_inline_screen.dart](https://github.com/dengage-tech/dengage-flutter-sdk/blob/stable_combined/example/lib/screens/in_app_inline_screen.dart)** on the `stable_combined` branch.
 
@@ -758,8 +758,52 @@ AppStoryView(
 ## 9. Inbox, deep links, and utilities
 
 - **Inbox**: When the backend sends messages with “Save to Inbox” enabled, they are stored locally. Use `getInboxMessages(offset, limit)` to fetch a page of messages (each has id, title, message, receiveDate, isClicked, etc.). Use `deleteInboxMessage(id)` to remove one message and `setInboxMessageAsClicked(id)` to mark it as read/clicked. You can build a simple inbox screen that lists these and handles delete/click.
-- **Deep links**: When the user taps a link inside an in-app message or a push notification, the Dengage SDK can open a URL (in-app browser or external). If you want to handle certain URLs inside your app (e.g. open a specific screen), set `setInAppLinkConfiguration(deepLink)` to your app’s URL scheme or universal link host. The plugin also exposes an event channel (e.g. `com.dengage.flutter/inAppLinkRetrieval`) so you can listen in Dart for link callbacks when the user taps a link — check the plugin source for the exact channel name and payload format.
-- **Notification click**: When the user taps a notification, the native SDK handles it (e.g. open app, track click). If you need to react in Flutter (e.g. navigate to a screen), listen on the plugin’s notification event channel (e.g. `com.dengage.flutter/onNotificationClicked`). The plugin streams the payload or notification data when a notification is opened; see the plugin’s iOS/Android implementation for the exact event name and data shape.
+- **Deep links and in-app link taps**: When the user taps a link inside an in-app or inline message, the Dengage SDK either opens the URL itself (in-app browser or external) or hands it to your app. To handle certain URLs inside your app (for example open a specific screen), call `DengageFlutter.setInAppLinkConfiguration('myapp://')` and listen on the in-app link event channel (see *Event channels* below).
+- **Notification click**: When the user taps a notification, the native SDK handles it (open the app, track the click). To react in Flutter (for example navigate to a screen), listen on the notification event channel (see *Event channels* below).
+
+#### Event channels
+
+The plugin exposes two `EventChannel`s. Each one has its own handler on Android and iOS, so an event is only delivered on the channel it belongs to (since 1.1.9; on iOS before 1.1.9 both channels shared one handler).
+
+| Channel | Event | Payload |
+|---|---|---|
+| `com.dengage.flutter/onNotificationClicked` | The user tapped a push notification | Android: JSON string of the message. iOS: `[ {actionIdentifier, notification} ]` |
+| `com.dengage.flutter/inAppLinkRetrieval` | The user tapped a link inside an in-app / inline message and the SDK handed the URL to your app | Android: a double-encoded JSON string `{"targetUrl": "..."}`. iOS: `[ {targetUrl: "..."} ]` |
+
+The SDK hands the URL to your app (instead of opening it) when the message has **retrieve on same link** on and **in-app browser** off. If you also called `setInAppLinkConfiguration(prefix)`, URLs that start with the prefix are treated as deep links. Otherwise the SDK opens the URL itself and no event is sent.
+
+```dart
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/services.dart';
+
+const _inAppLink = EventChannel('com.dengage.flutter/inAppLinkRetrieval');
+StreamSubscription? _sub;
+
+void listenInAppLinks(void Function(String url) onUrl) {
+  _sub?.cancel();
+  _sub = _inAppLink.receiveBroadcastStream().listen((event) {
+    String? url;
+    try {
+      if (event is String) {
+        // Android: double-encoded JSON string
+        dynamic d = jsonDecode(event);
+        if (d is String) d = jsonDecode(d);
+        if (d is Map) url = d['targetUrl'] as String?;
+      } else if (event is List && event.isNotEmpty && event.first is Map) {
+        // iOS: [ {targetUrl: ...} ]
+        url = (event.first as Map)['targetUrl'] as String?;
+      }
+    } catch (_) {}
+    if (url != null && url.isNotEmpty) onUrl(url);
+  });
+}
+
+void stopListeningInAppLinks() => _sub?.cancel();
+```
+
+Listen once for the whole app (not once per inline widget), otherwise one tap is handled several times.
+> **Upgrading to 1.1.9 (iOS):** in-app link taps are no longer delivered on `onNotificationClicked`. Listen on `inAppLinkRetrieval` for them, the same as on Android.
 
 ---
 

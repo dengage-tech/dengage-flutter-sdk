@@ -28,22 +28,18 @@ Key _platformViewKey({
   return ValueKey<String>(b.toString());
 }
 
-void _bindVisibilityChannel(int viewId, ValueChanged<bool>? onChanged) {
-  if (onChanged == null) return;
-  final channel = MethodChannel('plugins.dengage/inappinline_$viewId');
-  channel.setMethodCallHandler((call) async {
-    if (call.method != 'onVisibilityChanged') return;
-    final map = (call.arguments as Map?)?.cast<String, dynamic>() ?? const {};
-    onChanged((map['isHidden'] as bool?) ?? false);
-  });
-}
+/// Called when the inline in-app placement changes visibility.
+///
+/// [isHidden] is `true` when the native SDK hid the placement (no message
+/// found and `hideIfNotFound` is true) and `false` when a message is shown.
+typedef InAppInlineVisibilityCallback = void Function(bool isHidden);
 
-class InAppInline extends StatelessWidget {
+class InAppInline extends StatefulWidget {
   final String propertyId;
   final String? screenName;
   final HashMap<String, String>? customParams;
   final bool? hideIfNotFound;
-  final ValueChanged<bool>? onVisibilityChanged;
+  final InAppInlineVisibilityCallback? onVisibilityChanged;
 
   const InAppInline({
     Key? key,
@@ -54,20 +50,62 @@ class InAppInline extends StatelessWidget {
     this.onVisibilityChanged,
   }) : super(key: key);
 
+  @override
+  State<InAppInline> createState() => _InAppInlineState();
+}
+
+class _InAppInlineState extends State<InAppInline> {
+  MethodChannel? _channel;
+  bool? _lastIsHidden;
+
   Map<String, dynamic> get _creationParams => {
-        'propertyId': propertyId,
-        'screenName': screenName,
-        'customParams': customParams,
-        'hideIfNotFound': hideIfNotFound,
+        'propertyId': widget.propertyId,
+        'screenName': widget.screenName,
+        'customParams': widget.customParams,
+        'hideIfNotFound': widget.hideIfNotFound,
       };
+
+  void _onPlatformViewCreated(int viewId) {
+    _unbindChannel();
+    _lastIsHidden = null;
+    final channel = MethodChannel('plugins.dengage/inappinline_$viewId');
+    // Always read the callback from `widget` so a callback passed by a later
+    // rebuild (or added after the view was created) is the one that runs.
+    channel.setMethodCallHandler((call) async {
+      if (call.method != 'onVisibilityChanged') return;
+      final onChanged = widget.onVisibilityChanged;
+      if (onChanged == null) return;
+      final map = (call.arguments as Map?)?.cast<String, dynamic>() ?? const {};
+      final isHidden = (map['isHidden'] as bool?) ?? false;
+      // The re-sync below can repeat a value that was already delivered.
+      if (isHidden == _lastIsHidden) return;
+      _lastIsHidden = isHidden;
+      onChanged(isHidden);
+    });
+    _channel = channel;
+    // Native starts reporting before this handler exists, so ask it to send
+    // the current state again now that we are listening.
+    channel.invokeMethod<void>('requestVisibility').catchError((_) {});
+  }
+
+  void _unbindChannel() {
+    _channel?.setMethodCallHandler(null);
+    _channel = null;
+  }
+
+  @override
+  void dispose() {
+    _unbindChannel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final viewKey = _platformViewKey(
-      propertyId: propertyId,
-      screenName: screenName,
-      customParams: customParams,
-      hideIfNotFound: hideIfNotFound,
+      propertyId: widget.propertyId,
+      screenName: widget.screenName,
+      customParams: widget.customParams,
+      hideIfNotFound: widget.hideIfNotFound,
     );
 
     switch (defaultTargetPlatform) {
@@ -75,7 +113,7 @@ class InAppInline extends StatelessWidget {
         return AndroidView(
           key: viewKey,
           viewType: 'plugins.dengage/inappinline',
-          onPlatformViewCreated: (id) => _bindVisibilityChannel(id, onVisibilityChanged),
+          onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: _creationParams,
           creationParamsCodec: const StandardMessageCodec(),
         );
@@ -83,7 +121,7 @@ class InAppInline extends StatelessWidget {
         return UiKitView(
           key: viewKey,
           viewType: 'plugins.dengage/inappinline',
-          onPlatformViewCreated: (id) => _bindVisibilityChannel(id, onVisibilityChanged),
+          onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: _creationParams,
           creationParamsCodec: const StandardMessageCodec(),
         );

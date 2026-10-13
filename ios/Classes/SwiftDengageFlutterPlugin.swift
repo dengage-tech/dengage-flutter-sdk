@@ -7,9 +7,35 @@ enum EventChannelName {
     static let inAppLinkRetrieval = "com.dengage.flutter/inAppLinkRetrieval"
 }
 
-public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
+/// Stream handler for one event channel. Each channel gets its own instance, so an event is only
+/// ever delivered to the channel it belongs to (push clicks vs. in-app link taps).
+final class EventChannelHandler: NSObject, FlutterStreamHandler {
+    private(set) var sink: FlutterEventSink?
+    private let onListenAction: () -> Void
 
-    private var eventSink: FlutterEventSink?
+    init(onListen: @escaping () -> Void) {
+        self.onListenAction = onListen
+        super.init()
+    }
+
+    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        sink = events
+        onListenAction()
+        return nil
+    }
+
+    func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        sink = nil
+        return nil
+    }
+}
+
+public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin {
+
+    /// Sink of `com.dengage.flutter/onNotificationClicked`.
+    private lazy var notificationHandler = EventChannelHandler { [weak self] in self?.listenForNotification() }
+    /// Sink of `com.dengage.flutter/inAppLinkRetrieval`.
+    private lazy var inAppLinkHandler = EventChannelHandler { [weak self] in self?.registerInAppListener() }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         registrar.register(InAppinlineFactory(messenger: registrar.messenger()), withId: "plugins.dengage/inappinline")
@@ -23,24 +49,12 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         let inappLinkEventChannel = FlutterEventChannel(name: EventChannelName.inAppLinkRetrieval,
                                                         binaryMessenger: registrar.messenger())
 
-        notificationEventChannel.setStreamHandler(instance.self)
+        notificationEventChannel.setStreamHandler(instance.notificationHandler)
 
-        inappLinkEventChannel.setStreamHandler(instance.self)
+        inappLinkEventChannel.setStreamHandler(instance.inAppLinkHandler)
 
 
         registrar.addMethodCallDelegate(instance, channel: channel)
-    }
-
-    public func onListen(withArguments arguments: Any?,
-                         eventSink: @escaping FlutterEventSink) -> FlutterError? {
-        self.eventSink = eventSink
-        self.listenForNotification()
-        self.registerInAppListener()
-        return nil
-    }
-
-    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        return nil
     }
 
 
@@ -838,7 +852,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
             notification["request"] = notificationReq
             response["notification"] = notification
 
-            guard let eventSink = self.eventSink else {
+            guard let eventSink = self.notificationHandler.sink else {
                 return
             }
             eventSink([response])
@@ -963,7 +977,7 @@ public class SwiftDengageFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         var response = [String:Any?]();
         response["targetUrl"] = url
         print(url)
-        guard let eventSink = self.eventSink else {
+        guard let eventSink = self.inAppLinkHandler.sink else {
             return
         }
         eventSink([response])

@@ -2,6 +2,7 @@ package com.example.dengage_flutter
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
@@ -44,6 +45,10 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private lateinit var appContext: Context
+
+    // Receivers behind the two event channels. Each channel owns its own receiver and sink.
+    private var notifReceiver: NotificationReceiver? = null
+    private var inappReceiver: InAppBroadcastReceiver? = null
     private lateinit var appActivity: Activity
     private lateinit var flutterPluginBindingGlobal: FlutterPlugin.FlutterPluginBinding
 
@@ -57,8 +62,6 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dengage_flutter")
         channel.setMethodCallHandler(this)
 
-        var notifReceiver: NotificationReceiver? = null
-        var inappReceiver: InAppBroadcastReceiver? = null
         EventChannel(flutterPluginBinding.flutterEngine.dartExecutor,
             ON_NOTIFICATION_CLICKED).setStreamHandler(
             object : StreamHandler {
@@ -68,6 +71,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                     val filter = IntentFilter()
                     filter.addAction("com.dengage.push.intent.RECEIVE")
                     filter.addAction("com.dengage.push.intent.OPEN")
+                    unregisterQuietly(notifReceiver)
                     notifReceiver = createNotifReciever(events)
 
                     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -89,7 +93,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 }
 
                 override fun onCancel(arguments: Any?) {
-                    appContext.unregisterReceiver(notifReceiver)
+                    unregisterQuietly(notifReceiver)
                     notifReceiver = null
                 }
             }
@@ -103,6 +107,7 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
 
                     val filter = IntentFilter()
                     filter.addAction("com.dengage.inapp.LINK_RETRIEVAL")
+                    unregisterQuietly(inappReceiver)
                     inappReceiver = createInAppLinkReciever(events)
                     @SuppressLint("UnspecifiedRegisterReceiverFlag")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -123,8 +128,8 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
                 }
 
                 override fun onCancel(arguments: Any?) {
-                    appContext.unregisterReceiver(inappReceiver)
-                    notifReceiver = null
+                    unregisterQuietly(inappReceiver)
+                    inappReceiver = null
                 }
             }
         )
@@ -873,6 +878,20 @@ class DengageFlutterPlugin : FlutterPlugin, MethodCallHandler, DengageResponder(
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        unregisterQuietly(notifReceiver)
+        notifReceiver = null
+        unregisterQuietly(inappReceiver)
+        inappReceiver = null
+    }
+
+    /** Unregisters [receiver] if there is one and it is still registered. Never throws. */
+    private fun unregisterQuietly(receiver: BroadcastReceiver?) {
+        if (receiver == null) return
+        try {
+            appContext.unregisterReceiver(receiver)
+        } catch (_: IllegalArgumentException) {
+            // already unregistered
+        }
     }
 
     override fun onDetachedFromActivity() {
