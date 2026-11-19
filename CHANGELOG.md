@@ -1,3 +1,9 @@
+## 1.1.10
+Features included
+-This release includes:
+* Android SDK dependency updated to 6.0.106
+* iOS SDK dependency updated to 5.108 (branch version/5.108)
+
 ## 1.1.9
 Features included
 -This release includes:

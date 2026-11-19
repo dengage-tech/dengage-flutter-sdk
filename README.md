@@ -41,7 +41,7 @@ In your app’s `pubspec.yaml`:
 dependencies:
   flutter:
     sdk: flutter
-  dengage_flutter: ^1.1.9   # use latest from pub.dev or git
+  dengage_flutter: ^1.1.10   # use latest from pub.dev or git
 ```
 
 Then run:
@@ -143,7 +143,7 @@ plugins {
 
 ```gradle
 android {
-    compileSdkVersion 35   // required by the Dengage Android SDK 6.0.104 (androidx.core 1.16.0)
+    compileSdkVersion 35   // required by the Dengage Android SDK 6.0.106 (androidx.core 1.16.0)
     // ...
     defaultConfig {
         applicationId "com.yourcompany.yourapp"
@@ -160,8 +160,8 @@ dependencies {
     implementation "com.google.firebase:firebase-core:21.1.1"
     implementation "com.google.firebase:firebase-messaging:23.4.0"
     implementation "com.google.firebase:firebase-analytics:21.5.0"
-    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:6.0.104"
-    implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.104"   // optional, for Huawei
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk:6.0.106"
+    implementation "com.github.dengage-tech.dengage-android-sdk:sdk-hms:6.0.106"   // optional, for Huawei
 }
 ```
 
@@ -303,8 +303,8 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.105'
-  pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.105'   # optional
+  pod 'Dengage', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.108'
+  pod 'DengageGeofence', :git => 'https://github.com/dengage-tech/dengage-ios-sdk.git', :branch => 'version/5.108'   # optional
 
   target 'DengageNotificationServiceExtension' do
     use_frameworks!
